@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const progress = sqliteTable('progress', {
   itemId: text('item_id').primaryKey(),
@@ -21,3 +21,10 @@ export const answers = sqliteTable('answers', {
   feedback: text('feedback').notNull(),
   createdAt: text('created_at').notNull(),
 });
+
+export const qaConversations = sqliteTable('qa_conversations', {
+  id: text('id').primaryKey(),
+  question: text('question').notNull(),
+  answer: text('answer').notNull(),
+  createdAt: text('created_at').notNull(),
+}, (table) => [index('idx_qa_created_at').on(table.createdAt)]);

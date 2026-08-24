@@ -1,5 +1,7 @@
 import { env } from 'cloudflare:workers';
 
+const FORMAL_START = '2026-08-31T16:00:00.000Z';
+
 const rubrics: Record<string, { keywords: string[]; answer: string }> = {
   action_chunk: {
     keywords: ['时间', '连贯', '误差', '频率', '闭环', '抖动', 'chunk', '轨迹'],
@@ -12,17 +14,20 @@ async function ensureTables() {
     env.DB.prepare('CREATE TABLE IF NOT EXISTS progress (item_id TEXT PRIMARY KEY, completed INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL)'),
     env.DB.prepare('CREATE TABLE IF NOT EXISTS favorites (item_id TEXT PRIMARY KEY, item_type TEXT NOT NULL, title TEXT NOT NULL, summary TEXT NOT NULL, updated_at TEXT NOT NULL)'),
     env.DB.prepare('CREATE TABLE IF NOT EXISTS answers (question_id TEXT PRIMARY KEY, answer TEXT NOT NULL, score INTEGER NOT NULL, feedback TEXT NOT NULL, created_at TEXT NOT NULL)'),
+    env.DB.prepare('CREATE TABLE IF NOT EXISTS qa_conversations (id TEXT PRIMARY KEY, question TEXT NOT NULL, answer TEXT NOT NULL, created_at TEXT NOT NULL)'),
+    env.DB.prepare('CREATE INDEX IF NOT EXISTS idx_qa_created_at ON qa_conversations(created_at)'),
   ]);
 }
 
 export async function GET() {
   await ensureTables();
-  const [progress, favorites, answers] = await env.DB.batch([
-    env.DB.prepare('SELECT item_id AS itemId, completed FROM progress ORDER BY updated_at DESC'),
+  const [progress, favorites, answers, qa] = await env.DB.batch([
+    env.DB.prepare('SELECT item_id AS itemId, completed FROM progress WHERE updated_at >= ? ORDER BY updated_at DESC').bind(FORMAL_START),
     env.DB.prepare('SELECT item_id AS itemId, item_type AS itemType, title, summary FROM favorites ORDER BY updated_at DESC'),
-    env.DB.prepare('SELECT question_id AS questionId, answer, score, feedback, created_at AS createdAt FROM answers ORDER BY created_at DESC'),
+    env.DB.prepare('SELECT question_id AS questionId, answer, score, feedback, created_at AS createdAt FROM answers WHERE created_at >= ? ORDER BY created_at DESC').bind(FORMAL_START),
+    env.DB.prepare('SELECT id, question, answer, created_at AS createdAt FROM qa_conversations ORDER BY created_at DESC'),
   ]);
-  return Response.json({ progress: progress.results, favorites: favorites.results, answers: answers.results });
+  return Response.json({ progress: progress.results, favorites: favorites.results, answers: answers.results, qa: qa.results });
 }
 
 export async function POST(request: Request) {
@@ -31,6 +36,7 @@ export async function POST(request: Request) {
   const now = new Date().toISOString();
 
   if (body.type === 'toggle-task') {
+    if (now < FORMAL_START) return Response.json({ ok: true, trial: true });
     await env.DB.prepare('INSERT INTO progress (item_id, completed, updated_at) VALUES (?, ?, ?) ON CONFLICT(item_id) DO UPDATE SET completed = excluded.completed, updated_at = excluded.updated_at')
       .bind(String(body.itemId), body.completed ? 1 : 0, now).run();
     return Response.json({ ok: true });
@@ -53,9 +59,20 @@ export async function POST(request: Request) {
     const hits = rubric.keywords.filter((keyword) => answer.toLowerCase().includes(keyword.toLowerCase())).length;
     const score = Math.min(96, Math.max(25, 28 + hits * 9 + Math.min(14, Math.floor(answer.length / 18))));
     const feedback = score >= 80 ? '回答已覆盖核心权衡，表达也较完整。下一步可加上 temporal ensemble 的执行细节和一个实验例子。' : '已记入错题集。建议从「时序相关、推理频率、误差累积、闭环纠错」四个角度重组答案。';
+    if (now < FORMAL_START) return Response.json({ score, feedback, reference: rubric.answer, trial: true });
     await env.DB.prepare('INSERT INTO answers (question_id, answer, score, feedback, created_at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(question_id) DO UPDATE SET answer = excluded.answer, score = excluded.score, feedback = excluded.feedback, created_at = excluded.created_at')
       .bind(questionId, answer, score, feedback, now).run();
-    return Response.json({ score, feedback, reference: rubric.answer });
+    return Response.json({ score, feedback, reference: rubric.answer, trial: false });
+  }
+
+  if (body.type === 'save-qa') {
+    const id = String(body.id ?? '');
+    const question = String(body.question ?? '').trim();
+    const answer = String(body.answer ?? '').trim();
+    if (!id || !question || !answer) return Response.json({ error: '问答内容不完整' }, { status: 400 });
+    await env.DB.prepare('INSERT INTO qa_conversations (id, question, answer, created_at) VALUES (?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET question = excluded.question, answer = excluded.answer, created_at = excluded.created_at')
+      .bind(id, question, answer, String(body.createdAt ?? now)).run();
+    return Response.json({ ok: true });
   }
 
   return Response.json({ error: '未知操作' }, { status: 400 });
