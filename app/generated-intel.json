@@ -1,6 +1,17 @@
 {
-  "updatedAt": "2026-08-24T07:00:00+08:00",
-  "status": "seeded",
-  "summary": "每日 07:00 自动采集开源模型、杭州/上海 JD 与面经，去重后更新。",
-  "items": []
+  "updatedAt": "2026-08-27T12:19:12+08:00",
+  "status": "updated",
+  "summary": "新增 1 条上海补充官方岗位：卡特彼勒端到端算法校招明确要求 VLA、Diffusion Policy、闭环仿真、World Model 与 ROS2；课程已覆盖且未达调整阈值，面经无新增。",
+  "items": [
+    {
+      "type": "job",
+      "title": "卡特彼勒 2027 校招·自动驾驶端到端算法工程师",
+      "source": "Caterpillar Careers",
+      "location": "上海 / 无锡",
+      "publishedAt": "2026-08-27",
+      "url": "https://careers.caterpillar.com/zh/%E8%81%8C%E4%BD%8D/r0000390959/2027%E6%A0%A1%E5%9B%AD%E6%8B%9B%E8%81%98-%E7%A0%94%E5%8F%91%E7%B1%BB-%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E6%96%B9%E5%90%91/",
+      "signals": ["VLA", "Diffusion Policy", "闭环仿真", "World Model", "ROS/ROS2", "实车调试"],
+      "decision": "记录为单一新岗位信号；当前课程已覆盖，不调整学习计划。"
+    }
+  ]
 }
