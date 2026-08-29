@@ -1,17 +1,16 @@
 {
-  "updatedAt": "2026-08-27T12:19:12+08:00",
+  "updatedAt": "2026-08-29T01:43:03+08:00",
   "status": "updated",
-  "summary": "新增 1 条上海补充官方岗位：卡特彼勒端到端算法校招明确要求 VLA、Diffusion Policy、闭环仿真、World Model 与 ROS2；课程已覆盖且未达调整阈值，面经无新增。",
+  "summary": "新增 1 条 LeRobot 官方数据工程更新：原生接入 LanceDB，覆盖远程数据、批量读取、视频/深度解码与训练评测；课程已覆盖且未达调整阈值，岗位和面经无新增。",
   "items": [
     {
-      "type": "job",
-      "title": "卡特彼勒 2027 校招·自动驾驶端到端算法工程师",
-      "source": "Caterpillar Careers",
-      "location": "上海 / 无锡",
-      "publishedAt": "2026-08-27",
-      "url": "https://careers.caterpillar.com/zh/%E8%81%8C%E4%BD%8D/r0000390959/2027%E6%A0%A1%E5%9B%AD%E6%8B%9B%E8%81%98-%E7%A0%94%E5%8F%91%E7%B1%BB-%E8%87%AA%E5%8A%A8%E9%A9%BE%E9%A9%B6%E6%96%B9%E5%90%91/",
-      "signals": ["VLA", "Diffusion Policy", "闭环仿真", "World Model", "ROS/ROS2", "实车调试"],
-      "decision": "记录为单一新岗位信号；当前课程已覆盖，不调整学习计划。"
+      "type": "official_update",
+      "title": "LeRobot 原生支持 LanceDB 数据集",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-08-28T20:25:00+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/f67b122dbbecbd01be8c2a36114dba8f453bcdd6",
+      "signals": ["LeRobotDataset", "LanceDB", "远程数据读取", "视频/深度解码", "数据完整性", "训练与评测"],
+      "decision": "记录为单一官方数据工程信号；现有课程已覆盖数据管线，不调整学习计划。"
     }
   ]
 }
