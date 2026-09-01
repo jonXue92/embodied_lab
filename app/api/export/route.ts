@@ -34,5 +34,12 @@ export async function GET(request: Request) {
     return markdownResponse(`# 知行工坊·学习答疑归档\n\n> 导出时间：${new Date().toISOString()}\n\n${rows || '暂无答疑记录。\n'}`, 'zhixing-qa.md');
   }
 
+  if (type === 'notes') {
+    await env.DB.prepare('CREATE TABLE IF NOT EXISTS notes (id TEXT PRIMARY KEY, title TEXT NOT NULL, content TEXT NOT NULL, context TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)').run();
+    const result = await env.DB.prepare('SELECT title, content, context, updated_at AS updatedAt FROM notes ORDER BY updated_at DESC').all<{ title: string; content: string; context: string; updatedAt: string }>();
+    const rows = result.results.map((item) => [`## ${item.title}`, '', `> 上下文：${item.context}`, '', item.content, '', `_更新于 ${item.updatedAt}_`, ''].join('\n')).join('\n');
+    return markdownResponse(`# 知行工坊·学习笔记\n\n> 导出时间：${new Date().toISOString()}\n\n${rows || '暂无学习笔记。\n'}`, 'zhixing-notes.md');
+  }
+
   return Response.json({ error: '不支持的导出类型' }, { status: 400 });
 }

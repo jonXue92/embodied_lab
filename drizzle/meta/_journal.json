@@ -15,6 +15,13 @@
       "when": 1787584382671,
       "tag": "0001_spooky_earthquake",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788224619759,
+      "tag": "0002_orange_sphinx",
+      "breakpoints": true
     }
   ]
 }
