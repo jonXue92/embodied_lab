@@ -1,34 +1,43 @@
 {
-  "updatedAt": "2026-08-31T23:33:24+08:00",
+  "updatedAt": "2026-09-01T22:05:08+08:00",
   "status": "updated",
-  "summary": "新增 2 条官方技术更新与 1 个杭州仿真岗位；未单独触发课程调整，已随本次功能迭代通过构建并准备发布。",
+  "summary": "新增 4 个官方更新簇：LeRobot 数据后端与 HIL-SERL 修复、Cosmos Framework 连续发布、小鹏第二代 VLA；无可靠新岗位或面经，课程不调整。",
   "items": [
     {
       "type": "official_update",
-      "title": "Cosmos 3 增加 ModelOpt FP8 推理示例",
-      "source": "NVIDIA Cosmos",
-      "publishedAt": "2026-08-31T21:34:22+08:00",
-      "url": "https://github.com/NVIDIA/cosmos/commit/9aa98e5a0773a5558f07d2699e640858f7ca8827",
-      "signals": ["Cosmos Framework", "ModelOpt FP8", "Nano", "Reasoner", "多 GPU FSDP", "推理部署"],
-      "decision": "记录为世界模型推理优化信号；官方技术源不单独触发课程调整。"
+      "title": "LeRobot 开放数据读取器并补齐多后端评测与回放",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-01T17:38:35+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/fa048804d05c1b965b0a5801cf205f97a9e8a3e8",
+      "signals": ["DatasetReader registry", "第三方存储后端", "Lance", "对象存储", "eval_split", "Foxglove 回放"],
+      "decision": "将同日 3 个 Lance/多存储后端提交合并为 1 个工程更新簇；官方技术源不单独触发课程调整。"
     },
     {
       "type": "official_update",
-      "title": "VLANeXt 扩展为 VLA / JEPA / WAM 统一研究平台",
-      "source": "VLANeXt Team",
-      "publishedAt": "2026-08-31",
-      "url": "https://huggingface.co/blog/cavanloy/vlanext",
-      "signals": ["Action Chunk", "Flow Matching", "潜动作预训练", "JEPA", "World Action Model", "DROID 数据加速"],
-      "decision": "将同日 6 个 DROID 加速与配置提交合并为一个项目更新簇；不按提交数重复计数。"
+      "title": "LeRobot 修复 HIL-SERL 固定复位姿态编码",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-01T15:37:36+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/dd256899946c6255653aa7824a9f8ce6420148b4",
+      "signals": ["HIL-SERL", "ResetConfig", "固定关节复位姿态", "配置序列化", "learner 启动", "真机安全"],
+      "decision": "解决独立的 HIL-SERL 启动阻塞，单列为修复簇；现有真机 RL 课程已覆盖该能力链。"
     },
     {
-      "type": "job",
-      "title": "机器人仿真实习生（操作方向）",
-      "source": "Palatial Technology（璞逍科技）",
-      "publishedAt": "2026-08-31",
-      "url": "https://www.nowcoder.com/jobs/detail/460491",
-      "signals": ["Isaac Sim / Isaac Lab", "MuJoCo / PyBullet", "抓取与操纵", "IK", "USD / URDF", "强化学习 / 模仿学习", "项目证据"],
-      "decision": "牛客与实习僧的同岗信息去重后仅计 1 个杭州岗位；单一独立岗位不足以调整课程。"
+      "type": "official_update",
+      "title": "Cosmos Framework 连续发布交互式因果生成与动作数据能力",
+      "source": "NVIDIA Cosmos Framework",
+      "publishedAt": "2026-09-01T17:56:50+08:00",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/107f79ba3d6d2f7c9ef767be6692c03ffacf4a05",
+      "signals": ["Causal Omni-MoT", "KV Cache", "Context Parallel", "CUDA Graph", "NVFP4", "Action Schema", "VAE Load Balancing"],
+      "decision": "将 08-31 与 09-01 两次自动发布合并为 1 个 release train 更新簇；不按文件数或提交数重复计数。"
+    },
+    {
+      "type": "official_update",
+      "title": "小鹏第二代 VLA 从 3D 空间理解升级到 4D 时空理解",
+      "source": "小鹏汽车",
+      "publishedAt": "2026-09-01",
+      "url": "https://www.xiaopeng.com/news/company_news/5591.html",
+      "signals": ["长时序上下文", "4D 时空理解", "VLA + VLM", "Master Agent", "Token 压缩", "蒸馏", "端侧部署"],
+      "decision": "按 09-01 官网发布日期纳入，同时保留正文 08-27 体验日以避免混淆；自动驾驶技术信号不直接等同于机器人岗位门槛。"
     }
   ]
 }
