@@ -1,8 +1,8 @@
 import LessonPage from '@/app/LessonPage';
-import { lessons } from '@/app/content';
+import { allLessonIds } from '@/app/curriculum';
 
 export function generateStaticParams() {
-  return Object.keys(lessons).map((id) => ({ id }));
+  return allLessonIds().map((id) => ({ id }));
 }
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {

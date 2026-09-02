@@ -1,10 +1,22 @@
-import { index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
 export const progress = sqliteTable('progress', {
   itemId: text('item_id').primaryKey(),
   completed: integer('completed', { mode: 'boolean' }).notNull().default(false),
   updatedAt: text('updated_at').notNull(),
 });
+
+export const dailyProgress = sqliteTable('daily_progress', {
+  id: text('id').primaryKey(),
+  learningDate: text('learning_date').notNull(),
+  itemId: text('item_id').notNull(),
+  taskType: text('task_type').notNull(),
+  completed: integer('completed', { mode: 'boolean' }).notNull().default(false),
+  updatedAt: text('updated_at').notNull(),
+}, (table) => [
+  uniqueIndex('idx_daily_progress_date_item').on(table.learningDate, table.itemId),
+  index('idx_daily_progress_date_completed').on(table.learningDate, table.completed),
+]);
 
 export const favorites = sqliteTable('favorites', {
   itemId: text('item_id').primaryKey(),
