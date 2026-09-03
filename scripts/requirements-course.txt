@@ -1,0 +1,2 @@
+# Isolated CPU teaching tests; not a website runtime dependency.
+torch==2.14.0

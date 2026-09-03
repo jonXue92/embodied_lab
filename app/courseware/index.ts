@@ -1,0 +1,17 @@
+import type { AuthoredDay } from './types';
+import { day02 } from './2026-09-02';
+import { day03 } from './2026-09-03';
+import { day04 } from './2026-09-04';
+import { day05 } from './2026-09-05';
+import { day06 } from './2026-09-06';
+import { day07 } from './2026-09-07';
+
+// No generated fallback: an unregistered date is a syllabus, not a lesson.
+export const authoredDays: Record<string, AuthoredDay> = {
+  '2026-09-02': day02,
+  '2026-09-03': day03,
+  '2026-09-04': day04,
+  '2026-09-05': day05,
+  '2026-09-06': day06,
+  '2026-09-07': day07,
+};

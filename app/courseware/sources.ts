@@ -1,0 +1,22 @@
+// Primary sources checked on 2026-09-03. Explanations and exercises are original,
+// not translations of entire source articles. Reading locations are explicit.
+export const sources = {
+  data: { id: 'data', label: 'PyTorch · Dataset / DataLoader', url: 'https://docs.pytorch.org/tutorials/beginner/basics/data_tutorial.html', reading: '阅读自定义 Dataset 与批量迭代两节，区分取样、采样顺序和组批三个职责。' },
+  checkpoint: { id: 'checkpoint', label: 'PyTorch · Saving and Loading Models', url: 'https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html', reading: '阅读 General Checkpoint；注意模型参数不包含优化器状态。' },
+  randomness: { id: 'randomness', label: 'PyTorch · Reproducibility', url: 'https://docs.pytorch.org/docs/stable/notes/randomness.html', reading: '阅读随机源与 DataLoader 小节；固定种子不保证跨设备、跨版本逐位一致。' },
+  attention: { id: 'attention', label: 'Vaswani 等 · Attention Is All You Need', url: 'https://arxiv.org/html/1706.03762v7', reading: '重点阅读 §3.2 注意力、§3.3 前馈网络、§3.5 位置编码；原论文任务是翻译，不是机器人控制。' },
+  sdpa: { id: 'sdpa', label: 'PyTorch · scaled_dot_product_attention', url: 'https://docs.pytorch.org/docs/main/generated/torch.nn.functional.scaled_dot_product_attention.html', reading: '核对布尔 mask 与 dropout_p 语义；True 表示允许参与注意力。' },
+  mha: { id: 'mha', label: 'PyTorch · MultiheadAttention', url: 'https://docs.pytorch.org/docs/stable/generated/torch.nn.MultiheadAttention', reading: '核对 attn_mask / key_padding_mask；这里的 True 表示屏蔽，与 SDPA 相反。' },
+  smolvla: { id: 'smolvla', label: 'Hugging Face · SmolVLA 技术说明', url: 'https://huggingface.co/blog/smolvla', reading: '阅读 Action Expert 与 Interleaved Cross and Self-Attention；分清项目报告的结果和本课提出的实验假设。' },
+  smolcode: { id: 'smolcode', label: 'LeRobot · SmolVLA 模型实现', url: 'https://github.com/huggingface/lerobot/blob/main/src/lerobot/policies/smolvla/modeling_smolvla.py', reading: '搜索 embed_prefix、embed_suffix、forward、sample_actions。main 会变化；复现实验时请记录本地提交号。' },
+  maskcode: { id: 'maskcode', label: 'LeRobot · VLA 公共 mask 工具', url: 'https://github.com/huggingface/lerobot/blob/main/src/lerobot/policies/common/vla_utils.py', reading: '搜索 make_att_2d_masks 与 prepare_attention_masks_4d，比较累计分组与布尔/加性 mask。' },
+  actpaper: { id: 'actpaper', label: 'Zhao 等 · ACT / ALOHA 原论文', url: 'https://arxiv.org/abs/2304.13705', reading: '阅读 Action Chunking with Transformers 方法部分；本课的控制预算算例是教学推导，不是论文测量结果。' },
+  actcode: { id: 'actcode', label: 'ACT · imitate_episodes.py', url: 'https://github.com/tonyzhaozh/act/blob/main/imitate_episodes.py', reading: '搜索 query_frequency、all_time_actions、exp_weights；沿时间轴检查权重对应的是旧预测还是新预测。' },
+  actdata: { id: 'actdata', label: 'ACT · utils.py 数据管线', url: 'https://github.com/tonyzhaozh/act/blob/main/utils.py', reading: '搜索 EpisodicDataset.__getitem__ 与 get_norm_stats，观察 episode 内切片、动作补齐和归一化。' },
+  rl: { id: 'rl', label: 'Spinning Up · RL 核心概念', url: 'https://spinningup.openai.com/en/latest/spinningup/rl_intro.html', reading: '阅读 reward/return、value functions 和 Bellman equations，先分清策略评估与最优控制。' },
+  limits: { id: 'limits', label: 'Gymnasium · Handling Time Limits', url: 'https://gymnasium.farama.org/tutorials/gymnasium_basics/handling_time_limits/', reading: '重点理解 terminated 与 truncated 对 bootstrap 的不同影响。' },
+  so101: { id: 'so101', label: 'LeRobot · SO-101 官方指南', url: 'https://huggingface.co/docs/lerobot/en/so101', reading: '按当前硬件版本阅读电机设置、标定、遥操作。这里不自动运行任何真机指令。' },
+  follower: { id: 'follower', label: 'LeRobot · SOFollower 驱动', url: 'https://github.com/huggingface/lerobot/blob/main/src/lerobot/robots/so_follower/so_follower.py', reading: '搜索 get_observation、send_action、calibrate；实际硬件操作前核对安装版本与安全说明。' },
+  record: { id: 'record', label: 'LeRobot · 采集入口', url: 'https://github.com/huggingface/lerobot/blob/main/src/lerobot/scripts/lerobot_record.py', reading: '阅读 record_loop 与 main；当前 main 的采集和策略 rollout 已分离，不沿用过时命令。' },
+  robotil: { id: 'robotil', label: 'LeRobot · 真机模仿学习流程', url: 'https://huggingface.co/docs/lerobot/en/il_robots', reading: '沿遥操作、采集、回放、训练、评测阅读；涉及上传数据的步骤需自己确认隐私。' },
+};

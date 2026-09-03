@@ -71,3 +71,26 @@ button,a { font:inherit; } button { color:inherit; } a { color:inherit; text-dec
 /* Iteration 4: date-aware daily curriculum and automatic full-day check-in */
 .day-switcher{display:grid;grid-template-columns:auto minmax(220px,1fr) auto auto;align-items:center;gap:10px;margin:4px 0 16px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:#faf9f4}.day-switcher>div{display:flex;align-items:center;justify-content:center;gap:10px;text-align:center}.day-switcher>div span,.day-switcher>div small{color:#87918c;font-size:8px}.day-switcher>div b{color:var(--green);font:600 12px/1 Georgia,"Songti SC",serif}.day-switcher button{padding:8px 11px;border:1px solid #d9dad2;border-radius:8px;background:#fffefa;color:#60736a;font-size:8px;font-weight:800;cursor:pointer}.day-switcher button:disabled,.task-controls button:disabled,.question-card button:disabled,.lesson-finish button:disabled{opacity:.38;cursor:not-allowed}.day-switcher .today-jump{border-color:#bfd1c7;background:#e5eee8;color:var(--green)}.streak-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0 14px}.streak-pair span{padding:10px;border-radius:8px;background:#f0eee6;color:#78837e;font-size:8px;text-align:center}.streak-pair b{color:var(--green);font-size:13px}.day-grid article{cursor:pointer;transition:.2s ease}.day-grid article:hover{border-color:#aebfb6;transform:translateY(-1px)}.day-grid article.active-day{border-color:var(--green);background:#e7efe9;box-shadow:inset 0 0 0 1px var(--green)}
 @media(max-width:760px){.day-switcher{grid-template-columns:1fr 1fr}.day-switcher>div{grid-column:1/-1;grid-row:1;flex-direction:column;gap:4px}.day-switcher .today-jump{grid-column:1/-1}.hero-copy h2{max-width:95%;font-size:29px}.streak-pair{grid-template-columns:1fr 1fr}}
+/* Authored courseware: readable long-form lessons and accessible math. */
+.lesson-chapter p { font-size: 1rem; line-height: 1.95; margin-bottom: 1.15rem; }
+.lesson-formula { margin: 1.4rem 0; padding: 1.3rem; border-left: 3px solid #258d88; background: #f0f8f8; border-radius: 0 8px 8px 0; min-width: 0; }
+.formula-scroll { overflow-x: auto; max-width: 100%; padding: .35rem 0; }
+.lesson-formula figcaption { font-size: .9375rem; line-height: 1.8; color: #344f59; margin-top: .8rem; }
+.lesson-context, .lesson-code-notes, .lesson-exercise { margin: 1.75rem 0; padding: 1.5rem; background: #f6f8fb; border: 1px solid #dfe6ed; border-radius: 12px; font-size: 1rem; line-height: 1.9; }
+.lesson-context h2, .lesson-code-notes h2, .lesson-exercise h2 { font-size: 1.2rem; margin-bottom: .8rem; }
+.lesson-context p + p { margin-top: .8rem; }
+.lesson-code-notes ol, .lesson-exercise ol { padding-left: 1.5rem; }
+.lesson-code-notes li, .lesson-exercise li { margin: .7rem 0; }
+.lesson-exercise details { margin-top: 1rem; border-top: 1px solid #dfe6ed; padding-top: 1rem; }
+.lesson-exercise summary { cursor: pointer; color: #176a72; font-weight: 600; }
+.lesson-exercise details p { margin-top: 1rem; }
+.section-citations { display: flex; flex-wrap: wrap; gap: .7rem; font-size: .875rem; margin-top: 1rem; color: #566977; }
+.section-citations a { text-decoration: underline; color: #176a72; }
+.course-revision { display: flex; flex-direction: column; gap: .45rem; font-size: .875rem; line-height: 1.6; padding: 1rem 0; border-bottom: 1px solid #dde5eb; color: #536975; }
+.lesson-references a { flex-wrap: wrap; }
+.lesson-references a small { display: block; flex-basis: 100%; font-size: .875rem; line-height: 1.7; font-weight: 400; margin-top: .45rem; }
+.grading-notice { font-size: .875rem !important; color: #66717d; }
+.course-status { margin: 1rem 0; padding: 1rem 1.25rem; border: 1px solid #bad6d7; border-radius: 10px; background: #f0f8f8; line-height: 1.8; font-size: .9375rem; }
+.course-status.pending { background: #fff8e8; border-color: #e6d5aa; }
+.lesson-not-found p { max-width: 48rem; margin: 1rem auto; line-height: 1.9; font-size: 1rem; }
+@media (max-width: 700px) { .lesson-formula { padding: .8rem; } .lesson-context, .lesson-code-notes, .lesson-exercise { padding: 1rem; } }

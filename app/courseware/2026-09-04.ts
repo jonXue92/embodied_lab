@@ -1,0 +1,67 @@
+import type { AuthoredDay } from './types';
+import { sources as s } from './sources';
+
+export const day04: AuthoredDay = {
+  reviewedAt: '2026-09-03', revision: '逐课编写 2.0',
+  deliverable: '一张抓取 MDP 图、一个带终止/截断分支的 Bellman 单元测试、一个 BC 到价值学习的数据补齐清单。',
+  question: { title: '抓取失败、任务成功、采集时间到：这三种 episode 结束应如何影响 Bellman target？', summary: '明确任务定义，再给出 reward、terminated、truncated 和 next observation 的处理。', keywords: ['终止', '截断', 'bootstrap', '奖励', '时间', '状态'], reference: '成功或不可继续的失败若按任务定义进入终止状态，target 只保留当前奖励；采集器外部时间限制造成的截断，一般仍应从真实最后观测 bootstrap。若时间上限本身就是任务定义的一部分，应将剩余时间纳入状态，并按有限时域终止处理。不要把自动 reset 后的新初始观测当作上一条 transition 的 next observation。' },
+  lessons: {
+    foundation: {
+      title: 'MDP、reward、V 与 Q：把抓取任务写成可学习的问题', minutes: 30,
+      prerequisites: '知道策略根据观测产生动作；今天从矩阵运算转向随机过程，不要求掌握 RL 算法。',
+      connection: 'Transformer 说明怎么组织输入；MDP 说明策略要优化什么，以及动作如何改变后续数据。',
+      intro: 'BC 问“专家在这里会怎么做”，强化学习问“怎样行动能让长期结果更好”。两个问题需要的数据不同。本课用接近—闭合—抬起三个阶段的抓取，解释状态、奖励、回报和价值函数。',
+      outcomes: ['区分 reward 与 return', '说明 V 与 Q 条件中的策略和动作差别', '从回报递推推导 Bellman 关系'],
+      sections: [
+        { heading: '01 Markov 假设不是说一张图像就足够', body: 'MDP 用状态、动作、转移概率、奖励和折扣因子定义决策过程。Markov 假设是：给定当前状态与动作，下一状态分布不再需要完整历史。机械臂状态可能包括关节位置、速度、物体姿态和接触；摄像头只能观测其中一部分，所以机器人任务常更接近 POMDP。\n\n同一张“夹爪贴近物体”的图片，可能对应物体已夹稳，也可能只是被遮挡。若只给单帧图像，最优动作可能无法唯一确定。加历史帧、状态估计或记忆，是为了缓解信息不足，不是证明环境突然变成了完全可观测。先区分物理状态 s 与传感器观测 o，后续数据字段才不会混乱。', sourceIds: ['rl'] },
+        { heading: '02 奖励是一步信号，回报是未来结果的汇总', body: '如果只在物体成功抬起时给 1，接近和闭合动作当下都可能得到 0，但它们仍可能对成功至关重要。回报把未来奖励加总，折扣控制远期结果的权重。它不是“机器人的耐心”这种拟人解释，而是优化问题的一部分，会改变偏好的行为。\n\n设奖励序列为 (0,0,1)，γ=0.9。从第一步看回报为 0.81，从第二步看为 0.9，最后一步为 1。若按动作惩罚每步扣 0.01，要把这些扣分也计入，而不是仍把回报叫成功概率。奖励设计改变了你训练的目标，必须随实验记录。', formulas: [{ latex: 'G_t=\\sum_{j=0}^{\\infty}\\gamma^j r_{t+j}=r_t+\\gamma G_{t+1}', explanation: '本课将 r_t 定义为执行 a_t 后得到的奖励；γ∈[0,1)。有限 episode 在终止后奖励为零。不同教材可能使用 r_{t+1} 下标，需保持一致。' }] },
+        { heading: '03 V 评估状态，Q 评估先做一个指定动作', body: 'Vπ(s) 表示从 s 开始一直按策略 π 行动的期望回报。Qπ(s,a) 则先指定动作 a，然后再遵循 π。因此 Q 不是单纯“这个动作好不好”的独立标签，它依赖后续策略、环境和奖励定义。Aπ(s,a)=Qπ(s,a)−Vπ(s) 比较这个动作与该状态下策略通常表现的差异。\n\n在夹爪位置偏左时，“立刻闭合”可能低价值，“先微调再闭合”可能高价值。BC 只模仿数据中的动作；价值函数尝试利用结果区分选择。但如果数据没有覆盖纠偏动作，Q 的高分可能只是外推，并不等于安全可执行。这个限制会在 Offline RL 单元深入讨论。', formulas: [{ latex: 'V^\\pi(s)=\\mathbb E_{a\\sim\\pi(\\cdot|s)}[Q^\\pi(s,a)],\\qquad A^\\pi(s,a)=Q^\\pi(s,a)-V^\\pi(s)', explanation: '上标 π 不可省略理解：更换后续策略，通常会改变这些价值。V 的动作平均按 π 的分布进行。' }] },
+        { heading: '04 Bellman 关系来自把第一步拆开', body: '将回报写成当前奖励加折扣后的未来回报，再对下一状态和后续策略取期望，就得到 Bellman 关系。它让长期问题变成“当前一步 + 下一状态估计”。训练中常用目标网络给出下一状态价值，这叫 bootstrap；目标本身也是估计，因此会带来偏差和稳定性问题。\n\n数值例子：当前奖励 0.2，γ=0.9，下一状态价值估计 0.6，则一步 target 为 0.74。若这一步已经终止，未来项应为零，target 变成 0.2。注意这只是策略评估的例子；最优 Q-learning 会使用下一动作最大值，而 SAC 的目标还含熵项，不能把下面式子说成所有 RL 的完整实现。', formulas: [{ latex: 'V^\\pi(s)=\\mathbb E_{a\\sim\\pi,s^\\prime\\sim P}\\!\\left[r(s,a,s^\\prime)+\\gamma V^\\pi(s^\\prime)\\right]', explanation: '期望涵盖策略和环境转移。终止状态的后续价值设为零；代码课将用 terminated 显式处理这个分支。' }] },
+      ],
+      points: ['状态与观测不同，单帧图像不保证 Markov 性。', 'reward 是局部信号，return 汇总未来，V/Q 依赖策略。', 'Bellman target 是估计目标，不是真实长期结果的直接观测。'],
+      codeTitle: 'return_recursion.py · 原创回报手算',
+      code: ['rewards = [0.0, 0.0, 1.0]', 'gamma = 0.9', 'g, returns = 0.0, []', 'for reward in reversed(rewards):', '    g = reward + gamma * g', '    returns.append(g)', 'returns.reverse()', 'assert abs(returns[0] - 0.81) < 1e-12', 'print(returns)  # [0.81, 0.9, 1.0]'].join('\n'),
+      codeNotes: ['反向计算利用递推式，不是在拟合价值网络。', '真实数据如有截断，最后一个 g 不一定应初始化为零，需考虑 bootstrap。'],
+      exercise: { prompt: '把三步奖励改成 (-0.01,-0.01,0.99)，计算第一步回报。', steps: ['逐步反向计算，保留折扣。', '解释为什么最终成功但回报不再是 0.81。'], solution: '最后为 0.99，前一步为 -0.01+0.9×0.99=0.881，第一步为 -0.01+0.9×0.881=0.7829。新增动作成本改变了目标。' },
+      quiz: { question: '两个动作当前奖励都是 0，为什么 Q 值仍可能不同？', hint: '从下一状态和后续策略解释。', keywords: ['下一', '未来', '策略', '回报'], reference: '不同动作会改变下一状态分布及到达成功的概率/时间，因此即使当前奖励相同，按同一后续策略得到的期望折扣回报仍不同。Q 依赖后续策略，不仅是即时奖励。' }, sources: [s.rl],
+    },
+    code: {
+      title: 'Bellman target 的两个结束信号：别把时间到当成价值归零', minutes: 35,
+      prerequisites: '理解 r+γV(next) 与 bootstrap；能读布尔条件。',
+      connection: '基础课的终止分支在代码里必须落实成明确字段，否则一个 done 就会掩盖两类不同事件。',
+      intro: '许多 RL 问题不是网络太弱，而是监督目标构造错了。这里不训练机器人，只用三条 transition 和一个目标函数检查 terminated、truncated 和自动 reset 的边界。',
+      outcomes: ['写出终止感知的 target', '区分环境终止与采集器截断', '设计三种边界用例并核对数值'],
+      sections: [
+        { heading: '01 Transition 必须保留哪些事实', body: '最小记录含 observation、action、reward、next_observation、terminated 和 truncated。terminated 表示按任务定义已结束，例如成功到达终点或不可恢复失败；truncated 表示外部条件打断采样，例如继续型任务被采集器时间上限截断。这两个事件都会结束当前采集段，但价值语义不同。\n\n如果将它们合并成 done，后续就无法知道是否应该估计未观察到的未来回报。数据采集阶段少保存一个布尔值，训练阶段可能永久无法修复。尤其是回收已有日志做 offline-to-online，先审计结束原因，比立即实现复杂 actor-critic 更必要。', sourceIds: ['limits'] },
+        { heading: '02 用三个具体数字检查目标', body: '统一令 γ=0.9、next_value=0.6。普通转移 reward=0.2 时 target=0.74；真正终止且 reward=1 时 target=1；外部截断但未终止且 reward=0.2 时 target 仍为 0.74。最后一种不能因为“文件结束了”就把未来价值置零。\n\n这个结论有前提：时间限制是任务外部截断。如果任务定义要求十秒内完成，剩余时间本身应属于状态，耗尽时是真正有限时域终止。代码无法替你决定任务定义，必须先在环境与数据规范里写清，再选择字段值。', formulas: [{ latex: 'y=r+\\gamma(1-\\mathbb 1_{\\rm terminated})\\,\\operatorname{stopgrad}(V_{\\bar\\theta}(s^\\prime))', explanation: '横线参数表示目标估计器。stopgrad 表示该 target 不通过未来价值分支反向传播；此式是简化价值学习目标，不含 SAC 熵项。' }] },
+        { heading: '03 自动 reset 的 next observation 陷阱', body: '向量化环境可能在 episode 结束后立即重置。返回的观测若已经是下一局初始画面，就不能用于上一局截断时的 bootstrap。应保留结束时的 final observation，并根据当前环境版本的返回约定取得它。不要假定所有 wrapper 使用同一个字段名字。\n\n可以构造强烈的负例：真实最后状态价值为 0.6，而 reset 后价值为 0.1。误用 reset 观测会把 target 从 0.74 拉到 0.29。两个数都有限、训练照常运行，仅看 NaN 检查发现不了问题。必须在测试里让 final 与 reset 的数值显著不同。' },
+        { heading: '04 目标梯度与数组 shape 也要核对', body: '在 PyTorch 实现里，通常在 no_grad 下计算 target 或显式 detach；只对当前价值预测计算回归梯度。否则网络可能同时移动预测与目标，使“追近目标”失去原有含义。还要保持 reward、done 和 value 相同 batch shape，例如全为 [B]；[B,1] 与 [B] 相加会广播成 [B,B]。\n\n下方先用标准库标量函数做语义单元测试，使你无需下载模型就能验证三种结束情况。移植到张量版本时，再增加 shape 断言、target.requires_grad=False 和 final-observation 选择测试。先验证监督，再验证优化，避免把环境边界问题误诊为学习率问题。' },
+      ],
+      points: ['采集段结束不一定意味着任务终止。', '截断 bootstrap 需要真实 final observation。', '数值有限不能证明 target 正确，要覆盖边界测试。'],
+      codeTitle: 'bellman_boundaries.py · 原创无依赖测试',
+      code: ['def target(reward, next_value, terminated, truncated, gamma=0.9):', '    # truncated is stored for audit; only true termination zeros the future.', '    assert isinstance(terminated, bool) and isinstance(truncated, bool)', '    return reward if terminated else reward + gamma * next_value', '', 'assert abs(target(0.2, 0.6, False, False) - 0.74) < 1e-12', 'assert target(1.0, 0.6, True, False) == 1.0', 'assert abs(target(0.2, 0.6, False, True) - 0.74) < 1e-12', 'wrong_reset_target = target(0.2, 0.1, False, True)', 'assert abs(wrong_reset_target - 0.29) < 1e-12', 'print("normal / termination / truncation: PASS")'].join('\n'),
+      codeNotes: ['truncated 被保留而不进入归零条件，这是有意的语义选择。', '此脚本未包含策略更新、目标网络软更新或熵正则，不能当作完整 SAC。'],
+      exercise: { prompt: '增加 terminated=True、truncated=True 同时出现的测试。', steps: ['先确定真正终止是否仍需未来价值。', '再写一个误用 done=terminated or truncated 的函数，与正确函数对照。'], solution: '如果确实已终止，target 为当前 reward；终止优先。合并 done 的负例会在“仅截断”的情况下给出错误目标。' },
+      quiz: { question: '为何外部超时不能一律把 next_value 乘 0？什么情况下时间耗尽应真的终止？', hint: '把任务定义与采集器预算分开。', keywords: ['外部', '截断', 'bootstrap', '有限', '时间'], reference: '外部超时只是停止观察，不代表环境未来回报为零，继续型任务应 bootstrap。若任务本身是有限时域，剩余时间应纳入状态，耗尽时按终止处理。' }, sources: [s.limits, s.rl],
+    },
+    insight: {
+      title: '从模仿到经验改进：你还缺哪些数据，而不只是哪个算法', minutes: 25,
+      prerequisites: '能区分 BC 监督动作和 RL 奖励/价值目标。',
+      connection: '利用今天的 MDP 字段，重新审视 POC 项目的数据回收：什么记录才能让未来价值学习成为可能。',
+      intro: '“之后再做 RL”不是一个充分计划。示教文件若没有执行结果、终止原因和实际动作，未来就很难评价自主行为。本课比较三类数据的作用，并给出从现有 BC 基线开始的渐进路线。',
+      outcomes: ['区分示教、策略 rollout 与人工介入数据的语义', '说明分布偏移为何不能靠训练集 loss 判断', '列出一个可供价值学习的数据补齐方案'],
+      sections: [
+        { heading: '01 专家分布与策略自己访问的状态不同', body: 'BC 主要在专家访问过的状态上拟合动作。部署时一次小误差可能使夹爪偏离轨迹，随后看到训练中少见的画面，误差又会引发新的偏移。这个闭环改变了输入分布，所以离线误差小不自动意味着长期成功率高。\n\n可以做一个一维教学类比：每步都偏离目标一点，在没有反馈修正的情况下，位置误差可能随步数累积。但真实机器人不必按线性速度恶化，模型也可能恢复。这个例子用于说明反馈分布的变化，不应拿某个简单误差上界当作所有 VLA 的定量预测。' },
+        { heading: '02 三类数据回答三个不同问题', body: '专家示教回答“人在这些状态如何动作”；自主 rollout 回答“当前策略会走到哪里、结果怎样”；人工介入回答“哪些状态需要纠正、纠正动作是什么”。将它们直接混成一个无标签池，会丢失来源、行为策略与失败原因，训练也难以区分恢复动作和正常动作。\n\n如果安全裁剪改变了模型建议命令，必须分别记录 proposed action、sent action 和之后测得的状态。sent 不等于真实执行轨迹：电机滞后、碰撞或打滑仍会改变物理结果。用于 transition 的 action 语义要声明清楚，否则价值函数可能把一次安全系统纠正后的成功归功于原始危险动作。' },
+        { heading: '03 价值学习有机会超出模仿，也会放大外推错误', body: '价值估计把奖励与后续状态联系起来，允许比较不同动作的长期结果；但固定数据未覆盖的动作仍可能被错误高估。仅有成功示教时，价值模型可能没见过掉落或偏置状态，无法可靠识别这些失败。引入失败 rollout 能扩展证据，却不能保证任意新动作都变得可信。\n\n一个可行的第一步是保持 BC 策略作为基线，用已记录的成功/失败轨迹训练辅助价值或成功预测，先检验它能否在留出的 episode 上区分结果。不要直接让尚未验证的高 Q 动作控制真机。模型估计、离线检验和安全上线是不同关卡，顺序不能因为“要做 RL”而跳过。', formulas: [{ latex: '\\mathcal D=\\{(o_t,a_t,r_t,o_{t+1},\\mathrm{term}_t,\\mathrm{trunc}_t,\\mathrm{source}_t)\\}', explanation: 'source 标记专家、自主或介入等来源；实际项目还应保存策略版本、时间戳和控制安全事件。公式列的是最小语义结构，不是完整数据格式。' }] },
+        { heading: '04 给 POC 项目设置现实的第一轮目标', body: '你当前可能无法访问合作方底层训练代码，但可以争取更完整的采集协议和回放证据。先确定失败分类、终止原因、动作语义与数据使用权限，再选择少量可重复任务收集自主尝试；涉及客户图像与场景时，必须遵循项目授权，不默认上传公共平台。\n\n第一轮目标可以是“日志能重建一次失败，并能区分超时与真正终止”，而不是立刻复现某个真机 RL SOTA。第二轮才评价价值预测，第三轮在明确安全边界和人工监督下比较改进策略。这样年底作品会有连续证据链，也能说明你怎样把传感器、数据工程经验转化为策略改进能力。' },
+      ],
+      points: ['BC loss 只覆盖所评测的数据分布。', '自主、示教与介入来源要保留，安全裁剪前后动作要分开。', '价值学习先验证预测与数据覆盖，再讨论上线动作选择。'],
+      codeTitle: 'transition_contract.py · 原创日志字段检查',
+      code: ['required = {"observation", "sent_action", "reward", "next_observation",', '            "terminated", "truncated", "source", "policy_version"}', 'sample = dict.fromkeys(required, None)', 'sample.update(terminated=False, truncated=True, source="policy")', 'assert required <= sample.keys()', 'assert sample["source"] in {"expert", "policy", "intervention"}', 'assert isinstance(sample["terminated"], bool)', 'print("schema keys checked; content validation still required")'].join('\n'),
+      codeNotes: ['字段齐全仅为第一道检查；None 值仍需实际采集填充与校验。', '脚本没有机器人接口，不会发出控制命令。'],
+      exercise: { prompt: '选一次曾见过的抓取失败，分别写出缺少哪条日志会阻碍复盘。', steps: ['区分感知失败、动作时延和夹持打滑。', '为每种原因列一条可观察证据，而不是只写最终 failed。'], solution: '感知需原始图像/时间戳，时延需感知到发送的时间线，打滑需执行后状态或视频。只记录模型输出无法区分这些机制。' },
+      quiz: { question: '安全层裁剪后抓取成功，能否把成功直接标到模型原始动作上用于 Q 学习？', hint: '检查 action 与实际 transition 是否一致。', keywords: ['裁剪', '动作', '实际', '转移', '归因'], reference: '不能直接这样归因。环境接收的是裁剪后的命令，应保存建议动作与发送动作，并声明用于价值学习的动作语义；还需保留实际状态变化，因为发送命令也不等于物理执行完全一致。' }, sources: [s.rl, s.limits, s.robotil],
+    },
+  },
+};

@@ -1,0 +1,67 @@
+import type { AuthoredDay } from './types';
+import { sources as s } from './sources';
+
+export const day07: AuthoredDay = {
+  reviewedAt: '2026-09-03', revision: '逐课编写 2.0',
+  deliverable: '一份从数据到执行的故障定位报告、最小离线联调脚本与四个月里程碑验收表。',
+  question: { title: '同一策略离线误差下降，真机更慢且更易抓偏：请构造三种不同根因，并给出能区分它们的实验。', summary: '必须分别包含数据、表示/推理和执行层，不能只回答“多采数据、换模型”。', keywords: ['时间', '归一化', 'mask', '延迟', '执行', '对照'], reference: '数据层可构造时间错位或归一化变化，用相同 episode 的时间戳与输入摘要定位；表示层可构造 padding 泄漏，用被屏蔽 K/V 扰动测试定位；执行层可构造过长执行窗口或队列陈旧，用观测年龄、动作覆盖区间和固定 checkpoint 的 H 消融定位。每次只改变一个因素，保留失败记录；离线误差下降不能排除部署输入或控制链路的变化。' },
+  lessons: {
+    foundation: {
+      title: '第一周知识网络：用一场抓偏事故串起五种不同错误', minutes: 30,
+      prerequisites: '完成本周 Dataset、attention、Bellman、chunk 与设备接口的学习。',
+      connection: '今天不引入另一个模型名，而是检查你能否把已学概念用于定位一条具体失败链。',
+      intro: '假设训练 loss 下降，机械臂却总在物体刚移走时闭合。我们不先猜“泛化不好”，而是沿数据语义、模型信息、价值目标、动作时间与设备坐标逐层构造可排除的假设。',
+      outcomes: ['把五层故障分别映射到可观察证据', '区分输入问题、目标问题与执行问题', '写出最短的逐层排除顺序'],
+      sections: [
+        { heading: '01 数据层：先问图像究竟属于哪一刻', body: '若采集器把最新读取的关节值与缓存中的旧图像写到一起，训练样本就可能含有固定延迟。模型能稳定拟合这种错位数据，但部署延迟不同后就会抓偏。此时“loss 下降”只证明它拟合了当前监督，并不证明监督对应你想要的控制问题。\n\n排查从一条 episode 开始，画图像采集时间、状态读取时间、动作发送时间，不从全量平均数开始。再挑相同画面附近的动作回放，核对 t 与 t+1 的约定。若错位稳定出现，先修数据与时钟映射，不让模型结构变化掩盖这个确定性错误。' },
+        { heading: '02 表示层：低 loss 可能来自不合法的信息', body: '如果训练中动作目标被错误拼入条件前缀，又未用 mask 阻止条件读取未来答案，网络可能学会“抄答案”。部署时没有这部分信息，性能便崩溃。更隐蔽的情况是 padding 内容参与 attention，不同长度样本改变了不应有的上下文。\n\n用第三天的不变性测试，固定合法 token，只扰动不可见部分，再检查合法 query 输出。通过这项测试仍不代表数据没泄漏，因为错位的未来图像可能早已进入合法条件。所以数据时间检查与网络 mask 检查要分别执行，任何一项都不能替代另一项。', sourceIds: ['sdpa'] },
+        { heading: '03 目标层：有 reward 不代表 target 就正确', body: '如果用价值模型评价抓取，把采集超时统一当成终止，会让最后几个状态的目标偏低；若用 reset 后观测 bootstrap，又可能把新一局价值接到旧一局。两者都会给策略改进提供错误信号，但与 BC 的动作回归错误属于不同层次。\n\n把一个批量训练问题缩小到三条 transition：正常、真正终止、仅截断，手算 target 再对代码。若数值不符，不要先调学习率或增加网络层数。这个策略体现本周的一条共同方法：复杂模型出错时，先用可手算边界证明监督语义，再分析优化。', sourceIds: ['limits'] },
+        { heading: '04 执行层与坐标层：正确预测也可能变成错误行为', body: '动作块预测的目标时刻错一格，会把“下一步闭合”提早执行；H 太长会忽略新观测；主从臂单位或关节顺序不同会把正确张量变成错误物理命令。这些问题都可能在离线 loss 中完全不可见，因为 loss 通常没有经过真实驱动与控制队列。\n\n因此最后一段检查不是再打印一次网络输出，而是关联 prediction_start、target_time、sent_action 和 measured_state。你需要证明同一数值被送往同一物理关节，并在正确时刻执行。报告中将每个假设与一个最小反例绑定，避免写成无法验证的“系统有分布偏移”。', formulas: [{ latex: '\\mathrm{prediction}\\xrightarrow{\\text{time index}}a_t^{\\rm proposed}\\xrightarrow{\\text{limits / units}}a_t^{\\rm sent}\\xrightarrow{\\text{physics}}q_{t+1}^{\\rm measured}', explanation: '三个箭头都有可能改变语义或引入延迟；网络预测正确只覆盖这条链的起点。' }] },
+      ],
+      points: ['低训练 loss 不能排除监督错位或信息泄漏。', '先用最小可手算反例排查，再讨论更大模型。', '从张量到物理执行的链路也必须纳入验证。'],
+      codeTitle: 'failure_hypotheses.py · 原创诊断映射',
+      code: ['checks = {', '    "data": "compare acquisition timestamps",', '    "representation": "perturb masked keys and values",', '    "target": "test terminated vs truncated",', '    "execution": "check chunk target index",', '    "hardware": "check joint order and units",', '}', 'assert len(set(checks.values())) == 5', 'for layer, evidence in checks.items():', '    print(layer, "->", evidence)'].join('\n'),
+      codeNotes: ['这不是自动诊断器，而是要求每个假设对应不同证据的检查表。', '每个检查应落到实际日志或单元测试，不能只保留字符串。'],
+      exercise: { prompt: '选三种根因，为每种写一个“若它成立，会观察到什么；若不成立，如何排除”的实验。', steps: ['先固定 checkpoint。', '逐次改变一个变量并保留测试结果。', '说明无法排除的剩余假设。'], solution: '例如固定输入回放排除数据变化，mask 扰动排除不可见 token 依赖，固定模型改变 H 观察恢复能力。实验应能区分机制，而不是三次都笼统重训。' },
+      quiz: { question: '为什么“换一个更大 VLA 再试”不是抓偏故障的首个诊断步骤？', hint: '从可归因性与确定性错误说明。', keywords: ['变量', '定位', '数据', '执行', '归因'], reference: '换模型同时改变许多因素，可能掩盖时间、单位或 mask 错误，却无法定位根因。先用固定模型和最小反例检查数据/目标/执行契约，证据指向容量问题后再比较更大模型。' }, sources: [s.data, s.sdpa, s.limits, s.follower],
+    },
+    code: {
+      title: '最小离线联调：让数据、策略输出、动作窗口和评测说同一种语言', minutes: 35,
+      prerequisites: '能读列表、字典与断言；理解 episode、chunk 和有效位。',
+      connection: '将本周分散测试组合成一次离线联调。重点是接口之间的语义，不是用玩具函数冒充真实学习模型。',
+      intro: '下面搭一个完全离线的小管线：读取已划分的 episode，获得预测动作块，计算有效误差，再选出本次执行前缀。它不连接硬件、不训练 VLA，用来暴露组件连接处的错误。',
+      outcomes: ['检查 train/eval episode 隔离', '解释模型预测与执行前缀的区别', '用两个负例检查评测和接口是否真的生效'],
+      sections: [
+        { heading: '01 集成测试先定义保留哪些不变量', body: '单个 loss 函数和切片器都正确，连接时仍可能把相机顺序、动作维度或评测 split 用错。集成测试应列出横跨组件的不变量：训练与评测 episode 不重叠、预测与目标 shape 一致、padding 不计入误差、H 不大于 K，且输出只是建议动作而非已执行事实。\n\n玩具管线不需要复现整个 LeRobot 框架。它的作用是给复杂工程建立一个能快速运行的参照物，错误发生时先判断是算法函数还是接口拼接。真实模型替换进去后，应保留这些不变量，而不是因为输出“看起来差不多”就删除断言。' },
+        { heading: '02 明确玩具 policy 的能力边界', body: '下方 policy 被刻意定义为在目标动作上加一个常数偏差。这当然使用了真实部署时不可获得的标签，因此绝不是可部署策略。这样设计是为了让误差可以精确预期：偏差 0.1 的每个有效标量，平方误差是 0.01。若评测函数给出其他值，就说明接口或归一化计算有问题。\n\n把此函数标成 test fixture，而不是训练成果，非常重要。教学代码可以为了隔离错误而使用人工输入，但必须告诉读者哪些部分需要真实模型替换。这里验证的是“指标和执行选择有没有按约定处理”，不是机器人智能或泛化能力。' },
+        { heading: '03 评测只算有效位置，执行只取允许前缀', body: '预测长度 K=3，而测试样本只有两个有效目标。第三个 padding 可以放极端数值，正确 loss 仍不受影响。这个负例比放零更强，因为漏 mask 时会立即使误差显著变大。执行窗口 H=1 表示只取第一个建议动作，不能把所有 K 个都当作已执行记录。\n\n评测输出与控制输出最好使用不同名称：metric 描述误差，proposed_prefix 描述候选命令，execution_log 才描述真实设备反馈。玩具脚本只有前两者，不创建 execution_log。这样的命名边界可以防止离线实验被误报成真机成功测试。' },
+        { heading: '04 把负例也纳入日常运行', body: '第一种负例让 train/eval ID 相交，应在计算指标前拒绝。第二种负例把全样本设为无效，应拒绝没有监督的均值。还可以添加错误 K/H、维度不匹配和缺字段。测试的价值不在于数量，而在于每个失败是否揭示一个可能发生且代价高的错误。\n\n进入下一周的 PyTorch 工程训练后，可以把 fixture 换成小型网络，再加入梯度、checkpoint 和性能日志。不要一次叠加所有功能，否则失败后很难知道哪一层先坏。每次扩展都保持当前小测试通过，形成可累积的工程资产，而不是每周重新写一个无法比较的 demo。' },
+      ],
+      points: ['集成测试验证跨组件不变量。', '玩具策略使用标签只为构造已知误差，不代表部署能力。', '离线候选输出不是执行日志。'],
+      codeTitle: 'offline_integration.py · 原创无硬件测试',
+      code: ['def evaluate(train_ids, eval_ids, target, valid, h):', '    assert not set(train_ids) & set(eval_ids), "episode leakage"', '    assert len(target) == len(valid) and any(valid)', '    assert 0 < h <= len(target)', '    predicted = [x + 0.1 if m else 999 for x, m in zip(target, valid)]', '    errors = [(p-y)**2 for p, y, m in zip(predicted, target, valid) if m]', '    return sum(errors)/len(errors), predicted[:h]', '', 'metric, proposed_prefix = evaluate([1, 2], [3], [1.0, 2.0, 0.0], [True, True, False], 1)', 'assert abs(metric - 0.01) < 1e-12', 'assert proposed_prefix == [1.1]', 'try:', '    evaluate([1, 2], [2], [1.0], [True], 1)', 'except AssertionError as error:', '    assert "leakage" in str(error)', 'else:', '    raise AssertionError("split leakage missed")', 'print("offline interface test: PASS; not a trained robot policy")'].join('\n'),
+      codeNotes: ['999 padding 是故意的坏值，用于检验 mask 是否真实生效。', 'H=1 只选择执行建议的前缀，并未向机器人发送任何数据。'],
+      exercise: { prompt: '在不改评测逻辑的前提下，把偏差改为 0.2，预期 loss 应是多少？', steps: ['先计算平方误差。', '再使一个有效位无效，解释均值为何仍不变。'], solution: '有效位置都偏差 0.2，loss 为 0.04。减少有效数量但保留相同逐元素误差时，正确均值仍为 0.04；按完整 K 归一化则会错误改变结果。' },
+      quiz: { question: '这个脚本输出误差 0.01，为什么不能写进作品 README 作为真机性能？', hint: '区分 fixture、离线接口测试和真实策略。', keywords: ['标签', '玩具', '离线', '真机', '测试'], reference: '预测直接由目标加常数构造，只验证评测接口；没有训练策略、真实输入或设备闭环，因此不能表示真机成功率或模型泛化。应明确标注为离线单元/集成测试。' }, sources: [s.data, s.actdata, s.robotil],
+    },
+    insight: {
+      title: '把第一周证据接到年底目标：四个月路线如何逐级验收', minutes: 25,
+      prerequisites: '能说清本周五类接口，并已保存至少一个可运行测试。',
+      connection: '回到总计划：9 月基础，10 月 VLA/World Model，11 月经验改进，12 月作品。今天定义每个阶段的进入条件。',
+      intro: '四个月路线不是按日期看完一串模型名，而是累积可验证能力。你的时间、算力和硬件有限，应该把每个月的知识与一项能展示的证据绑定，并为尚未通过的能力保留补课空间。',
+      outcomes: ['为每个月写出可检验产物', '区分必要依赖和可并行阅读', '根据实验失败调整投入而不盲目追新'],
+      sections: [
+        { heading: '01 9 月先证明“能把训练问题定义正确”', body: '9 月的关键不是读完所有 VLA，而是能从 episode 构造样本、解释动作与观测时间、训练一个小基线并正确评测。你应留下数据审计表、checkpoint 恢复测试、attention/mask 检查和动作时间预算。本周只是搭桥，之后还需要梯度、优化器、数据质量和模仿学习的更深训练。\n\n进入 10 月模型阅读前，至少要能指出一个 batch 的各维含义、一个 loss 的分母为什么这样算、一个部署失败可能在哪层发生。若这些问题还说不清，增加模型名字只会增加记忆负担。这里的验收是技能证据，不是页面打卡数量；完整打卡记录不能替代实际运行和解释。' },
+        { heading: '02 10 月用同一套问题比较 VLA 与世界模型', body: 'SmolVLA、π0 系列以及其他模型应围绕输入、动作头、训练信号、数据与推理成本比较；World Model 则问预测什么、如何受动作条件控制、怎样进入规划或策略学习。不能把“能生成逼真视频”直接等同于“能改善闭环动作”，也不能仅因参数更多就认为更适合个人项目。\n\n优先选一个与 SO-101 和预算兼容的开源基线真正走通，再用阅读矩阵理解其他路线。若上游某个型号尚未公开代码或权重，应标为论文/报告阅读，不安排不存在的复现任务。你关注的最新工作可以加入未来阅读，但要给出官方来源与可复现边界。', sourceIds: ['smolvla', 'robotil'] },
+        { heading: '03 11 月把价值学习建立在真实结果数据上', body: '真机 RL 与 offline-to-online 需要奖励、终止原因、实际动作和失败状态。9—10 月采集时若没保留这些信息，到 11 月再想补就可能已无法恢复。因此准备字段可以提前，但自主探索和策略上线必须等待基线与安全条件通过。\n\n先验证价值或成功预测能否对留出 episode 给出有用区分，再考虑策略更新；比较改进前后时保持任务协议和在线交互预算一致。人工介入要记录并计入成本。你与合作方的 POC 可以积累数据经验，但客户数据与底层代码的使用范围必须遵循授权，不因求职作品目标而扩大公开范围。' },
+        { heading: '04 12 月展示证据，并给计划留出失败预算', body: '年底作品应让别人能看懂任务、环境、数据、模型选择、评测分母与失败边界。一个规模较小但能够复现、解释并安全演示的闭环，比多个只有截图的模型仓库更接近你的目标。README 可以区分已经执行的实验、仅离线验证的环节，以及尚未实现的设想。\n\n每日总预算建议核心阅读与练习 60—100 分钟，留 10—20 分钟复盘或补课，而不是塞入 140 分钟固定正文再额外作业。如果某周主要测试未通过，用预留时间解决依赖再前进。计划可以调整，但更改原因应来自已观察到的能力缺口或新证据，而不是每天追逐热度。', formulas: [{ latex: 'T_{\\rm day}=T_{\\rm concept}+T_{\\rm code}+T_{\\rm insight}+T_{\\rm review}\\le120\\ \\mathrm{min}', explanation: '120 分钟来自用户的每日上限。当前重写课程核心部分约 90—95 分钟；延伸阅读可放入周末或补课时间，不要求当天全部读完。' }] },
+      ],
+      points: ['阶段通过标准是产物和解释能力，不是只看打卡数。', '先把一个基线走通，再横向阅读更多架构。', '新路线需要公开证据，计划必须为失败和补课预留时间。'],
+      codeTitle: 'study_budget.py · 原创学习预算',
+      code: ['budget = {"concept": 30, "code": 35, "insight": 25, "review": 15}', 'assert sum(budget.values()) == 105', 'assert sum(budget.values()) <= 120', 'milestones = ["data_and_baseline", "vla_and_world_models", "experience_improvement", "reproducible_demo"]', 'assert len(milestones) == 4', 'print("105 minutes planned; milestone evidence is still required")'].join('\n'),
+      codeNotes: ['时间分配不是完成能力的保证，实际困难应记录并用于调整。', '延伸资料不要求一次读完，先完成本课定位的章节。'],
+      exercise: { prompt: '为四个月各写一个“可以被别人检查”的完成标准。', steps: ['避免只写“熟悉”“掌握”。', '指出标准依赖哪个前置产物。', '写一项尚未验证、不能对外宣称的能力。'], solution: '例如 9 月提供可恢复基线与数据审计；10 月提供一套微调/推理记录；11 月提供结果数据与固定协议改进对照；12 月提供复现说明和真实失败边界。尚未做过的真机 RL 不写成已具备。' },
+      quiz: { question: '为什么应在 9 月就准备终止原因和行为来源字段，而不是等 11 月学 RL 再加？', hint: '考虑历史数据是否还能恢复丢失事实。', keywords: ['历史', '终止', '来源', '恢复', '价值'], reference: '缺失的终止/截断原因、实际动作和行为来源往往无法从历史视频可靠重建，会限制价值目标与离线改进。字段规划应提前，策略探索上线仍需等待基线和安全验收。' }, sources: [s.robotil, s.smolvla, s.rl],
+    },
+  },
+};

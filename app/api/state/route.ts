@@ -1,5 +1,5 @@
 import { env } from 'cloudflare:workers';
-import { addDays, getDynamicRubric, isCurriculumDate, resolveLearningDate, shanghaiDateKey } from '@/app/curriculum';
+import { addDays, COURSE_START_DATE, COURSE_END_DATE, getDailyLearningPlan, getDynamicRubric, isCurriculumDate, resolveLearningDate, shanghaiDateKey } from '@/app/curriculum';
 
 const rubrics: Record<string, { keywords: string[]; answer: string }> = {
   action_chunk: {
@@ -55,13 +55,17 @@ export async function GET(request: Request) {
   const today = shanghaiDateKey();
   const [progress, completedDateRows, favorites, answers, qa, notes] = await env.DB.batch([
     env.DB.prepare('SELECT item_id AS itemId, task_type AS taskType, completed, updated_at AS updatedAt FROM daily_progress WHERE learning_date = ? ORDER BY task_type').bind(requestedDate),
-    env.DB.prepare('SELECT learning_date AS learningDate FROM daily_progress WHERE completed = 1 AND learning_date <= ? GROUP BY learning_date HAVING COUNT(DISTINCT item_id) >= 3 ORDER BY learning_date').bind(today),
+    env.DB.prepare(`SELECT learning_date AS learningDate FROM daily_progress
+      WHERE completed = 1 AND learning_date BETWEEN ? AND ? AND learning_date <= ?
+        AND task_type IN ('foundation', 'code', 'insight')
+        AND item_id = learning_date || '-' || task_type
+      GROUP BY learning_date HAVING COUNT(DISTINCT task_type) = 3 ORDER BY learning_date`).bind(COURSE_START_DATE, COURSE_END_DATE, today),
     env.DB.prepare('SELECT item_id AS itemId, item_type AS itemType, title, summary FROM favorites ORDER BY updated_at DESC'),
     env.DB.prepare('SELECT id, question_id AS questionId, question_title AS questionTitle, item_type AS itemType, answer, score, feedback, reference, created_at AS createdAt FROM learning_answers ORDER BY created_at DESC'),
     env.DB.prepare('SELECT id, question, answer, created_at AS createdAt FROM qa_conversations ORDER BY created_at DESC'),
     env.DB.prepare('SELECT id, title, content, context, created_at AS createdAt, updated_at AS updatedAt FROM notes ORDER BY updated_at DESC'),
   ]);
-  const completedDates = completedDateRows.results.map((row) => String((row as { learningDate: string }).learningDate));
+  const completedDates = completedDateRows.results.map((row) => String((row as { learningDate: string }).learningDate)).filter(isCurriculumDate);
   return Response.json({
     progress: progress.results,
     progressSummary: { completedDays: completedDates.length, currentStreak: streakFromDates(completedDates, today), fullDayCompleted: completedDates.includes(requestedDate), completedDates },
@@ -79,7 +83,9 @@ export async function POST(request: Request) {
   if (body.type === 'toggle-task') {
     const itemId = String(body.itemId ?? '');
     const taskType = String(body.taskType ?? '');
-    if (!isCurriculumDate(learningDate) || learningDate > today || !itemId.startsWith(`${learningDate}-`) || !['foundation', 'code', 'insight'].includes(taskType)) return Response.json({ error: '无效或尚未开放的每日课程' }, { status: 400 });
+    const dailyPlan = getDailyLearningPlan(learningDate);
+    const task = dailyPlan?.tasks.find((item) => item.id === itemId && item.track === taskType);
+    if (dailyPlan?.contentStatus !== 'ready' || learningDate > today || !task || typeof body.completed !== 'boolean') return Response.json({ error: '无效或尚未开放的每日课程' }, { status: 400 });
     await env.DB.prepare('INSERT INTO daily_progress (id, learning_date, item_id, task_type, completed, updated_at) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET completed = excluded.completed, task_type = excluded.task_type, updated_at = excluded.updated_at')
       .bind(itemId, learningDate, itemId, taskType, body.completed ? 1 : 0, now).run();
     return Response.json({ ok: true });
@@ -99,10 +105,15 @@ export async function POST(request: Request) {
     if (!isCurriculumDate(learningDate) || learningDate > today) return Response.json({ error: '该学习日尚未开放' }, { status: 400 });
     const questionId = String(body.questionId);
     const answer = String(body.answer ?? '').trim();
-    const rubric = getDynamicRubric(questionId) ?? rubrics[questionId] ?? rubrics.action_chunk;
+    const isDatedQuestion = questionId.startsWith('daily-') || questionId.startsWith('quiz-');
+    const questionDate = questionId.startsWith('daily-') ? questionId.slice(6) : questionId.slice(5, 15);
+    if (isDatedQuestion && questionDate !== learningDate) return Response.json({ error: '题目与学习日期不匹配' }, { status: 400 });
+    const rubric = getDynamicRubric(questionId) ?? rubrics[questionId];
+    if (!rubric) return Response.json({ error: '题目尚未备课或不存在' }, { status: 400 });
     const hits = rubric.keywords.filter((keyword) => answer.toLowerCase().includes(keyword.toLowerCase())).length;
     const score = Math.min(96, Math.max(25, 28 + hits * 9 + Math.min(14, Math.floor(answer.length / 18))));
-    const feedback = score >= 80 ? '回答已覆盖主要机制和验证思路。下一步可补充一个具体日志字段或对照实验，让结论更可执行。' : '已记入错题集。建议对照参考讲解，从输入假设、机制、失败信号和验证实验四层重组答案。';
+    const missing = rubric.keywords.filter((keyword) => !answer.toLowerCase().includes(keyword.toLowerCase()));
+    const feedback = '关键词辅助评分（不是语义判分）：命中 ' + hits + '/' + rubric.keywords.length + ' 个检查词。' + (missing.length ? '可对照复核：' + missing.join('、') + '。' : '请继续核对公式推导和数值结果。') + (score < 80 ? '已记入错题集。' : '高分不代表推导一定正确。');
     await env.DB.prepare('INSERT INTO learning_answers (id, question_id, question_title, item_type, answer, score, feedback, reference, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
       .bind(crypto.randomUUID(), questionId, String(body.questionTitle ?? questionId), String(body.itemType ?? '学习答题'), answer, score, feedback, rubric.answer, now).run();
     return Response.json({ score, feedback, reference: rubric.answer });

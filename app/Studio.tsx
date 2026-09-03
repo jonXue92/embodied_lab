@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import generatedIntel from './generated-intel.json';
 import NotesWidget, { type NoteItem } from './NotesWidget';
+import { observeShanghaiDate } from './learning-clock';
 import { answerQuestion, dailyEvidence, interviewItems, jobs, models, phases, type InterviewItem } from './content';
 import { addDays, COURSE_END_DATE, COURSE_START_DATE, getDailyLearningPlan, getUnitWeek, isCurriculumDate, resolveLearningDate, shanghaiDateKey, type DailyLearningPlan, type DailyQuestion } from './curriculum';
 
@@ -12,6 +13,9 @@ type SavedAnswer = { id: string; questionId: string; questionTitle: string; item
 type QaItem = { id: string; question: string; answer: string; createdAt: string };
 type SearchItem = { id: string; kind: string; title: string; detail: string; action: () => void };
 type ProgressSummary = { completedDays: number; currentStreak: number; fullDayCompleted: boolean; completedDates: string[] };
+
+type StateResponse = { progress: { itemId: string; completed: number }[]; progressSummary: ProgressSummary; favorites: Favorite[]; answers: SavedAnswer[]; qa: QaItem[]; notes: NoteItem[] };
+type AnswerResponse = { score: number; feedback: string; reference: string };
 
 const nav: { id: View; icon: string; label: string }[] = [
   { id: 'today', icon: '◫', label: '今日学习' }, { id: 'plan', icon: '◷', label: '学习计划' },
@@ -29,6 +33,7 @@ export default function Studio() {
   const [view, setView] = useState<View>('today');
   const [selectedDate, setSelectedDate] = useState(() => resolveLearningDate(shanghaiDateKey()));
   const [followToday, setFollowToday] = useState(true);
+  const [calendarDate, setCalendarDate] = useState(shanghaiDateKey);
   const [done, setDone] = useState<string[]>([]);
   const [progressSummary, setProgressSummary] = useState<ProgressSummary>({ completedDays: 0, currentStreak: 0, fullDayCompleted: false, completedDates: [] });
   const [favorites, setFavorites] = useState<Favorite[]>([]);
@@ -45,23 +50,31 @@ export default function Studio() {
   const [searchQuery, setSearchQuery] = useState('');
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const plan = getDailyLearningPlan(selectedDate)!;
-  const todayDate = resolveLearningDate(shanghaiDateKey());
-  const isFuture = selectedDate > shanghaiDateKey();
+  const todayDate = resolveLearningDate(calendarDate);
+  const isFuture = selectedDate > calendarDate;
+
 
   useEffect(() => {
-    fetch(`/api/state?date=${selectedDate}`).then((response) => response.json()).then((data) => {
+    let active = true;
+    fetch(`/api/state?date=${selectedDate}`).then((response) => response.json() as Promise<StateResponse>).then((data) => {
+      if (!active) return;
       setDone((data.progress ?? []).filter((item: { completed: number }) => item.completed).map((item: { itemId: string }) => item.itemId));
       setFavorites(data.favorites ?? []);
       setAnswers(data.answers ?? []);
       setQa(data.qa ?? []);
       setNotes(data.notes ?? []);
       setProgressSummary(data.progressSummary ?? { completedDays: 0, currentStreak: 0, fullDayCompleted: false, completedDates: [] });
-    }).catch(() => undefined).finally(() => setSyncing(false));
+    }).catch(() => undefined).finally(() => { if (active) setSyncing(false); });
+    return () => { active = false; };
   }, [selectedDate]);
 
   useEffect(() => {
-    function refreshNotes() { fetch(`/api/state?date=${selectedDate}`).then((response) => response.json()).then((data) => setNotes(data.notes ?? [])).catch(() => undefined); }
+    function refreshNotes() { fetch(`/api/state?date=${selectedDate}`).then((response) => response.json() as Promise<StateResponse>).then((data) => setNotes(data.notes ?? [])).catch(() => undefined); }
     window.addEventListener('notes:updated', refreshNotes);
+    return () => window.removeEventListener('notes:updated', refreshNotes);
+  }, [selectedDate]);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const requested = params.get('view');
     const requestedDate = params.get('date');
@@ -76,25 +89,23 @@ export default function Studio() {
         setFollowToday(requestedDate === resolveLearningDate(shanghaiDateKey()));
       }, 0);
     }
-    return () => window.removeEventListener('notes:updated', refreshNotes);
-  }, [selectedDate]);
+  }, []);
 
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      if (followToday) {
-        const nextDate = resolveLearningDate(shanghaiDateKey());
-        setSelectedDate((currentDate) => {
-          if (currentDate === nextDate) return currentDate;
-          setSyncing(true);
-          setDraft('');
-          setResult(null);
-          setQuestionOpen(false);
-          return nextDate;
-        });
-      }
-    }, 60_000);
-    return () => window.clearInterval(timer);
-  }, [followToday]);
+  useEffect(() => observeShanghaiDate((date) => {
+    setCalendarDate(date);
+    const nextDate = resolveLearningDate(date);
+    if (!followToday || selectedDate === nextDate) return;
+    setSyncing(true);
+    setDone([]);
+    setProgressSummary({ completedDays: 0, currentStreak: 0, fullDayCompleted: false, completedDates: [] });
+    setDraft('');
+    setResult(null);
+    setQuestionOpen(false);
+    setSelectedDate(nextDate);
+    const url = new URL(window.location.href);
+    url.searchParams.set('date', nextDate);
+    window.history.replaceState({}, '', url);
+  }), [followToday, selectedDate]);
 
   useEffect(() => {
     function shortcut(event: KeyboardEvent) {
@@ -122,11 +133,11 @@ export default function Studio() {
   }
 
   async function toggleTask(itemId: string, taskType: string) {
-    if (isFuture) return;
+    if (isFuture || plan.contentStatus !== 'ready') return;
     const completed = !done.includes(itemId);
     setDone(completed ? [...done, itemId] : done.filter((id) => id !== itemId));
     await fetch('/api/state', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'toggle-task', learningDate: selectedDate, itemId, taskType, completed }) });
-    const refreshed = await fetch(`/api/state?date=${selectedDate}`).then((response) => response.json());
+    const refreshed = await fetch(`/api/state?date=${selectedDate}`).then((response) => response.json() as Promise<StateResponse>);
     setDone((refreshed.progress ?? []).filter((item: { completed: number }) => item.completed).map((item: { itemId: string }) => item.itemId));
     setProgressSummary(refreshed.progressSummary);
   }
@@ -138,9 +149,9 @@ export default function Studio() {
   }
 
   async function submitAnswer() {
-    if (draft.trim().length < 12 || isFuture) return;
+    if (draft.trim().length < 12 || isFuture || plan.contentStatus !== 'ready') return;
     const response = await fetch('/api/state', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'answer', learningDate: selectedDate, questionId: plan.question.id, questionTitle: plan.question.title, itemType: '每日思考题', answer: draft }) });
-    const data = await response.json(); setResult(data);
+    const data = await response.json() as AnswerResponse; setResult(data);
     setAnswers([{ id: crypto.randomUUID(), questionId: plan.question.id, questionTitle: plan.question.title, itemType: '每日思考题', answer: draft, score: data.score, feedback: data.feedback, reference: data.reference, createdAt: new Date().toISOString() }, ...answers]);
   }
 
@@ -196,16 +207,19 @@ export default function Studio() {
 
 function TodayView({ plan, selectedDate, todayDate, isFuture, done, progressSummary, favorites, onFavorite, onToggle, onQuestion, onEvidence, onDate }: { plan: DailyLearningPlan; selectedDate: string; todayDate: string; isFuture: boolean; done: string[]; progressSummary: ProgressSummary; favorites: Favorite[]; onFavorite: (item: Favorite) => void; onToggle: (id: string, taskType: string) => void; onQuestion: () => void; onEvidence: () => void; onDate: (date: string) => void }) {
   const dailyQuestion = plan.question;
+  const ready = plan.contentStatus === 'ready';
+  const minutes = plan.tasks.reduce((sum, task) => sum + (parseInt(task.time, 10) || 0), 0);
   const questionFavorite: Favorite = { itemId: `question-${dailyQuestion.id}`, itemType: '每日思考题', title: dailyQuestion.title, summary: dailyQuestion.summary };
   const questionSaved = favorites.some((item) => item.itemId === questionFavorite.itemId);
   const completedCount = plan.tasks.filter((task) => done.includes(task.id)).length;
-  return <><section className="day-switcher"><button disabled={selectedDate <= COURSE_START_DATE} onClick={() => onDate(addDays(selectedDate, -1))}>← 前一天</button><div><span>北京时间学习日</span><b>{selectedDate} · DAY {String(plan.dayNumber).padStart(2, '0')}</b><small>{plan.unitTitle}</small></div><button disabled={selectedDate >= COURSE_END_DATE} onClick={() => onDate(addDays(selectedDate, 1))}>后一天 →</button><button className="today-jump" disabled={selectedDate === todayDate} onClick={() => onDate(todayDate)}>回到今天</button></section><section className="hero"><div className="hero-copy"><p className="kicker">{selectedDate === todayDate ? '今日主题' : isFuture ? '未来课程' : '历史课程'} · DAY {String(plan.dayNumber).padStart(2, '0')}</p><h2>{plan.theme}<br /><em>{plan.unitTitle}</em></h2><p>{plan.unitOutcome}</p><div className="hero-meta"><span><b>140</b> 分钟</span><span><b>3</b> 个完整课程</span><span><b>4</b> 道可评分题</span></div></div><div className="hero-art" aria-hidden="true"><div className="orbit orbit-a"><span>基</span></div><div className="orbit orbit-b"><span>码</span></div><div className="orbit orbit-c"><span>路</span></div><div className="robot-core"><i className="eye left" /><i className="eye right" /><span>{plan.dayNumber}</span></div><div className="grid-plane" /></div></section>
-    <div className="content-grid"><section className="today-panel"><div className="section-heading"><div><span className="eyebrow">{isFuture ? '课程预览' : '当日必修'}</span><h3>{progressSummary.fullDayCompleted ? '当日完整打卡已自动记录' : '完成三门课程，自动记为完整打卡日'}</h3></div><span className="completion">{completedCount} / 3 完成</span></div><div className="task-list">{plan.tasks.map((task, index) => { const checked = done.includes(task.id); const favorite: Favorite = { itemId: `lesson-${task.id}`, itemType: task.type, title: task.title, summary: `${selectedDate} · 完整课程 · ${task.time}` }; const saved = favorites.some((item) => item.itemId === favorite.itemId); return <article className={`task-card ${checked ? 'done' : ''}`} key={task.id}><span className={`task-index ${task.color}`}>0{index + 1}</span><a className="task-copy" href={`/learn/${task.id}`}><p><span>{task.type}</span><small>{task.time} · 完整网页</small></p><h4>{task.title}</h4></a><div className="task-controls"><button className={`task-favorite ${saved ? 'saved' : ''}`} aria-label={saved ? '取消收藏课程' : '收藏课程'} onClick={() => onFavorite(favorite)}>{saved ? '♥' : '♡'}</button><button className="check-button" disabled={isFuture} aria-label={checked ? '标记为未完成' : '标记完成'} onClick={() => onToggle(task.id, task.track)}>{checked ? '✓' : isFuture ? '·' : '→'}</button></div></article>; })}</div></section>
-      <aside className="right-rail"><section className="streak-card"><div className="section-heading compact"><div><span className="eyebrow">完整打卡统计</span><h3>累计完成 / 当前连续</h3></div><b>{progressSummary.completedDays} <small>天</small></b></div><div className="streak-pair"><span>连续 <b>{progressSummary.currentStreak}</b> 天</span><span>计划 <b>{plan.totalDays}</b> 天</span></div><p>三门课程全部完成后自动计入；历史日期可以补签，未来日期不会提前计入。</p></section><section className="question-card"><div className="question-card-head"><span className="eyebrow">DAY {String(plan.dayNumber).padStart(2, '0')} 思考题 · 当日关联</span><button className={questionSaved ? 'saved' : ''} onClick={() => onFavorite(questionFavorite)} aria-label="收藏每日思考题">{questionSaved ? '♥' : '♡'}</button></div><h3>{dailyQuestion.title}</h3><div className="question-meta"><span>{plan.unitTitle}</span><span>中等</span></div><button className="question-start" disabled={isFuture} onClick={onQuestion}>{isFuture ? '尚未开放' : '开始思考'} <span>→</span></button></section></aside></div>
+  return <><section className="day-switcher"><button disabled={selectedDate <= COURSE_START_DATE} onClick={() => onDate(addDays(selectedDate, -1))}>← 前一天</button><div><span>北京时间学习日</span><b>{selectedDate} · DAY {String(plan.dayNumber).padStart(2, '0')}</b><small>{plan.unitTitle}</small></div><button disabled={selectedDate >= COURSE_END_DATE} onClick={() => onDate(addDays(selectedDate, 1))}>后一天 →</button><button className="today-jump" disabled={selectedDate === todayDate} onClick={() => onDate(todayDate)}>回到今天</button></section><section className="hero"><div className="hero-copy"><p className="kicker">{selectedDate === todayDate ? '今日主题' : isFuture ? '未来课程' : '历史课程'} · DAY {String(plan.dayNumber).padStart(2, '0')}</p><h2>{plan.theme}<br /><em>{plan.unitTitle}</em></h2><p>{plan.unitOutcome}</p><div className="hero-meta"><span><b>{ready ? minutes : '—'}</b> 分钟</span><span><b>{ready ? 3 : 0}</b> 门正文已备课</span><span><b>{ready ? 4 : 0}</b> 道专项题</span></div></div><div className="hero-art" aria-hidden="true"><div className="orbit orbit-a"><span>基</span></div><div className="orbit orbit-b"><span>码</span></div><div className="orbit orbit-c"><span>路</span></div><div className="robot-core"><i className="eye left" /><i className="eye right" /><span>{plan.dayNumber}</span></div><div className="grid-plane" /></div></section>
+    <div className={'course-status' + (ready ? '' : ' pending')}>{ready ? <><b>{plan.revision ?? '原始专题课'}</b><br />当日产出：{plan.deliverable}<br />正文含独立讲解、练习与阅读定位；延伸资料不要求当天读完。</> : <><b>当前为教学计划，正文待备课审核</b><br />未编写的课程不再由模板填充。只有完成独立讲解、公式/案例、代码检查和专项题后才开放学习打卡。</>}</div>
+    <div className="content-grid"><section className="today-panel"><div className="section-heading"><div><span className="eyebrow">{isFuture ? '课程预览' : '当日必修'}</span><h3>{progressSummary.fullDayCompleted ? '当日完整打卡已自动记录' : '完成三门课程，自动记为完整打卡日'}</h3></div><span className="completion">{completedCount} / 3 完成</span></div><div className="task-list">{plan.tasks.map((task, index) => { const checked = done.includes(task.id); const favorite: Favorite = { itemId: `lesson-${task.id}`, itemType: task.type, title: task.title, summary: `${selectedDate} · ${ready ? '已备课' : '教学计划'} · ${task.time}` }; const saved = favorites.some((item) => item.itemId === favorite.itemId); return <article className={`task-card ${checked ? 'done' : ''}`} key={task.id}><span className={`task-index ${task.color}`}>0{index + 1}</span><a className="task-copy" href={`/learn/${task.id}`}><p><span>{task.type}</span><small>{task.time} · {ready ? '讲解与练习' : '教学计划'}</small></p><h4>{task.title}</h4></a><div className="task-controls"><button className={`task-favorite ${saved ? 'saved' : ''}`} aria-label={saved ? '取消收藏课程' : '收藏课程'} onClick={() => onFavorite(favorite)}>{saved ? '♥' : '♡'}</button><button className="check-button" disabled={isFuture || !ready} aria-label={checked ? '标记为未完成' : '标记完成'} onClick={() => onToggle(task.id, task.track)}>{checked ? '✓' : isFuture ? '·' : '→'}</button></div></article>; })}</div></section>
+      <aside className="right-rail"><section className="streak-card"><div className="section-heading compact"><div><span className="eyebrow">完整打卡统计</span><h3>累计完成 / 当前连续</h3></div><b>{progressSummary.completedDays} <small>天</small></b></div><div className="streak-pair"><span>连续 <b>{progressSummary.currentStreak}</b> 天</span><span>计划 <b>{plan.totalDays}</b> 天</span></div><p>三门课程全部完成后自动计入；历史日期可以补签，未来日期不会提前计入。</p></section><section className="question-card"><div className="question-card-head"><span className="eyebrow">DAY {String(plan.dayNumber).padStart(2, '0')} 思考题 · 当日关联</span><button className={questionSaved ? 'saved' : ''} onClick={() => onFavorite(questionFavorite)} aria-label="收藏每日思考题">{questionSaved ? '♥' : '♡'}</button></div><h3>{dailyQuestion.title}</h3><div className="question-meta"><span>{plan.unitTitle}</span><span>中等</span></div><button className="question-start" disabled={isFuture || !ready} onClick={onQuestion}>{!ready ? '待备课' : isFuture ? '尚未开放' : '开始思考'} <span>→</span></button></section></aside></div>
     <section className="daily-signal"><span className="signal-mark">RL</span><div><span className="eyebrow">学习主线已增强 · {generatedIntel.status === 'no_change' ? '今日情报无新增' : '情报已更新'}</span><h3>从模仿学习走向 HIL-SERL、RECAP 与 Evo-RL 的真机闭环</h3><p>强化学习不再只是岗位关键词，已进入 9—12 月学习、数据采集和 SO-101 作品路线。</p></div><button onClick={onEvidence}>查看依据 →</button></section></>;
 }
 
-function PlanView({ plan, selectedDate, onDate }: { plan: DailyLearningPlan; selectedDate: string; onDate: (date: string) => void }) { const unitDays = getUnitWeek(selectedDate); return <div className="page-view"><section className="page-intro"><span className="eyebrow">2026.09.01 — 2026.12.31 · 共 {plan.totalDays} 个学习日</span><h2>从「模仿会做」到「从真实经验中 <em>持续改进</em>」</h2><p>每天固定包含基础知识、代码精读、路线洞察和一道关联思考题；页面按北京时间自动切换，不依赖重新发布。</p></section><section className="roadmap">{phases.map((phase, index) => <article className="phase" key={phase.month}><span className="phase-number">{index + 1}</span><div className="phase-date">{phase.month}<small>{phase.tag}</small></div><div className="phase-copy"><h3>{phase.title}</h3><p>{phase.detail}</p><strong>{phase.output}</strong></div></article>)}</section><section className="week-plan"><div className="section-heading"><div><span className="eyebrow">单元 {plan.unitNumber} · 当前 7 日安排</span><h3>{plan.unitTitle}</h3></div><span className="plan-principle">本单元产出：{plan.deliverable}</span></div><div className="day-grid">{unitDays.map((day) => <article className={day.active ? 'active-day' : ''} key={day.date} onClick={() => onDate(day.date)}><span>{day.date.slice(5)}<b>DAY {day.dayNumber}</b></span><strong>{day.theme}</strong><small>{day.active ? '当前查看' : '查看当天三门课程'}</small></article>)}</div></section></div>; }
+function PlanView({ plan, selectedDate, onDate }: { plan: DailyLearningPlan; selectedDate: string; onDate: (date: string) => void }) { const unitDays = getUnitWeek(selectedDate); return <div className="page-view"><section className="page-intro"><span className="eyebrow">2026.09.01 — 2026.12.31 · 共 {plan.totalDays} 个学习日</span><h2>从「模仿会做」到「从真实经验中 <em>持续改进</em>」</h2><p>122 天教学计划保留；每个日期的正文需单独备课并检查，未完成的日期明确显示“待备课”。已备课课程按北京时间自动切换。</p></section><section className="roadmap">{phases.map((phase, index) => <article className="phase" key={phase.month}><span className="phase-number">{index + 1}</span><div className="phase-date">{phase.month}<small>{phase.tag}</small></div><div className="phase-copy"><h3>{phase.title}</h3><p>{phase.detail}</p><strong>{phase.output}</strong></div></article>)}</section><section className="week-plan"><div className="section-heading"><div><span className="eyebrow">单元 {plan.unitNumber} · 当前 7 日安排</span><h3>{plan.unitTitle}</h3></div><span className="plan-principle">本单元产出：{plan.deliverable}</span></div><div className="day-grid">{unitDays.map((day) => <article className={day.active ? 'active-day' : ''} key={day.date} onClick={() => onDate(day.date)}><span>{day.date.slice(5)}<b>DAY {day.dayNumber}</b></span><strong>{day.theme}</strong><small>{day.active ? '当前查看' : day.ready ? '正文已备课 · 查看课程' : '待备课 · 查看计划'}</small></article>)}</div></section></div>; }
 
 function InsightsView({ favorites, onFavorite, filter, setFilter, items }: { favorites: Favorite[]; onFavorite: (item: Favorite) => void; filter: string; setFilter: (value: string) => void; items: typeof models }) { return <div className="page-view"><section className="page-intro"><span className="eyebrow">VLA · WORLD MODEL · REAL-WORLD RL</span><h2>不只问模型「输出什么」，还要问「如何从经验改进」</h2><p>在原有 VLA 与 World Model 地图上，新增 HIL-SERL、π*0.6 / RECAP 和 Evo-RL，比较它们如何使用演示、自主 rollout、人工介入与 value / advantage。</p></section><div className="filters model-filters">{['全部','VLA','World Model','World + Action','Real-world RL','RL + VLA'].map((family) => <button key={family} className={filter === family ? 'active' : ''} onClick={() => setFilter(family)}>{family}</button>)}</div><section className="insight-summary"><span>RL</span><div><b>新的主线</b><h3>Policy 解决「现在做什么」，World Model 预演「做了会发生什么」，RL 用真实结果学会「哪种做法更好」。</h3></div></section><div className="model-grid">{items.map((model) => { const saved = favorites.some((item) => item.itemId === model.id); return <article className="model-card" key={model.id}><div className="model-top"><span>{model.name.slice(0, 2)}</span><div><small>{model.team} · {model.family}</small><h3>{model.name}</h3></div><button className={saved ? 'saved' : ''} onClick={() => onFavorite({ itemId: model.id, itemType: '模型洞察', title: model.name, summary: model.highlight })}>{saved ? '♥' : '♡'}</button></div><dl><div><dt>规模</dt><dd>{model.scale}</dd></div><div><dt>输出 / 动作</dt><dd>{model.action}</dd></div><div><dt>数据</dt><dd>{model.data}</dd></div></dl><h4>{model.highlight}</h4><p>{model.code}</p><a href={model.url} target="_blank" rel="noreferrer">查看官方工作 ↗</a></article>; })}</div><section className="code-lens"><span className="eyebrow">代码对比镜头 · IMITATION VS EXPERIENCE</span><div className="compare-code"><article><b>BC / VLA 基线</b><code>actions = policy(observation, language)<br />loss = distance(actions, expert_actions)</code><p>从专家演示学习，稳定易扩展，但很难超过演示者，且不了解 policy 自己的失败分布。</p></article><article><b>RECAP / Evo-RL 闭环</b><code>value = train_value(rollouts)<br />policy = improve(policy, advantage(value))</code><p>将自主经验、人工介入和成功/失败回收进数据池，通过 value / advantage 实现迭代改进。</p></article></div></section></div>; }
 

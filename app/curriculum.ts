@@ -1,4 +1,5 @@
 import { lessons as legacyLessons, type Lesson, type Task } from './content';
+import { authoredDays } from './courseware';
 
 export const COURSE_START_DATE = '2026-09-01';
 export const COURSE_END_DATE = '2026-12-31';
@@ -24,6 +25,8 @@ export type DailyLearningPlan = {
   tasks: DailyTask[];
   question: DailyQuestion;
   deliverable: string;
+  contentStatus: 'ready' | 'planned';
+  revision?: string;
 };
 
 type DaySpec = [foundation: string, code: string, insight: string];
@@ -293,7 +296,8 @@ export function shanghaiDateKey(value = new Date()) {
 }
 
 export function isCurriculumDate(dateKey: string) {
-  return /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && dateKey >= COURSE_START_DATE && dateKey <= COURSE_END_DATE;
+  return /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && dateKey >= COURSE_START_DATE && dateKey <= COURSE_END_DATE
+    && new Date(parseDateKey(dateKey)).toISOString().slice(0, 10) === dateKey;
 }
 
 export function resolveLearningDate(dateKey: string) {
@@ -327,90 +331,36 @@ export function getDailyLearningPlan(dateKey: string): DailyLearningPlan | null 
   const resolved = planSpec(dateKey);
   if (!resolved) return null;
   const { dayNumber, unitIndex, unit, spec } = resolved;
-  const [foundation, code, insight] = spec;
-  const tasks: DailyTask[] = [
-    { id: lessonId(dateKey, 'foundation'), track: 'foundation', learningDate: dateKey, type: '基础知识', title: foundation, time: '45 分钟', color: 'mint' },
-    { id: lessonId(dateKey, 'code'), track: 'code', learningDate: dateKey, type: '代码精读', title: code, time: '50 分钟', color: 'amber' },
-    { id: lessonId(dateKey, 'insight'), track: 'insight', learningDate: dateKey, type: '路线洞察', title: insight, time: '45 分钟', color: 'blue' },
-  ];
-  const questionTitle = dayNumber === 1
-    ? '为什么 VLA 通常输出一段 Action Chunk，而不是只预测下一个动作？'
-    : `把“${foundation}”用于“${insight}”时，最关键的工程假设、失败信号和验证实验分别是什么？`;
+  const authored = authoredDays[dateKey];
+  const tracks: DailyTrack[] = ['foundation', 'code', 'insight'];
+  const labels = ['基础知识', '代码精读', '路线洞察'];
+  const colors = ['mint', 'amber', 'blue'];
+  const tasks: DailyTask[] = tracks.map((track, index) => ({
+    id: lessonId(dateKey, track), track, learningDate: dateKey,
+    type: labels[index], title: authored?.lessons[track].title ?? spec[index],
+    time: authored ? authored.lessons[track].minutes + ' 分钟' : '待备课',
+    color: colors[index],
+  }));
+  if (dateKey === COURSE_START_DATE) {
+    tasks.forEach((task, i) => { task.time = [30, 35, 25][i] + ' 分钟'; });
+  }
   return {
-    date: dateKey,
-    dayNumber,
-    totalDays: TOTAL_LEARNING_DAYS,
-    unitNumber: unitIndex + 1,
-    unitTitle: unit.title,
-    unitOutcome: unit.outcome,
-    theme: foundation,
-    tasks,
-    deliverable: unit.deliverable,
-    question: {
-      id: `daily-${dateKey}`,
-      title: questionTitle,
-      summary: `围绕“${foundation}—${code}—${insight}”按假设、证据和行动三层回答。`,
-      keywords: [...unit.keywords, '假设', '失败', '验证'],
-      reference: `先明确“${foundation}”成立所依赖的数据、接口和环境假设；再指出“${code}”中最早可观察的失败信号；最后设计一个控制变量清晰、同时记录离线指标与闭环结果的实验，用证据判断它是否真正支撑“${insight}”。`,
+    date: dateKey, dayNumber, totalDays: TOTAL_LEARNING_DAYS,
+    unitNumber: unitIndex + 1, unitTitle: unit.title, unitOutcome: unit.outcome,
+    theme: tasks[0].title, tasks,
+    contentStatus: authored || dayNumber === 1 ? 'ready' : 'planned',
+    revision: authored?.revision,
+    deliverable: authored?.deliverable ?? unit.deliverable,
+    question: authored ? { id: 'daily-' + dateKey, ...authored.question } : dayNumber === 1 ? {
+      id: 'daily-' + dateKey,
+      title: '为什么 VLA 通常输出一段 Action Chunk，而不是只预测下一个动作？',
+      summary: '区分时序连贯、推理次数与闭环纠错。',
+      keywords: ['时间', '连贯', '误差', '频率', '闭环', 'chunk'],
+      reference: legacyLessons['act-code'].quiz.reference,
+    } : {
+      id: 'daily-' + dateKey, title: '思考题待随课程正文审核',
+      summary: '当前只有教学计划，不将通用模板当作已完成课程。', keywords: [], reference: '',
     },
-  };
-}
-
-function generatedLesson(dateKey: string, track: DailyTrack, task: DailyTask, unit: CurriculumUnit, spec: DaySpec): Lesson {
-  const [foundation, code, insight] = spec;
-  const sharedIntro = `这是 ${dateKey} 的${task.type}课程，处于“${unit.title}”单元。今天把“${foundation}”“${code}”和“${insight}”连接起来，目标不是记住术语，而是形成可解释、可运行、可验证的判断。`;
-  const trackContent: Record<DailyTrack, Pick<Lesson, 'outcomes' | 'sections' | 'points' | 'codeTitle' | 'code' | 'quiz'>> = {
-    foundation: {
-      outcomes: [`用自己的话准确解释“${foundation}”`, `画出它与“${code}”之间的数据或控制关系`, `指出它在“${insight}”中最容易被忽略的假设`],
-      sections: [
-        { heading: '01 先界定今天的问题', body: `“${foundation}”要解决的不是孤立概念题，而是机器人从观测进入决策、再由真实结果校验的一个环节。先写清输入、输出、监督或反馈信号，以及它运行在训练阶段还是部署阶段。` },
-        { heading: '02 建立核心对象', body: `把问题拆成数据、表示、策略、控制和评测五层。${unit.outcome} 每一层都要有明确接口，不能用“模型会自动学到”替代解释。`, example: `input -> representation -> policy/value -> executed_action -> outcome` },
-        { heading: '03 顺着机制链推演', body: `从一条具体样本或一次 rollout 出发，逐步追踪信息如何流过“${foundation}”。每一步都问：张量或状态代表什么、时间戳属于哪一刻、下游如何使用、发生异常时谁能最先发现。` },
-        { heading: '04 识别常见误区', body: `常见错误包括混淆训练目标和模型结构、把离线拟合好当成闭环控制好、忽略执行动作与模型建议动作的差异，以及在数据覆盖不足时夸大泛化。` },
-        { heading: '05 与代码和系统连接', body: `今天的代码课“${code}”是概念落点；路线课“${insight}”则回答它为何值得投入。学习时至少留下一个 shape、一个日志字段和一个可复现实验。` },
-        { heading: '06 当天最小产出', body: `完成一张不超过一页的机制图：标出输入、输出、关键假设、失败信号和验证指标，并把它归入单元产出“${unit.deliverable}”。` },
-      ],
-      points: [`${foundation} 必须用输入、输出和反馈信号来定义。`, `概念是否掌握，要看能否在“${code}”中找到对应接口。`, `最终判断必须回到“${insight}”要求的闭环证据。`],
-      codeTitle: 'concept_contract.py',
-      code: `topic = "${foundation}"\ncontract = {\n    "inputs": ["observation", "robot_state", "goal"],\n    "outputs": ["prediction_or_action"],\n    "assumptions": ["timestamp_aligned", "normalization_frozen"],\n    "evidence": ["offline_metric", "closed_loop_success"],\n}\nassert all(contract.values()), f"{topic}: contract incomplete"`,
-      quiz: { id: `quiz-${task.id}`, question: `请用“输入—机制—输出—失败模式—验证”五层解释“${foundation}”。`, hint: '不要只下定义；至少给出一个张量/日志落点和一个闭环实验。', reference: `先写清输入观测、状态或数据分布，再说明“${foundation}”如何产生中间表示或决策；输出必须对应可执行接口。失败模式至少覆盖数据错位、分布外输入或控制延迟，验证同时使用离线指标与“${insight}”相关的闭环结果。` },
-    },
-    code: {
-      outcomes: [`定位“${code}”的入口、核心状态和输出`, '能为关键张量或记录写出 shape/字段契约', '能设计一个失败用例并从日志定位根因'],
-      sections: [
-        { heading: '01 从调用入口开始', body: `先不要陷入实现细节。找到“${code}”的调用者、配置来源、数据加载入口和最终消费者，画出最短调用链。` },
-        { heading: '02 追踪数据契约', body: `对每个关键对象记录 shape、dtype、device、时间语义和归一化方式。机器人代码中最危险的 bug 往往不是语法错误，而是“数值看起来合理、语义已经错位”。`, example: `batch: [B, T, ...] | timestamp: observation time | action: executed or proposed` },
-        { heading: '03 阅读核心转换', body: `围绕“${foundation}”解释每次转换为何存在：它保留什么信息、丢弃什么信息、是否只在训练时启用，以及部署时是否有等价路径。` },
-        { heading: '04 加入可诊断日志', body: `至少记录输入范围、关键 shape、loss/score 分项、推理时延和异常计数。日志要能回答“第一处偏离预期的位置在哪里”，而不是只输出最终成功或失败。` },
-        { heading: '05 构造失败用例', body: `主动注入一个错位时间戳、错误归一化或过期计划，确认检查器能在靠近源头的位置失败。没有失败测试的代码精读，很容易停留在“看懂了”的错觉。` },
-        { heading: '06 连接路线判断', body: `最后回答“${code}”如何支撑“${insight}”：它改善的是数据质量、训练稳定性、推理吞吐、安全性，还是闭环恢复能力。` },
-      ],
-      points: ['代码精读先追调用链和数据契约，再看算法细节。', '每个关键对象都要写清 shape、时间语义和消费者。', '通过故意制造失败验证日志与断言是否真正有效。'],
-      codeTitle: 'daily_code_lens.py',
-      code: `def inspect_step(batch, model, clock):\n    assert batch["observation"].ndim >= 2\n    assert batch["timestamp"].is_monotonic_increasing\n    started = clock.now()\n    output = model(batch)  # ${code}\n    latency_ms = (clock.now() - started) * 1000\n    return {\n        "output": output,\n        "latency_ms": latency_ms,\n        "finite": output.isfinite().all().item(),\n        "topic": "${foundation}",\n    }`,
-      quiz: { id: `quiz-${task.id}`, question: `如果“${code}”离线结果正常但真机失败，你会按什么顺序检查？`, hint: '至少覆盖数据契约、训练/推理差异、时延和执行动作。', reference: `先核对样本 schema、shape、归一化和时间戳，再比较训练与部署的预处理、模型模式和 checkpoint；随后测量端到端时延并区分 proposed action 与 executed action；最后用最小回放和闭环 A/B 实验判断问题来自数据、模型还是控制。` },
-    },
-    insight: {
-      outcomes: [`解释“${insight}”对应的真实决策`, `比较至少两种可行路线的成本、收益与风险`, `形成一个与“${unit.deliverable}”相连的下一步行动`],
-      sections: [
-        { heading: '01 把热点改写成决策', body: `路线洞察不是罗列模型名字。把“${insight}”改写为一个决策：在你的数据、算力、机器人、安全和时间预算下，下一步应验证哪条假设。` },
-        { heading: '02 明确当前基线', body: `没有基线就无法判断新路线是否有价值。基线至少包括当前成功率、推理时延、数据量、失败类型和人工介入率，并关联今天的基础课“${foundation}”。` },
-        { heading: '03 比较两条路线', body: `路线 A 优先复用稳定组件，路线 B 引入“${code}”相关的新机制。比较两者对数据需求、训练复杂度、部署风险和可解释性的影响。` },
-        { heading: '04 设置晋级门槛', body: `新路线只有在固定评测集和真机任务上达到预先声明的门槛，且没有显著增加安全事件或长尾延迟，才进入下一阶段。` },
-        { heading: '05 对齐岗位与作品证据', body: `把路线转化为可展示证据：代码提交、数据说明、对比实验、失败复盘、演示视频和安全清单。技能只有被证据支撑，才能真正进入求职叙事。` },
-        { heading: '06 写下停止条件', body: `如果两轮实验仍没有改善核心指标，或数据与硬件成本超出预算，应回到更简单基线。知道何时停止，是研究和工程判断的一部分。` },
-      ],
-      points: ['路线洞察最终必须落到一个可验证决策。', '新方法要和固定基线比较，并设置晋级与停止条件。', '项目价值来自完整证据链，而不是追逐最新模型名称。'],
-      codeTitle: 'route_decision.yaml',
-      code: `decision: "${insight}"\nbaseline:\n  metrics: [success_rate, latency_p95, intervention_rate]\ncandidate:\n  mechanism: "${code}"\n  expected_gain: "measurable closed-loop improvement"\npromotion_gate:\n  - success_rate_improves\n  - no_new_safety_regression\n  - evidence_is_reproducible`,
-      quiz: { id: `quiz-${task.id}`, question: `围绕“${insight}”提出一个两周内可完成的路线决策实验。`, hint: '写清基线、唯一变量、指标、晋级门槛和停止条件。', reference: `保持任务、数据切分、硬件和评测脚本不变，只改变“${code}”对应的一项机制；同时记录成功率、p95 时延、人工介入和失败类型。预先给出晋级门槛，若两轮实验没有改善主要指标或引入安全回归，就停止并回到基线。` },
-    },
-  };
-  const content = trackContent[track];
-  return {
-    title: task.title, type: task.type, duration: task.time, intro: sharedIntro,
-    outcomes: content.outcomes, sections: content.sections, points: content.points,
-    codeTitle: content.codeTitle, code: content.code, quiz: content.quiz, sources: unit.sources,
   };
 }
 
@@ -428,7 +378,12 @@ export function getLessonById(id: string): { lesson: Lesson; task: DailyTask; pl
     const legacyId = track === 'foundation' ? 'vla-map' : track === 'code' ? 'act-code' : 'world-policy';
     return { lesson: { ...legacyLessons[legacyId], quiz: { ...legacyLessons[legacyId].quiz, id: `quiz-${task.id}` } }, task, plan };
   }
-  return { lesson: generatedLesson(dateKey, track, task, spec.unit, spec.spec), task, plan };
+  const authored = authoredDays[dateKey];
+  if (!authored) return null;
+  const lesson = authored.lessons[track];
+  return { lesson: { ...lesson, type: task.type, duration: task.time,
+    reviewedAt: authored.reviewedAt, revision: authored.revision,
+    quiz: { ...lesson.quiz, id: 'quiz-' + task.id } }, task, plan };
 }
 
 export function allLessonIds() {
@@ -446,20 +401,20 @@ export function getUnitWeek(dateKey: string) {
   return Array.from({ length: 7 }, (_, offset) => {
     const date = addDays(COURSE_START_DATE, unitStartIndex + offset);
     const plan = getDailyLearningPlan(date);
-    return plan ? { date, dayNumber: plan.dayNumber, theme: plan.theme, active: date === dateKey } : null;
+    return plan ? { date, dayNumber: plan.dayNumber, theme: plan.theme, active: date === dateKey, ready: plan.contentStatus === 'ready' } : null;
   }).filter((item): item is NonNullable<typeof item> => Boolean(item));
 }
 
 export function getDynamicRubric(questionId: string) {
   if (questionId.startsWith('daily-')) {
     const plan = getDailyLearningPlan(questionId.slice(6));
-    return plan ? { keywords: plan.question.keywords, answer: plan.question.reference } : null;
+    return plan?.contentStatus === 'ready' ? { keywords: plan.question.keywords, answer: plan.question.reference } : null;
   }
   if (questionId.startsWith('quiz-')) {
     const entry = getLessonById(questionId.slice(5));
     if (!entry) return null;
     const unit = planSpec(entry.plan.date)?.unit;
-    return { keywords: [...(unit?.keywords ?? []), '输入', '输出', '验证', '失败'], answer: entry.lesson.quiz.reference };
+    return { keywords: entry.lesson.quiz.keywords ?? unit?.keywords ?? [], answer: entry.lesson.quiz.reference };
   }
   return null;
 }

@@ -2,8 +2,12 @@ export type Task = { id: string; type: string; title: string; time: string; colo
 export type ModelItem = { id: string; name: string; team: string; family: string; scale: string; action: string; data: string; highlight: string; code: string; url: string };
 export type InterviewItem = { id: string; cat: string; q: string; freq: number; source: string; level: string };
 export type JobItem = { id: string; company: string; role: string; city: string; fit: number; date: string; skills: string[]; reason: string; url?: string; localSource?: boolean };
-export type LessonSection = { heading: string; body: string; example?: string };
-export type LessonQuiz = { id: string; question: string; hint: string; reference: string };
+export type LessonSection = {
+  heading: string; body: string; example?: string;
+  formulas?: { latex: string; explanation: string }[];
+  sourceIds?: string[];
+};
+export type LessonQuiz = { id: string; question: string; hint: string; reference: string; keywords?: string[] };
 export type Lesson = {
   title: string;
   type: string;
@@ -15,7 +19,13 @@ export type Lesson = {
   codeTitle: string;
   code: string;
   quiz: LessonQuiz;
-  sources: { label: string; url: string }[];
+  sources: { id?: string; label: string; url: string; reading?: string }[];
+  prerequisites?: string;
+  connection?: string;
+  exercise?: { prompt: string; steps: string[]; solution: string };
+  codeNotes?: string[];
+  reviewedAt?: string;
+  revision?: string;
 };
 
 export const tasks: Task[] = [

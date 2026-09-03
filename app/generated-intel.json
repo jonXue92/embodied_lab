@@ -1,52 +1,89 @@
 {
-  "updatedAt": "2026-09-02T21:48:36+08:00",
+  "updatedAt": "2026-09-03T23:27:48+08:00",
   "status": "updated",
-  "summary": "新增 3 个官方技术簇、1 条数据闭环行业报道和 1 个上海校招岗位簇；无可靠新面经，课程不调整。",
+  "summary": "新增 6 个官方技术更新簇；无可靠新岗位或面经，课程内容不调整。修正午夜换日、无效日期及完整打卡校验，保留全部学习数据。",
   "items": [
     {
       "type": "official_update",
-      "title": "LeRobot 用缓存单列视图加速 delta query",
+      "title": "LeRobot 支持自定义 rollout 策略",
       "source": "Hugging Face LeRobot",
-      "publishedAt": "2026-09-02T04:56:02+08:00",
-      "url": "https://github.com/huggingface/lerobot/commit/fbb811fca92504439792b97d216f0d00c2268382",
-      "signals": ["delta query", "select_columns", "图像解码", "DatasetReader", "缓存失效", "训练数据性能"],
-      "decision": "新增 1 个训练数据性能簇；官方基准显示查询约 200 倍、端到端单样本约 46 倍加速，现有数据流水线课程可承接。"
+      "publishedAt": "2026-09-03T21:43:17+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/3f2c29ef7e44b1ddccbcda3b6a63939e53639e9e",
+      "signals": [
+        "rollout strategy",
+        "DAgger",
+        "数据契约",
+        "streaming encoding"
+      ],
+      "decision": "通过插件声明数据集、遥操和编码需求；作为真机闭环工程实例，不触发课程调整。"
     },
     {
       "type": "official_update",
-      "title": "Cosmos Framework 09-02 发布补齐可恢复训练与推理快路",
-      "source": "NVIDIA Cosmos Framework",
-      "publishedAt": "2026-09-02T15:54:45+08:00",
-      "url": "https://github.com/NVIDIA/cosmos-framework/commit/9f008aeaaa1ee7dcb623a0319799c4aba72e8058",
-      "signals": ["Lance resume cursor", "text KV cache", "batched CFG", "FSDP", "LiDAR-only", "分布式推理"],
-      "decision": "作为 09-02 自动发布簇单列；工程主题已映射到现有 World Model 与部署主线，不单独触发课程调整。"
+      "title": "LeRobot 逆运动学改为多步迭代",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-03T21:06:29+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/060ba088d379b48f61ef816a5f3b44ba3f759a0c",
+      "signals": [
+        "inverse kinematics",
+        "Newton iteration",
+        "末端位姿"
+      ],
+      "decision": "默认执行 8 次 Newton 更新；不是误差阈值自适应收敛保证，现有部署课程可承接。"
     },
     {
       "type": "official_update",
-      "title": "Cosmos 动作策略链新增 RoboCasa 并优化 DROID 增强",
+      "title": "Cosmos 补齐生成侧 LoRA 微调指南",
+      "source": "NVIDIA Cosmos",
+      "publishedAt": "2026-09-03T17:05:05+08:00",
+      "url": "https://github.com/NVIDIA/cosmos/commit/5b50bba0fb97f4aa07b03d299bc1a22bafa10ade",
+      "signals": [
+        "LoRA",
+        "vision SFT",
+        "optimizer selection",
+        "checkpoint"
+      ],
+      "decision": "说明模型注入、优化器筛选、checkpoint 加载和 EMA/compile 配置；不把生成侧说明推广为 reasoner LoRA 支持。"
+    },
+    {
+      "type": "official_update",
+      "title": "Cosmos reasoner 推理减少生成侧显存占用",
       "source": "NVIDIA Cosmos Framework",
-      "publishedAt": "2026-09-02T20:24:06+08:00",
-      "url": "https://github.com/NVIDIA/cosmos-framework/commit/245d2b934c1a0a164d55193b90f724cc99760473",
-      "signals": ["RoboCasa", "移动操作", "15D raw action", "LeRobot loader", "闭环评测", "DROID composite"],
-      "decision": "将 RoboCasa 新 embodiment 与 DROID composite 增强合并为 1 个 action-policy 数据链簇；现有课程已覆盖动作表示、后训练和闭环评测。"
+      "publishedAt": "2026-09-03T17:33:09+08:00",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/4bc4392b615a2d6719313a368f81540117e5e405",
+      "signals": [
+        "reasoner-only",
+        "memory residency",
+        "generation pathway"
+      ],
+      "decision": "仅对非空且全部为 reasoner 的样本启用；作者在 Edge 上报告每卡少占约 2.757 GiB，未验证所有型号或训练路径。"
     },
     {
-      "type": "industry_report",
-      "title": "具身数据从固定训练场转向真实场景闭环",
-      "source": "澎湃新闻",
-      "publishedAt": "2026-09-02T15:44:00+08:00",
-      "url": "https://m.thepaper.cn/newsDetail_forward_33993034",
-      "signals": ["无本体采集", "时间同步", "空间标定", "质量评估", "失败接管", "数据回流"],
-      "decision": "作为有原始采访和明确时间的可靠行业信号纳入；不把媒体报道当作课程调整的 JD/面经证据。"
+      "type": "official_update",
+      "title": "Cosmos 09-03 发布修正条件样本损失与 KV 控制",
+      "source": "NVIDIA Cosmos Framework",
+      "publishedAt": "2026-09-03T23:15:05+08:00",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/6ea69664ab873320d026fcaebda3f9674332028e",
+      "signals": [
+        "flow matching",
+        "condition mask",
+        "teacher forcing",
+        "KV cache"
+      ],
+      "decision": "全条件样本可从 loss 均值分母排除，并统一 replay visibility 配置及缓存索引检查；整次发布计 1 簇。"
     },
     {
-      "type": "job",
-      "title": "SEER Robotics 2027 校招新增 VLA 与深度强化学习方向",
-      "source": "华中科技大学就业信息网 / 上海仙工智能",
-      "publishedAt": "2026-09-02",
-      "url": "https://job.hust.edu.cn/zpinfo1/2411169.htm",
-      "signals": ["上海", "VLA 算法", "深度强化学习", "机械臂", "SLAM", "多传感器", "运动控制"],
-      "decision": "同一校招公告内的多个算法方向合并为 1 个岗位簇；只有方向级标题且现有课程已覆盖，不调整学习计划。"
+      "type": "official_update",
+      "title": "Hugging Face 发布小模型 GRPO 结构化输出教程",
+      "source": "Hugging Face / Liquid AI",
+      "publishedAt": "2026-09-03T19:32:14+08:00",
+      "url": "https://github.com/huggingface/blog/commit/074777edcae899141d17cceb8440885d02dd394a",
+      "signals": [
+        "GRPO",
+        "TRL",
+        "reward design",
+        "evaluation"
+      ],
+      "decision": "350M 模型、约 500 样本和 100 步的可复现实例；是通用后训练学习补充，不是机器人性能证据。"
     }
   ]
 }
