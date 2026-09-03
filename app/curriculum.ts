@@ -293,7 +293,8 @@ export function shanghaiDateKey(value = new Date()) {
 }
 
 export function isCurriculumDate(dateKey: string) {
-  return /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && dateKey >= COURSE_START_DATE && dateKey <= COURSE_END_DATE;
+  return /^\d{4}-\d{2}-\d{2}$/.test(dateKey) && dateKey >= COURSE_START_DATE && dateKey <= COURSE_END_DATE
+    && new Date(parseDateKey(dateKey)).toISOString().slice(0, 10) === dateKey;
 }
 
 export function resolveLearningDate(dateKey: string) {

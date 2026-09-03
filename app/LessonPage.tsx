@@ -4,8 +4,10 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import NotesWidget from './NotesWidget';
 import { getLessonById, shanghaiDateKey } from './curriculum';
+import { observeShanghaiDate } from './learning-clock';
 
 type Favorite = { itemId: string; itemType: string; title: string; summary: string };
+type LessonState = { favorites: Favorite[]; progress: { itemId: string; completed: number }[] };
 type QuizResult = { score: number; feedback: string; reference: string };
 
 function displayDate(dateKey: string) {
@@ -23,12 +25,15 @@ export default function LessonPage({ lessonId }: { lessonId: string }) {
   const [answer, setAnswer] = useState('');
   const [result, setResult] = useState<QuizResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const isFuture = Boolean(plan && plan.date > shanghaiDateKey());
+  const [calendarDate, setCalendarDate] = useState(shanghaiDateKey);
+  const isFuture = Boolean(plan && plan.date > calendarDate);
   const planDate = plan?.date;
+
+  useEffect(() => observeShanghaiDate(setCalendarDate), []);
 
   useEffect(() => {
     if (!planDate) return;
-    fetch(`/api/state?date=${planDate}`).then((response) => response.json()).then((data) => {
+    fetch(`/api/state?date=${planDate}`).then((response) => response.json() as Promise<LessonState>).then((data) => {
       setFavorites(data.favorites ?? []);
       setDone((data.progress ?? []).some((item: { itemId: string; completed: number }) => item.itemId === lessonId && item.completed));
     }).catch(() => undefined);
@@ -43,14 +48,14 @@ export default function LessonPage({ lessonId }: { lessonId: string }) {
   }
 
   async function submitQuiz() {
-    if (answer.trim().length < 12 || isFuture) return;
+    if (!lesson || !plan || answer.trim().length < 12 || isFuture) return;
     setSubmitting(true);
     const response = await fetch('/api/state', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'answer', learningDate: plan.date, questionId: lesson.quiz.id, questionTitle: lesson.quiz.question, itemType: `${lesson.type}·学完自检`, answer }) });
-    setResult(await response.json()); setSubmitting(false);
+    setResult(await response.json() as QuizResult); setSubmitting(false);
   }
 
   async function toggleComplete() {
-    if (isFuture) return;
+    if (!plan || !task || isFuture) return;
     const completed = !done; setDone(completed);
     await fetch('/api/state', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'toggle-task', learningDate: plan.date, itemId: lessonId, taskType: task.track, completed }) });
   }

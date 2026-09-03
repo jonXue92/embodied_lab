@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import generatedIntel from './generated-intel.json';
 import NotesWidget, { type NoteItem } from './NotesWidget';
+import { observeShanghaiDate } from './learning-clock';
 import { answerQuestion, dailyEvidence, interviewItems, jobs, models, phases, type InterviewItem } from './content';
 import { addDays, COURSE_END_DATE, COURSE_START_DATE, getDailyLearningPlan, getUnitWeek, isCurriculumDate, resolveLearningDate, shanghaiDateKey, type DailyLearningPlan, type DailyQuestion } from './curriculum';
 
@@ -12,6 +13,9 @@ type SavedAnswer = { id: string; questionId: string; questionTitle: string; item
 type QaItem = { id: string; question: string; answer: string; createdAt: string };
 type SearchItem = { id: string; kind: string; title: string; detail: string; action: () => void };
 type ProgressSummary = { completedDays: number; currentStreak: number; fullDayCompleted: boolean; completedDates: string[] };
+
+type StateResponse = { progress: { itemId: string; completed: number }[]; progressSummary: ProgressSummary; favorites: Favorite[]; answers: SavedAnswer[]; qa: QaItem[]; notes: NoteItem[] };
+type AnswerResponse = { score: number; feedback: string; reference: string };
 
 const nav: { id: View; icon: string; label: string }[] = [
   { id: 'today', icon: '◫', label: '今日学习' }, { id: 'plan', icon: '◷', label: '学习计划' },
@@ -29,6 +33,7 @@ export default function Studio() {
   const [view, setView] = useState<View>('today');
   const [selectedDate, setSelectedDate] = useState(() => resolveLearningDate(shanghaiDateKey()));
   const [followToday, setFollowToday] = useState(true);
+  const [calendarDate, setCalendarDate] = useState(shanghaiDateKey);
   const [done, setDone] = useState<string[]>([]);
   const [progressSummary, setProgressSummary] = useState<ProgressSummary>({ completedDays: 0, currentStreak: 0, fullDayCompleted: false, completedDates: [] });
   const [favorites, setFavorites] = useState<Favorite[]>([]);
@@ -45,23 +50,32 @@ export default function Studio() {
   const [searchQuery, setSearchQuery] = useState('');
   const [evidenceOpen, setEvidenceOpen] = useState(false);
   const plan = getDailyLearningPlan(selectedDate)!;
-  const todayDate = resolveLearningDate(shanghaiDateKey());
-  const isFuture = selectedDate > shanghaiDateKey();
+  const todayDate = resolveLearningDate(calendarDate);
+  const isFuture = selectedDate > calendarDate;
+
+  useEffect(() => observeShanghaiDate(setCalendarDate), []);
 
   useEffect(() => {
-    fetch(`/api/state?date=${selectedDate}`).then((response) => response.json()).then((data) => {
+    let active = true;
+    fetch(`/api/state?date=${selectedDate}`).then((response) => response.json() as Promise<StateResponse>).then((data) => {
+      if (!active) return;
       setDone((data.progress ?? []).filter((item: { completed: number }) => item.completed).map((item: { itemId: string }) => item.itemId));
       setFavorites(data.favorites ?? []);
       setAnswers(data.answers ?? []);
       setQa(data.qa ?? []);
       setNotes(data.notes ?? []);
       setProgressSummary(data.progressSummary ?? { completedDays: 0, currentStreak: 0, fullDayCompleted: false, completedDates: [] });
-    }).catch(() => undefined).finally(() => setSyncing(false));
+    }).catch(() => undefined).finally(() => { if (active) setSyncing(false); });
+    return () => { active = false; };
   }, [selectedDate]);
 
   useEffect(() => {
-    function refreshNotes() { fetch(`/api/state?date=${selectedDate}`).then((response) => response.json()).then((data) => setNotes(data.notes ?? [])).catch(() => undefined); }
+    function refreshNotes() { fetch(`/api/state?date=${selectedDate}`).then((response) => response.json() as Promise<StateResponse>).then((data) => setNotes(data.notes ?? [])).catch(() => undefined); }
     window.addEventListener('notes:updated', refreshNotes);
+    return () => window.removeEventListener('notes:updated', refreshNotes);
+  }, [selectedDate]);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const requested = params.get('view');
     const requestedDate = params.get('date');
@@ -76,25 +90,22 @@ export default function Studio() {
         setFollowToday(requestedDate === resolveLearningDate(shanghaiDateKey()));
       }, 0);
     }
-    return () => window.removeEventListener('notes:updated', refreshNotes);
-  }, [selectedDate]);
+  }, []);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      if (followToday) {
-        const nextDate = resolveLearningDate(shanghaiDateKey());
-        setSelectedDate((currentDate) => {
-          if (currentDate === nextDate) return currentDate;
-          setSyncing(true);
-          setDraft('');
-          setResult(null);
-          setQuestionOpen(false);
-          return nextDate;
-        });
-      }
-    }, 60_000);
-    return () => window.clearInterval(timer);
-  }, [followToday]);
+    const nextDate = resolveLearningDate(calendarDate);
+    if (!followToday || selectedDate === nextDate) return;
+    setSyncing(true);
+    setDone([]);
+    setProgressSummary({ completedDays: 0, currentStreak: 0, fullDayCompleted: false, completedDates: [] });
+    setDraft('');
+    setResult(null);
+    setQuestionOpen(false);
+    setSelectedDate(nextDate);
+    const url = new URL(window.location.href);
+    url.searchParams.set('date', nextDate);
+    window.history.replaceState({}, '', url);
+  }, [calendarDate, followToday, selectedDate]);
 
   useEffect(() => {
     function shortcut(event: KeyboardEvent) {
@@ -126,7 +137,7 @@ export default function Studio() {
     const completed = !done.includes(itemId);
     setDone(completed ? [...done, itemId] : done.filter((id) => id !== itemId));
     await fetch('/api/state', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'toggle-task', learningDate: selectedDate, itemId, taskType, completed }) });
-    const refreshed = await fetch(`/api/state?date=${selectedDate}`).then((response) => response.json());
+    const refreshed = await fetch(`/api/state?date=${selectedDate}`).then((response) => response.json() as Promise<StateResponse>);
     setDone((refreshed.progress ?? []).filter((item: { completed: number }) => item.completed).map((item: { itemId: string }) => item.itemId));
     setProgressSummary(refreshed.progressSummary);
   }
@@ -140,7 +151,7 @@ export default function Studio() {
   async function submitAnswer() {
     if (draft.trim().length < 12 || isFuture) return;
     const response = await fetch('/api/state', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'answer', learningDate: selectedDate, questionId: plan.question.id, questionTitle: plan.question.title, itemType: '每日思考题', answer: draft }) });
-    const data = await response.json(); setResult(data);
+    const data = await response.json() as AnswerResponse; setResult(data);
     setAnswers([{ id: crypto.randomUUID(), questionId: plan.question.id, questionTitle: plan.question.title, itemType: '每日思考题', answer: draft, score: data.score, feedback: data.feedback, reference: data.reference, createdAt: new Date().toISOString() }, ...answers]);
   }
 
