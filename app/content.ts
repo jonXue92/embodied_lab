@@ -77,6 +77,7 @@ export const jobs: JobItem[] = [
   { id: 'job-uniview', company: '宇泛智能', role: '具身智能算法（VLN / VLA）', city: '杭州', fit: 84, date: '06 月发布', skills: ['3D 感知', '强化学习', '扩散模型', '真机部署'], reason: '你的视觉、LiDAR 和数据处理背景是差异化优势。', url: 'https://www.liepin.com/job/1978011737.shtml' },
   { id: 'job-post', company: '杭州具身团队', role: 'Post-training 算法实习生', city: '杭州 · 西湖', fit: 91, date: '08 月更新', skills: ['SFT Pipeline', '多任务数据配比', 'PPO / GRPO / DPO'], reason: '与 9—12 月 POC 中的后训练和真机经验闭环高度相关。', url: 'https://www.ncss.cn/student/jobs/NYAuURS6bzCbBUPYP7nhvh/detail.html' },
   { id: 'job-neoteai', company: '新智具身', role: '多模态 / 强化学习算法', city: '上海', fit: 86, date: '08 月在招', skills: ['视触觉', 'LLM / VLM / VLA', 'PPO / TD3', '遥操数据工场'], reason: '视触觉与真机 RL 都能利用你的传感器与数据经验。', url: 'https://www.neoteai.com/join.html' },
+  { id: 'job-xyzrobotics-2027', company: '星猿哲科技', role: '具身智能算法工程师（2027 校招）', city: '上海', fit: 89, date: '09-04 发布', skills: ['多模态感知', 'VLA / 强化学习', 'Sim2Real', '整机落地'], reason: '岗位要求感知与控制两端贯通，并覆盖数据采集、训练、部署和性能调优；你的传感器背景与 SO-101 作品可形成直接证据。', url: 'https://career.nankai.edu.cn/correcruit/content/id/117761.html' },
 ];
 
 export const lessons: Record<string, Lesson> = {

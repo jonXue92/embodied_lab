@@ -19,4 +19,9 @@ export const sources = {
   follower: { id: 'follower', label: 'LeRobot · SOFollower 驱动', url: 'https://github.com/huggingface/lerobot/blob/main/src/lerobot/robots/so_follower/so_follower.py', reading: '搜索 get_observation、send_action、calibrate；实际硬件操作前核对安装版本与安全说明。' },
   record: { id: 'record', label: 'LeRobot · 采集入口', url: 'https://github.com/huggingface/lerobot/blob/main/src/lerobot/scripts/lerobot_record.py', reading: '阅读 record_loop 与 main；当前 main 的采集和策略 rollout 已分离，不沿用过时命令。' },
   robotil: { id: 'robotil', label: 'LeRobot · 真机模仿学习流程', url: 'https://huggingface.co/docs/lerobot/en/il_robots', reading: '沿遥操作、采集、回放、训练、评测阅读；涉及上传数据的步骤需自己确认隐私。' },
+  tensors: { id: 'tensors', label: 'PyTorch · Tensors 教程', url: 'https://docs.pytorch.org/tutorials/beginner/basics/tensorqs_tutorial.html', reading: '阅读 Attributes of a Tensor 与 Operations on Tensors；shape、dtype、device 是可执行属性，不包含轴的业务含义。' },
+  broadcasting: { id: 'broadcasting', label: 'PyTorch · Broadcasting semantics', url: 'https://docs.pytorch.org/docs/2.14/notes/broadcasting.html', reading: '阅读末尾维度对齐规则和结果 shape 推导；能广播只说明数值运算合法，不说明机器人语义正确。' },
+  tensorTo: { id: 'tensorTo', label: 'PyTorch · Tensor.to', url: 'https://docs.pytorch.org/docs/2.14/generated/torch.Tensor.to.html', reading: '核对 dtype/device 转换与 copy/non_blocking 条件；不要把 .to 的返回值丢弃，也不要假定异步复制总能成立。' },
+  observationProcessor: { id: 'observationProcessor', label: 'LeRobot · observation_processor.py', url: 'https://github.com/huggingface/lerobot/blob/main/src/lerobot/processor/observation_processor.py', reading: '定位 VanillaObservationProcessorStep._process_single_image：核对 HWC uint8、batch 轴、BCHW float32 与 [0,1] 归一化。main 会变化，验证日期为 2026-09-04。' },
+  processorDebug: { id: 'processorDebug', label: 'LeRobot · Debug Your Processor Pipeline', url: 'https://github.com/huggingface/lerobot/blob/main/docs/source/debug_processor_pipeline.mdx', reading: '阅读 step_through、shape/dtype 日志与 Validating Feature Contracts；区分运行时张量检查和 transform_features 的结构声明。' },
 };

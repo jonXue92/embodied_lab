@@ -1,89 +1,34 @@
 {
-  "updatedAt": "2026-09-03T23:27:48+08:00",
+  "updatedAt": "2026-09-04T23:08:56+08:00",
   "status": "updated",
-  "summary": "新增 6 个官方技术更新簇；无可靠新岗位或面经，课程内容不调整。修正午夜换日、无效日期及完整打卡校验，保留全部学习数据。",
+  "summary": "新增 2 个 NVIDIA Cosmos Framework 官方技术簇与 1 个上海校招岗位；无可靠新面经，课程主题不调整。",
   "items": [
     {
       "type": "official_update",
-      "title": "LeRobot 支持自定义 rollout 策略",
-      "source": "Hugging Face LeRobot",
-      "publishedAt": "2026-09-03T21:43:17+08:00",
-      "url": "https://github.com/huggingface/lerobot/commit/3f2c29ef7e44b1ddccbcda3b6a63939e53639e9e",
-      "signals": [
-        "rollout strategy",
-        "DAgger",
-        "数据契约",
-        "streaming encoding"
-      ],
-      "decision": "通过插件声明数据集、遥操和编码需求；作为真机闭环工程实例，不触发课程调整。"
-    },
-    {
-      "type": "official_update",
-      "title": "LeRobot 逆运动学改为多步迭代",
-      "source": "Hugging Face LeRobot",
-      "publishedAt": "2026-09-03T21:06:29+08:00",
-      "url": "https://github.com/huggingface/lerobot/commit/060ba088d379b48f61ef816a5f3b44ba3f759a0c",
-      "signals": [
-        "inverse kinematics",
-        "Newton iteration",
-        "末端位姿"
-      ],
-      "decision": "默认执行 8 次 Newton 更新；不是误差阈值自适应收敛保证，现有部署课程可承接。"
-    },
-    {
-      "type": "official_update",
-      "title": "Cosmos 补齐生成侧 LoRA 微调指南",
-      "source": "NVIDIA Cosmos",
-      "publishedAt": "2026-09-03T17:05:05+08:00",
-      "url": "https://github.com/NVIDIA/cosmos/commit/5b50bba0fb97f4aa07b03d299bc1a22bafa10ade",
-      "signals": [
-        "LoRA",
-        "vision SFT",
-        "optimizer selection",
-        "checkpoint"
-      ],
-      "decision": "说明模型注入、优化器筛选、checkpoint 加载和 EMA/compile 配置；不把生成侧说明推广为 reasoner LoRA 支持。"
-    },
-    {
-      "type": "official_update",
-      "title": "Cosmos reasoner 推理减少生成侧显存占用",
+      "title": "Cosmos Framework 增加视频与声音同步续生成训练路径",
       "source": "NVIDIA Cosmos Framework",
-      "publishedAt": "2026-09-03T17:33:09+08:00",
-      "url": "https://github.com/NVIDIA/cosmos-framework/commit/4bc4392b615a2d6719313a368f81540117e5e405",
-      "signals": [
-        "reasoner-only",
-        "memory residency",
-        "generation pathway"
-      ],
-      "decision": "仅对非空且全部为 reasoner 的样本启用；作者在 Edge 上报告每卡少占约 2.757 GiB，未验证所有型号或训练路径。"
+      "publishedAt": "2026-09-04T14:55:43+08:00",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/8aa5f46c907128d91d5d295d1cdd734fc8b4c6f8",
+      "signals": ["vs2vs", "sound prefix", "时序对齐", "多模态生成"],
+      "decision": "新增 vs2vs 模式，将视频前缀映射到同步声音 latent 前缀，并补 CPU 测试；作为世界模型多模态时序案例归档，现有数据对齐与 World Model 单元可承接。"
     },
     {
       "type": "official_update",
-      "title": "Cosmos 09-03 发布修正条件样本损失与 KV 控制",
+      "title": "Cosmos Framework 内置生成侧 FP8 量化与导出工具",
       "source": "NVIDIA Cosmos Framework",
-      "publishedAt": "2026-09-03T23:15:05+08:00",
-      "url": "https://github.com/NVIDIA/cosmos-framework/commit/6ea69664ab873320d026fcaebda3f9674332028e",
-      "signals": [
-        "flow matching",
-        "condition mask",
-        "teacher forcing",
-        "KV cache"
-      ],
-      "decision": "全条件样本可从 loss 均值分母排除，并统一 replay visibility 配置及缓存索引检查；整次发布计 1 簇。"
+      "publishedAt": "2026-09-04T18:51:02+08:00",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/0fe093eafbac390ffb7906a6f4ed9f558fe42c4c",
+      "signals": ["ModelOpt", "FP8", "calibration", "checkpoint export"],
+      "decision": "将 Cosmos3 生成模型的量化、校准、checkpoint I/O 与 safetensors 索引工具移入框架；明确只覆盖生成侧，不外推为 reasoning tower 量化支持。"
     },
     {
-      "type": "official_update",
-      "title": "Hugging Face 发布小模型 GRPO 结构化输出教程",
-      "source": "Hugging Face / Liquid AI",
-      "publishedAt": "2026-09-03T19:32:14+08:00",
-      "url": "https://github.com/huggingface/blog/commit/074777edcae899141d17cceb8440885d02dd394a",
-      "signals": [
-        "GRPO",
-        "TRL",
-        "reward design",
-        "evaluation"
-      ],
-      "decision": "350M 模型、约 500 样本和 100 步的可复现实例；是通用后训练学习补充，不是机器人性能证据。"
+      "type": "job",
+      "title": "星猿哲科技 2027 校招具身智能算法工程师",
+      "source": "南开大学就业信息（含企业官方投递入口）",
+      "publishedAt": "2026-09-04",
+      "url": "https://career.nankai.edu.cn/correcruit/content/id/117761.html",
+      "signals": ["上海", "多模态感知", "VLA / 强化学习", "Sim2Real", "整机项目"],
+      "decision": "新增到岗位追踪。要求感知与控制贯通、数据采集/训练/部署优化及真机经验，与既定课程一致；单一岗位不触发总纲改题。"
     }
   ]
 }
