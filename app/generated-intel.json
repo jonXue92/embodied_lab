@@ -1,34 +1,25 @@
 {
-  "updatedAt": "2026-09-04T23:08:56+08:00",
+  "updatedAt": "2026-09-05T22:50:00+08:00",
   "status": "updated",
-  "summary": "新增 2 个 NVIDIA Cosmos Framework 官方技术簇与 1 个上海校招岗位；无可靠新面经，课程主题不调整。",
+  "summary": "新增 2 个 NVIDIA Cosmos 3 官方工程簇；无可靠新岗位或新面经，课程主题不调整。",
   "items": [
     {
       "type": "official_update",
-      "title": "Cosmos Framework 增加视频与声音同步续生成训练路径",
-      "source": "NVIDIA Cosmos Framework",
-      "publishedAt": "2026-09-04T14:55:43+08:00",
-      "url": "https://github.com/NVIDIA/cosmos-framework/commit/8aa5f46c907128d91d5d295d1cdd734fc8b4c6f8",
-      "signals": ["vs2vs", "sound prefix", "时序对齐", "多模态生成"],
-      "decision": "新增 vs2vs 模式，将视频前缀映射到同步声音 latent 前缀，并补 CPU 测试；作为世界模型多模态时序案例归档，现有数据对齐与 World Model 单元可承接。"
+      "title": "Cosmos 3 Certified NIM 补齐部署与 API 验证文档",
+      "source": "NVIDIA Cosmos",
+      "publishedAt": "2026-09-05T02:49:25+08:00",
+      "url": "https://github.com/NVIDIA/cosmos/commit/3ec8da3da13b816e29fdfcb83c5cfed97ad63f84",
+      "signals": ["Certified NIM", "Generator / Reasoner", "Action", "support matrix"],
+      "decision": "将同日主文档与环境入口补丁合并为一簇；用作模型能力到可部署契约的官方案例，不误报为新权重或性能提升。"
     },
     {
       "type": "official_update",
-      "title": "Cosmos Framework 内置生成侧 FP8 量化与导出工具",
-      "source": "NVIDIA Cosmos Framework",
-      "publishedAt": "2026-09-04T18:51:02+08:00",
-      "url": "https://github.com/NVIDIA/cosmos-framework/commit/0fe093eafbac390ffb7906a6f4ed9f558fe42c4c",
-      "signals": ["ModelOpt", "FP8", "calibration", "checkpoint export"],
-      "decision": "将 Cosmos3 生成模型的量化、校准、checkpoint I/O 与 safetensors 索引工具移入框架；明确只覆盖生成侧，不外推为 reasoning tower 量化支持。"
-    },
-    {
-      "type": "job",
-      "title": "星猿哲科技 2027 校招具身智能算法工程师",
-      "source": "南开大学就业信息（含企业官方投递入口）",
-      "publishedAt": "2026-09-04",
-      "url": "https://career.nankai.edu.cn/correcruit/content/id/117761.html",
-      "signals": ["上海", "多模态感知", "VLA / 强化学习", "Sim2Real", "整机项目"],
-      "decision": "新增到岗位追踪。要求感知与控制贯通、数据采集/训练/部署优化及真机经验，与既定课程一致；单一岗位不触发总纲改题。"
+      "title": "Cosmos 3 增加 SGLang Transfer 端到端测试 notebook",
+      "source": "NVIDIA Cosmos",
+      "publishedAt": "2026-09-05T00:35:17+08:00",
+      "url": "https://github.com/NVIDIA/cosmos/commit/6793c6455cd34a059b06c3e1d907382cb8c61465",
+      "signals": ["SGLang", "Transfer", "endpoint preflight", "artifact verification"],
+      "decision": "新增 edge/blur/depth/seg/world-scenario-map 五类 control 的请求、轮询、下载和预览测试路径；归档为 World Model 接口测试证据。"
     }
   ]
 }

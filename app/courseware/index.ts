@@ -6,6 +6,7 @@ import { day05 } from './2026-09-05';
 import { day06 } from './2026-09-06';
 import { day07 } from './2026-09-07';
 import { day08 } from './2026-09-08';
+import { day09 } from './2026-09-09';
 
 // No generated fallback: an unregistered date is a syllabus, not a lesson.
 export const authoredDays: Record<string, AuthoredDay> = {
@@ -16,4 +17,5 @@ export const authoredDays: Record<string, AuthoredDay> = {
   '2026-09-06': day06,
   '2026-09-07': day07,
   '2026-09-08': day08,
+  '2026-09-09': day09,
 };
