@@ -1,6 +1,14 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import 'katex/dist/katex.min.css';
 import './globals.css';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: '#173f35',
+  colorScheme: 'light',
+};
 
 export const metadata: Metadata = {
   title: '知行工坊 · 具身智能学习工作台',
@@ -15,6 +23,10 @@ export const metadata: Metadata = {
     title: '知行工坊 · 具身智能学习工作台',
     description: '从感知工程师到具身模型 / 数据算法工程师。',
     images: ['/og.png'],
+  },
+  icons: {
+    icon: [{ url: '/app-icon.svg', type: 'image/svg+xml' }],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
   },
 };
 

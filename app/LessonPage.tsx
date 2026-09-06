@@ -97,6 +97,7 @@ export default function LessonPage({ lessonId }: { lessonId: string }) {
         <section className="lesson-finish"><div><span className="eyebrow">完成课程</span><h2>{isFuture ? '课程尚未开放打卡' : done ? '这节课已完成' : '确认理解后再打卡'}</h2><p>{isFuture ? '到学习日后系统会自动开放。' : '三门课程全部完成后，当天会自动计为完整打卡日。'}</p></div><button className={done ? 'done' : ''} disabled={isFuture} onClick={toggleComplete}>{isFuture ? '尚未开放' : done ? '✓ 已完成，点击取消' : '完成打卡 →'}</button></section>
       </main>
     </div>
+    <div className="mobile-lesson-action" aria-label="课程打卡"><span><small>{displayDate(plan.date)}</small><b>{done ? '本课已完成' : '读完即可打卡'}</b></span><button className={done ? 'done' : ''} disabled={isFuture} onClick={toggleComplete}>{isFuture ? '尚未开放' : done ? '✓ 已打卡' : '完成打卡'}</button></div>
     <NotesWidget context={`${plan.date} · ${lesson.title}`} />
   </div>;
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import generatedIntel from './generated-intel.json';
+import InstallPrompt from './InstallPrompt';
 import NotesWidget, { type NoteItem } from './NotesWidget';
 import { observeShanghaiDate } from './learning-clock';
 import { answerQuestion, dailyEvidence, interviewItems, jobs, models, phases, type InterviewItem } from './content';
@@ -24,6 +25,7 @@ const nav: { id: View; icon: string; label: string }[] = [
   { id: 'interviews', icon: '▤', label: '面试情报' }, { id: 'jobs', icon: '◎', label: '岗位追踪' },
   { id: 'mistakes', icon: '⌑', label: '错题集' }, { id: 'favorites', icon: '♡', label: '我的收藏' },
 ];
+const mobilePrimaryViews: View[] = ['today', 'plan', 'qa', 'notes'];
 
 function chinaDate(dateKey = shanghaiDateKey()) {
   return new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', year: 'numeric', month: 'long', day: 'numeric', weekday: 'short' }).format(new Date(`${dateKey}T12:00:00+08:00`));
@@ -49,6 +51,7 @@ export default function Studio() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const plan = getDailyLearningPlan(selectedDate)!;
   const todayDate = resolveLearningDate(calendarDate);
   const isFuture = selectedDate > calendarDate;
@@ -118,7 +121,7 @@ export default function Studio() {
     return () => window.removeEventListener('keydown', shortcut);
   }, []);
 
-  function changeView(next: View) { setView(next); window.scrollTo(0, 0); }
+  function changeView(next: View) { setView(next); setMobileMoreOpen(false); window.scrollTo(0, 0); }
 
   function changeDate(nextDate: string) {
     if (!isCurriculumDate(nextDate)) return;
@@ -178,12 +181,15 @@ export default function Studio() {
   return <div className="app-shell">
     <aside className="sidebar">
       <button className="brand brand-button" onClick={() => changeView('today')} aria-label="知行工坊首页"><span className="brand-mark">知</span><span><strong>知行工坊</strong><small>Embodied Lab</small></span></button>
-      <nav className="nav-list" aria-label="主导航">{nav.map((item) => <button key={item.id} className={`nav-item ${view === item.id ? 'active' : ''}`} onClick={() => changeView(item.id)}><span>{item.icon}</span>{item.label}{item.id === 'mistakes' && lowAnswers.length > 0 ? <b>{lowAnswers.length}</b> : null}</button>)}</nav>
+      <nav className="nav-list" aria-label="主导航">{nav.map((item) => <button key={item.id} className={`nav-item ${mobilePrimaryViews.includes(item.id) ? '' : 'nav-secondary'} ${view === item.id ? 'active' : ''}`} onClick={() => changeView(item.id)}><span>{item.icon}</span>{item.label}{item.id === 'mistakes' && lowAnswers.length > 0 ? <b>{lowAnswers.length}</b> : null}</button>)}<button className={`nav-item nav-more ${mobilePrimaryViews.includes(view) ? '' : 'active'}`} aria-expanded={mobileMoreOpen} onClick={() => setMobileMoreOpen(!mobileMoreOpen)}><span>•••</span>更多</button></nav>
       <div className="side-goal"><span className="eyebrow">年度目标</span><strong>从感知工程师到<br />具身算法工程师</strong><div className="goal-meter"><span /></div><small>2026 · 9 月 1 日正式开始</small></div>
       <div className="profile"><span className="avatar">XZ</span><span><strong>学习者</strong><small>杭州 · 模型 / 数据</small></span><span className={`sync-dot ${syncing ? 'loading' : ''}`} title={syncing ? '同步中' : '已同步'} /></div>
     </aside>
 
+    {mobileMoreOpen ? <div className="mobile-more" role="dialog" aria-modal="true" aria-label="更多学习功能"><button className="mobile-more-backdrop" onClick={() => setMobileMoreOpen(false)} aria-label="关闭更多菜单" /><section><div><b>更多学习功能</b><button onClick={() => setMobileMoreOpen(false)} aria-label="关闭">×</button></div>{nav.filter((item) => !mobilePrimaryViews.includes(item.id)).map((item) => <button className={view === item.id ? 'active' : ''} key={item.id} onClick={() => changeView(item.id)}><span>{item.icon}</span><b>{item.label}</b>{item.id === 'mistakes' && lowAnswers.length > 0 ? <em>{lowAnswers.length}</em> : null}</button>)}</section></div> : null}
+
     <main className="main" id="top">
+      <InstallPrompt />
       {isFuture ? <div className="trial-banner"><b>未来课程预览</b><span>课程会在北京时间当天 00:00 自动开放；未来日期不能提前打卡或提交练习。</span></div> : null}
       <header className="topbar"><div><p className="date">{chinaDate(selectedDate)} · {selectedDate === todayDate ? '今日课程' : isFuture ? '课程预览' : '历史回看'}</p><h1>{view === 'today' ? `第 ${plan.dayNumber} 天 · ${plan.unitTitle}` : activeTitle} <span>↗</span></h1></div><div className="header-actions"><button className="search" aria-label="搜索" onClick={() => setSearchOpen(true)}>⌕ <span>搜索今日课程、模型、岗位或题目</span><kbd>⌘ K</kbd></button><button className="icon-button" aria-label="查看今日情报" onClick={() => setEvidenceOpen(true)}>◌<i /></button></div></header>
 
@@ -212,7 +218,9 @@ function TodayView({ plan, selectedDate, todayDate, isFuture, done, progressSumm
   const questionFavorite: Favorite = { itemId: `question-${dailyQuestion.id}`, itemType: '每日思考题', title: dailyQuestion.title, summary: dailyQuestion.summary };
   const questionSaved = favorites.some((item) => item.itemId === questionFavorite.itemId);
   const completedCount = plan.tasks.filter((task) => done.includes(task.id)).length;
-  return <><section className="day-switcher"><button disabled={selectedDate <= COURSE_START_DATE} onClick={() => onDate(addDays(selectedDate, -1))}>← 前一天</button><div><span>北京时间学习日</span><b>{selectedDate} · DAY {String(plan.dayNumber).padStart(2, '0')}</b><small>{plan.unitTitle}</small></div><button disabled={selectedDate >= COURSE_END_DATE} onClick={() => onDate(addDays(selectedDate, 1))}>后一天 →</button><button className="today-jump" disabled={selectedDate === todayDate} onClick={() => onDate(todayDate)}>回到今天</button></section><section className="hero"><div className="hero-copy"><p className="kicker">{selectedDate === todayDate ? '今日主题' : isFuture ? '未来课程' : '历史课程'} · DAY {String(plan.dayNumber).padStart(2, '0')}</p><h2>{plan.theme}<br /><em>{plan.unitTitle}</em></h2><p>{plan.unitOutcome}</p><div className="hero-meta"><span><b>{ready ? minutes : '—'}</b> 分钟</span><span><b>{ready ? 3 : 0}</b> 门正文已备课</span><span><b>{ready ? 4 : 0}</b> 道专项题</span></div></div><div className="hero-art" aria-hidden="true"><div className="orbit orbit-a"><span>基</span></div><div className="orbit orbit-b"><span>码</span></div><div className="orbit orbit-c"><span>路</span></div><div className="robot-core"><i className="eye left" /><i className="eye right" /><span>{plan.dayNumber}</span></div><div className="grid-plane" /></div></section>
+  const nextTask = plan.tasks.find((task) => !done.includes(task.id)) ?? plan.tasks[0];
+  const continueLabel = progressSummary.fullDayCompleted ? '回顾本日课程' : selectedDate === todayDate ? '继续今日学习' : isFuture ? '预览本日课程' : '继续本日课程';
+  return <><section className="day-switcher"><button disabled={selectedDate <= COURSE_START_DATE} onClick={() => onDate(addDays(selectedDate, -1))}>← 前一天</button><div><span>北京时间学习日</span><b>{selectedDate} · DAY {String(plan.dayNumber).padStart(2, '0')}</b><small>{plan.unitTitle}</small></div><button disabled={selectedDate >= COURSE_END_DATE} onClick={() => onDate(addDays(selectedDate, 1))}>后一天 →</button><button className="today-jump" disabled={selectedDate === todayDate} onClick={() => onDate(todayDate)}>回到今天</button></section><section className="hero"><div className="hero-copy"><p className="kicker">{selectedDate === todayDate ? '今日主题' : isFuture ? '未来课程' : '历史课程'} · DAY {String(plan.dayNumber).padStart(2, '0')}</p><h2>{plan.theme}<br /><em>{plan.unitTitle}</em></h2><p>{plan.unitOutcome}</p><div className="hero-meta"><span><b>{ready ? minutes : '—'}</b> 分钟</span><span><b>{ready ? 3 : 0}</b> 门正文已备课</span><span><b>{ready ? 4 : 0}</b> 道专项题</span></div>{nextTask ? <a className="mobile-continue" href={`/learn/${nextTask.id}`}><span><small>{completedCount} / 3 已完成</small><b>{continueLabel}</b></span><strong>开始 →</strong></a> : null}</div><div className="hero-art" aria-hidden="true"><div className="orbit orbit-a"><span>基</span></div><div className="orbit orbit-b"><span>码</span></div><div className="orbit orbit-c"><span>路</span></div><div className="robot-core"><i className="eye left" /><i className="eye right" /><span>{plan.dayNumber}</span></div><div className="grid-plane" /></div></section>
     <div className={'course-status' + (ready ? '' : ' pending')}>{ready ? <><b>{plan.revision ?? '原始专题课'}</b><br />当日产出：{plan.deliverable}<br />正文含独立讲解、练习与阅读定位；延伸资料不要求当天读完。</> : <><b>当前为教学计划，正文待备课审核</b><br />未编写的课程不再由模板填充。只有完成独立讲解、公式/案例、代码检查和专项题后才开放学习打卡。</>}</div>
     <div className="content-grid"><section className="today-panel"><div className="section-heading"><div><span className="eyebrow">{isFuture ? '课程预览' : '当日必修'}</span><h3>{progressSummary.fullDayCompleted ? '当日完整打卡已自动记录' : '完成三门课程，自动记为完整打卡日'}</h3></div><span className="completion">{completedCount} / 3 完成</span></div><div className="task-list">{plan.tasks.map((task, index) => { const checked = done.includes(task.id); const favorite: Favorite = { itemId: `lesson-${task.id}`, itemType: task.type, title: task.title, summary: `${selectedDate} · ${ready ? '已备课' : '教学计划'} · ${task.time}` }; const saved = favorites.some((item) => item.itemId === favorite.itemId); return <article className={`task-card ${checked ? 'done' : ''}`} key={task.id}><span className={`task-index ${task.color}`}>0{index + 1}</span><a className="task-copy" href={`/learn/${task.id}`}><p><span>{task.type}</span><small>{task.time} · {ready ? '讲解与练习' : '教学计划'}</small></p><h4>{task.title}</h4></a><div className="task-controls"><button className={`task-favorite ${saved ? 'saved' : ''}`} aria-label={saved ? '取消收藏课程' : '收藏课程'} onClick={() => onFavorite(favorite)}>{saved ? '♥' : '♡'}</button><button className="check-button" disabled={isFuture || !ready} aria-label={checked ? '标记为未完成' : '标记完成'} onClick={() => onToggle(task.id, task.track)}>{checked ? '✓' : isFuture ? '·' : '→'}</button></div></article>; })}</div></section>
       <aside className="right-rail"><section className="streak-card"><div className="section-heading compact"><div><span className="eyebrow">完整打卡统计</span><h3>累计完成 / 当前连续</h3></div><b>{progressSummary.completedDays} <small>天</small></b></div><div className="streak-pair"><span>连续 <b>{progressSummary.currentStreak}</b> 天</span><span>计划 <b>{plan.totalDays}</b> 天</span></div><p>三门课程全部完成后自动计入；历史日期可以补签，未来日期不会提前计入。</p></section><section className="question-card"><div className="question-card-head"><span className="eyebrow">DAY {String(plan.dayNumber).padStart(2, '0')} 思考题 · 当日关联</span><button className={questionSaved ? 'saved' : ''} onClick={() => onFavorite(questionFavorite)} aria-label="收藏每日思考题">{questionSaved ? '♥' : '♡'}</button></div><h3>{dailyQuestion.title}</h3><div className="question-meta"><span>{plan.unitTitle}</span><span>中等</span></div><button className="question-start" disabled={isFuture || !ready} onClick={onQuestion}>{!ready ? '待备课' : isFuture ? '尚未开放' : '开始思考'} <span>→</span></button></section></aside></div>
