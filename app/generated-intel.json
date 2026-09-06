@@ -1,25 +1,16 @@
 {
-  "updatedAt": "2026-09-05T22:50:00+08:00",
+  "updatedAt": "2026-09-06T22:50:00+08:00",
   "status": "updated",
-  "summary": "新增 2 个 NVIDIA Cosmos 3 官方工程簇；无可靠新岗位或新面经，课程主题不调整。",
+  "summary": "新增 1 个 NVIDIA Cosmos Framework 官方发布簇；无可靠新岗位或新面经，课程主题不调整。",
   "items": [
     {
       "type": "official_update",
-      "title": "Cosmos 3 Certified NIM 补齐部署与 API 验证文档",
-      "source": "NVIDIA Cosmos",
-      "publishedAt": "2026-09-05T02:49:25+08:00",
-      "url": "https://github.com/NVIDIA/cosmos/commit/3ec8da3da13b816e29fdfcb83c5cfed97ad63f84",
-      "signals": ["Certified NIM", "Generator / Reasoner", "Action", "support matrix"],
-      "decision": "将同日主文档与环境入口补丁合并为一簇；用作模型能力到可部署契约的官方案例，不误报为新权重或性能提升。"
-    },
-    {
-      "type": "official_update",
-      "title": "Cosmos 3 增加 SGLang Transfer 端到端测试 notebook",
-      "source": "NVIDIA Cosmos",
-      "publishedAt": "2026-09-05T00:35:17+08:00",
-      "url": "https://github.com/NVIDIA/cosmos/commit/6793c6455cd34a059b06c3e1d907382cb8c61465",
-      "signals": ["SGLang", "Transfer", "endpoint preflight", "artifact verification"],
-      "decision": "新增 edge/blur/depth/seg/world-scenario-map 五类 control 的请求、轮询、下载和预览测试路径；归档为 World Model 接口测试证据。"
+      "title": "Cosmos Framework 发布 action history 锚定与 multiview/MoE 工具更新",
+      "source": "NVIDIA Cosmos Framework",
+      "publishedAt": "2026-09-06T10:02:36+08:00",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/c23cf8ce41d5060cd4f838a664bf92b443b5b284",
+      "signals": ["action history", "anchor_index", "multiview", "MoE routing"],
+      "decision": "按唯一公开自动 release commit 合并计为一个更新簇；归档其坐标/时间语义和多视角输入契约，不误报为新模型或新权重。"
     }
   ]
 }
