@@ -1,16 +1,43 @@
 {
-  "updatedAt": "2026-09-06T22:50:00+08:00",
+  "updatedAt": "2026-09-07T22:50:00+08:00",
   "status": "updated",
-  "summary": "新增 1 个 NVIDIA Cosmos Framework 官方发布簇；无可靠新岗位或新面经，课程主题不调整。",
+  "summary": "新增 4 个官方技术更新簇；无可靠新岗位或新面经，课程主题不调整。",
   "items": [
     {
       "type": "official_update",
-      "title": "Cosmos Framework 发布 action history 锚定与 multiview/MoE 工具更新",
+      "title": "LeRobot 修正 PI tokenizer 与 PI0.5 PEFT 目标配置",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-07T20:41:25+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/675c07664279659525b1d1e52b6e33538c957ee3",
+      "signals": ["PI0", "PI0.5", "tokenizer config", "PEFT target"],
+      "decision": "把 tokenizer 身份与 LoRA 命中模块列为可序列化、可测试的训练契约；与 9758537d 合并为 π 系列配置正确性更新簇。"
+    },
+    {
+      "type": "official_update",
+      "title": "LeRobot 修复采集 reset、统计下载与对象存储根路径",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-07T20:52:13+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/2774d9bddcbbda50e697e162e89e7eaada8d7105",
+      "signals": ["record reset", "compressed images", "skip video download", "object-store URI"],
+      "decision": "与 c23698e2、77678397 合并为数据管线边界修复簇；强调选项需跨 reset、下载与 URI 解析保持语义。"
+    },
+    {
+      "type": "official_update",
+      "title": "LeRobot 暴露 W&B resume 与 console 设置",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-07T20:33:44+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/ed00614903324ab19c52f8719f69633902ab2d1f",
+      "signals": ["experiment tracking", "resume", "console", "checkpoint"],
+      "decision": "归档为实验恢复可审计性更新；课程主题不改，留待既定 checkpoint/复现日连接模型状态与日志 run 状态。"
+    },
+    {
+      "type": "official_update",
+      "title": "Cosmos Framework 发布多视角文本与动作域对齐",
       "source": "NVIDIA Cosmos Framework",
-      "publishedAt": "2026-09-06T10:02:36+08:00",
-      "url": "https://github.com/NVIDIA/cosmos-framework/commit/c23cf8ce41d5060cd4f838a664bf92b443b5b284",
-      "signals": ["action history", "anchor_index", "multiview", "MoE routing"],
-      "decision": "按唯一公开自动 release commit 合并计为一个更新簇；归档其坐标/时间语义和多视角输入契约，不误报为新模型或新权重。"
+      "publishedAt": "2026-09-07T11:13:23+08:00",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/fcd1d7eb07ad76dd7f15c61185a2377f15918ac7",
+      "signals": ["separate-view tokenization", "frame interpolation", "action_domain_id", "deterministic resize"],
+      "decision": "按唯一公开自动 release 计一个更新簇；记录 grouped packing 尚显式未支持的边界，不把部分入口误报为端到端完成。"
     }
   ]
 }

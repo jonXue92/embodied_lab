@@ -12,7 +12,9 @@ type NavigatorWithStandalone = Navigator & { standalone?: boolean };
 
 export default function InstallPrompt() {
   const [visible, setVisible] = useState(false);
-  const [isIos, setIsIos] = useState(false);
+  const [isIos] = useState(() => (
+    typeof window !== 'undefined' && /iphone|ipad|ipod/i.test(window.navigator.userAgent)
+  ));
   const [installEvent, setInstallEvent] = useState<InstallPromptEvent | null>(null);
 
   useEffect(() => {
@@ -20,7 +22,6 @@ export default function InstallPrompt() {
       || Boolean((window.navigator as NavigatorWithStandalone).standalone);
     if (standalone || window.localStorage.getItem('install-prompt-dismissed') === '1') return;
 
-    setIsIos(/iphone|ipad|ipod/i.test(window.navigator.userAgent));
     const timer = window.setTimeout(() => setVisible(true), 1200);
     const onBeforeInstall = (event: Event) => {
       event.preventDefault();
