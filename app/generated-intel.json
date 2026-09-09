@@ -1,16 +1,6 @@
 {
-  "updatedAt": "2026-09-08T22:49:33+08:00",
-  "status": "updated",
-  "summary": "新增 1 个 Cosmos Framework 官方修复簇；无可靠新岗位或新面经，课程主题不调整。",
-  "items": [
-    {
-      "type": "official_update",
-      "title": "Cosmos Framework 按 timestep 值而非张量形状启用打包快路径",
-      "source": "NVIDIA Cosmos Framework",
-      "publishedAt": "2026-09-08T16:56:42+08:00",
-      "url": "https://github.com/NVIDIA/cosmos-framework/commit/95f296fdc0f37044a7bb1418001f4fa0d7786ba1",
-      "signals": ["sequence packing", "timestep embedding", "batched CFG", "independent modality schedule"],
-      "decision": "记录为值语义与 shape 语义修复：统一 timestep 可跨 batch 复用单行 embedding，动作/声音独立 schedule 则必须撤销共享标志；不把不足 1% 的条件路径优化外推为整模型加速。"
-    }
-  ]
+  "updatedAt": "2026-09-09T23:31:51+08:00",
+  "status": "no_change",
+  "summary": "固定窗口内无可靠新技术更新、杭州/上海岗位或面经；课程主题不调整。",
+  "items": []
 }
