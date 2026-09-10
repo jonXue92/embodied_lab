@@ -33,6 +33,13 @@
 - 首先检查工作树和最新已发布源码；若有其他线程正在编辑重叠文件，不覆盖、不用旧副本发布将其回滚，报告冲突并保留现有线上版。
 - 本地任务需要电脑与应用运行、网络和权限可用。执行失败必须报告，不能用模板或空段落掩盖缺课。
 
+## 双团队研究主线
+
+- 李飞飞团队按两条连续但不可混同的来源讲解：Stanford Vision and Learning Lab 的 BEHAVIOR-1K/OmniGibson 负责“人类需要什么任务、如何构造交互环境和可审计评测”；World Labs 的 Marble、R2S2R、Atlas 负责“如何生成、重建和模拟空间世界”。不能把 World Labs 的产品主张写成 Stanford 学术基准结论，也不能因创始人相同省略具体项目团队。
+- Yann LeCun 团队按历史与现任边界讲解：Meta/FAIR 的 I-JEPA、V-JEPA 2/2.1、V-JEPA 2-AC 和 JEPA-WM 是已有论文、代码与实验；AMI Labs 是 2026 年起以表征空间预测、动作条件世界模型、可靠性和安全为目标的当前组织。不能把 Meta 发布的新工作自动归为 LeCun 当前团队，也不能把 AMI 的研究愿景写成已发布模型结果。
+- 从 2026-09-15 起，相关讲解分布到数据工程、模仿学习、视觉表征、世界模型、仿真、强化学习、评测和毕业项目。逐课备课时必须回答“输入与数据是什么、预测对象是什么、动作怎样进入、评测如何闭环、对 SO-101/RAW 经验有什么可验证价值”，不写人物履历式专题替代机制教学。
+- 固定一组一手追踪入口：BEHAVIOR Challenge/Updates 与 StanfordVL/BEHAVIOR-1K；World Labs Research、Atlas 和 R2S2R；AMI Labs 官网；Meta V-JEPA 页面、facebookresearch/vjepa2 与 jepa-wms。使用论文或固定提交解释结论，使用官方更新页识别日期；媒体报道、个人转述和网页抓取时间不作为技术发布。
+
 ## 验收
 
 - npm run check:curriculum：检查当日/次日覆盖、全部已备课的正文结构、来源定位、公式、代码和题目唯一性、段落重复、同轨道正文相似度。可加 -- --through=YYYY-MM-DD 检查备课储备。

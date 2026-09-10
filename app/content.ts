@@ -35,10 +35,10 @@ export const tasks: Task[] = [
 ];
 
 export const phases = [
-  { month: '09 月', tag: '基础 + 闭环', title: '建立模型、数据、控制与 RL 共同语言', detail: 'PyTorch 训练循环、Transformer/VLM；BC、ACT、Diffusion Policy；MDP、reward、value、Q function、offline/online RL；LeRobot 时序对齐与安全边界。', output: '输出：ACT 张量图 + RL 状态机 + SO-101 数据质检表' },
-  { month: '10 月', tag: 'VLA + World', title: '用统一框架读懂基座策略', detail: 'SmolVLA、π0.5、Spirit v1.5、LingBot-VLA、GR00T；LingBot-World / VA、Cosmos 3；输入表示、Action Head、未来预测、训练与部署。', output: '输出：VLA / World / Action 模型横评 + 小数据微调' },
-  { month: '11 月', tag: '真机 RL', title: '从「会做」到「越做越好」', detail: 'HIL-SERL 的人工接管与奖励分类器；RECAP 的 value / advantage conditioning；Evo-RL 的迭代 rollout—value—policy 闭环；安全、样本效率与分布漂移。', output: '输出：SO-101 HIL-SERL 最小方案 + 一轮失败数据回收' },
-  { month: '12 月', tag: '作品 + 求职', title: '打通「演示—试跑—介入—改进」证据链', detail: '自主 rollout、成功/失败标注、人工介入、价值训练、闭环评测；README、视频、消融、安全说明与模拟面试。', output: '输出：可复现仓库 + 对比实验 + 项目复盘' },
+  { month: '09 月', tag: '基础 + 数据', title: '建立模型、数据、控制与 RL 共同语言', detail: 'PyTorch 训练循环、Transformer/VLM、BC/ACT；从 LeRobot 数据契约扩展到 Stanford BEHAVIOR 的 episode、状态修订与长时任务定义。', output: '输出：ACT 张量图 + RL 状态机 + SO-101/BEHAVIOR 数据质检表' },
+  { month: '10 月', tag: 'VLA + 双路线 World', title: '比较直接动作、空间生成与表征预测', detail: '横评 SmolVLA、π0.5、GR00T 等策略；系统学习 World Labs Atlas/R2S2R 与 Meta V-JEPA 2/2.1、JEPA-WM 的数据、预测对象和规划接口。', output: '输出：VLA / World Labs / JEPA 可审计横评 + 小数据实验' },
+  { month: '11 月', tag: '仿真 + 规划 + RL', title: '从可交互世界走向安全行动', detail: 'OmniGibson/BEHAVIOR 仿真、Real-to-Sim-to-Real、JEPA 动作条件规划，与 PPO/SAC、offline RL 的 model-free 路线对照。', output: '输出：BEHAVIOR 评测草图 + SO-101 快慢规划与 RL 方案' },
+  { month: '12 月', tag: '闭环 + 作品', title: '打通「演示—世界—规划—介入—改进」证据链', detail: 'HIL-SERL、RECAP/Evo-RL、BEHAVIOR Q-score、V-JEPA 物理推理与真机闭环；用同一证据标准比较李飞飞和 LeCun 两条研究路线。', output: '输出：可复现仓库 + 双路线对比实验 + 项目答辩' },
 ];
 
 export const weekDays = [
@@ -54,6 +54,8 @@ export const models: ModelItem[] = [
   { id: 'spirit15', name: 'Spirit v1.5', team: '千寻智能', family: 'VLA', scale: 'Qwen3-VL + DiT', action: 'DiT Action Head', data: '非完美真机数据', highlight: '将「真实数据不完美」作为泛化资产，已开放微调代码', code: 'Qwen3-VL backbone、DiT head 与 policy API 构成清晰的精读路径。', url: 'https://github.com/Spirit-AI-Team/spirit-v1.5' },
   { id: 'lingbot-vla', name: 'LingBot-VLA', team: '蚂蚁灵波', family: 'VLA', scale: '4B / 6B', action: '连续动作专家', data: '20,000h / 9 种双臂', highlight: '工程实用主义：训练吞吐、深度蒸馏与跨本体', code: '对比 depth-free 与 depth-distilled checkpoint，直接验证深度模态的价值。', url: 'https://github.com/Robbyant/lingbot-vla' },
   { id: 'lingbot-world', name: 'LingBot-World Infinity', team: '蚂蚁灵波', family: 'World Model', scale: '1.3B / 14B', action: '可控世界生成', data: '视频 + 控制信号', highlight: '无界交互、720p60 与 Agentic Harness 展示长时域世界建模', code: '因果预训练 + 实时蒸馏，让慢规划能在内部预演。', url: 'https://github.com/Robbyant/lingbot-world-v2' },
+  { id: 'atlas', name: 'Atlas', team: 'World Labs · 李飞飞团队', family: 'World Model', scale: 'Omni world model', action: '生成 / 重建 / Real-to-Sim', data: '文本 + 图像 + 视频 + 3D', highlight: '共享空间上下文统一世界生成、空间重建与机器人传感器仿真', code: '多模态自回归扩散 Transformer 生成一致的新视角、显式 3D 与时空模拟；课程重点核验其与真实动力学的边界。', url: 'https://www.worldlabs.ai/blog/atlas' },
+  { id: 'vjepa21', name: 'V-JEPA 2.1', team: 'Meta FAIR · LeCun JEPA 谱系', family: 'World + Action', scale: '1B / 2B', action: 'Latent prediction + planning', data: '图像 + 视频 + 少量机器人视频', highlight: '以密集、时空一致的表征连接视觉预训练、动作预判和零样本机器人规划', code: 'context/target encoder 与 predictor 在表征空间学习；动作条件模型滚动预测 latent，再以目标代价选择动作。', url: 'https://arxiv.org/abs/2603.14482' },
   { id: 'lingbot-va', name: 'LingBot-VA', team: '蚂蚁灵波', family: 'World + Action', scale: '5.3B', action: '未来帧 + 逆动力学', data: '视频 + 机器人动作', highlight: '先预测「应该发生什么」，再反推「要做什么」', code: '自回归扩散世界模型联合未来帧预测与 policy execution。', url: 'https://github.com/Robbyant/lingbot-va' },
   { id: 'cosmos3', name: 'Cosmos 3', team: 'NVIDIA', family: 'World + Action', scale: 'Super / Nano', action: '推理 + 生成 + Action', data: '文本/图像/视频/音频/动作', highlight: '以 Mixture-of-Transformers 统一理解、世界生成与动作建模', code: 'Reasoner 负责物理理解，Generator 生成未来，Nano Policy 面向快速动作。', url: 'https://docs.nvidia.com/cosmos/latest/cosmos3/index.html' },
   { id: 'hil-serl', name: 'HIL-SERL', team: 'UC Berkeley', family: 'Real-world RL', scale: '系统方案', action: 'SAC + 人工接管', data: '演示 + 自主 rollout + 介入', highlight: '用少量演示、奖励分类器和人工接管实现样本高效真机 RL', code: 'Actor 高频执行，learner 离线更新；接管数据同时提供安全保护和恢复经验。', url: 'https://hil-serl.github.io/' },

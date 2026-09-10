@@ -60,6 +60,18 @@ function load(file) {
   }
   assert.equal(c.shanghaiDateKey(new Date('2026-09-03T15:59:59.999Z')), '2026-09-03');
   assert.equal(c.shanghaiDateKey(new Date('2026-09-03T16:00:00.000Z')), '2026-09-04');
+  const lineageCoverage = {
+    data: ['2026-09-16', 'BEHAVIOR'],
+    vision: ['2026-10-03', 'Atlas'],
+    worldModel: ['2026-10-29', 'V-JEPA'],
+    simulation: ['2026-11-04', 'OmniGibson'],
+    evaluation: ['2026-12-15', 'BDDL'],
+    capstone: ['2026-12-25', 'JEPA'],
+  };
+  for (const [lane, [date, keyword]] of Object.entries(lineageCoverage)) {
+    const text = c.getDailyLearningPlan(date).tasks.map((task) => task.title).join(' ');
+    assert.ok(text.includes(keyword), lane + ': missing ' + keyword + ' on ' + date);
+  }
   const observed = []; const stop = load('app/learning-clock.ts').observeShanghaiDate((date) => observed.push(date));
   assert.equal(observed.at(-1), '2026-09-03'); assert.equal([...timers.values()][0].delay, 500);
   clock += 500; [...timers.values()][0].fn(); assert.equal(observed.at(-1), '2026-09-04');
@@ -101,6 +113,6 @@ function load(file) {
   assert.equal((await answer('quiz-2026-09-03-code','2026-09-02')).status, 400);
   assert.equal((await answer('quiz-2026-09-03-fake','2026-09-03')).status, 400);
   assert.equal(snapshot(), before, 'Learning records outside the synthetic progress fixtures must stay unchanged');
-  console.log(JSON.stringify({ plannedDays: 122, plannedLessonIds: ids.length, authoredLessonCount: ids.filter((id) => c.getLessonById(id)).length, focusDates: ['2026-09-03','2026-09-04'].map((date) => c.getDailyLearningPlan(date).tasks.map((t) => t.title)), midnightAndResume: 'passed', strictCheckIns: 'passed', migrations: journal.entries.length, preservedTables: protectedTables }, null, 2));
+  console.log(JSON.stringify({ plannedDays: 122, plannedLessonIds: ids.length, authoredLessonCount: ids.filter((id) => c.getLessonById(id)).length, focusDates: ['2026-09-03','2026-09-04'].map((date) => c.getDailyLearningPlan(date).tasks.map((t) => t.title)), researchLineages: lineageCoverage, midnightAndResume: 'passed', strictCheckIns: 'passed', migrations: journal.entries.length, preservedTables: protectedTables }, null, 2));
   db.close();
 })().catch((error) => { console.error(error); process.exitCode = 1; });
