@@ -44,3 +44,10 @@
 - LeCun 线：优先检查 AMI Labs 官方发布与开放源码；为保持技术谱系连续性，同时检查 Meta AI V-JEPA 官方页面、facebookresearch/vjepa2 与 facebookresearch/jepa-wms，但新 Meta 工作只有在作者/项目明确关联时才标为 LeCun 谱系。
 - 只把一手页面的窗口内首发、release、论文版本或有实质技术内容的提交计为新增；同一功能的多提交合并成一个更新簇，媒体报道、个人评论和抓取时间不计。
 - 新进展先进入每日情报与相应课程的延伸阅读；是否改动已定日期仍遵守总纲调整门槛，不能因单次热点重排课程。
+
+## 实施与发布状态
+
+- 修改前的基线提交 1de781fd2bb4bd479dcc945c34153e689a5b9995 已先推送到 GitHub 仓库 jonXue92/embodied_lab，满足“先上传当前版本、再改课程”的顺序。
+- 双团队课程主线提交 5e2c21371459f0ff381cff2e3c76c0ebe0502729 已通过课程、日历、数据迁移、TypeScript、Lint 和生产构建检查，并推送到同一 GitHub main。
+- 现有每日自动化 automation 已原地更新，仍为 ACTIVE、每天 22:45（Asia/Shanghai）运行；没有创建重复任务。
+- 现有 owner-only 私有 Sites 项目已发布 v16，部署 appgdep_6aa2edf90628819199147fe57ad781b7 成功。访问仍为 custom、仅 owner、0 外部访客、0 群组，环境修订为 0。
