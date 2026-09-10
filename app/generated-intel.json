@@ -1,6 +1,34 @@
 {
-  "updatedAt": "2026-09-09T23:31:51+08:00",
-  "status": "no_change",
-  "summary": "固定窗口内无可靠新技术更新、杭州/上海岗位或面经；课程主题不调整。",
-  "items": []
+  "updatedAt": "2026-09-10T23:41:18+08:00",
+  "status": "updated",
+  "summary": "新增 3 个官方技术更新簇；无可靠新岗位或新面经，课程主题不调整。",
+  "items": [
+    {
+      "type": "official_update",
+      "title": "LeRobot 将训练配方固化为语言处理契约",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-10T00:04:40+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/83d184ef1b8d024d45787acd3a0f51cade706697",
+      "signals": ["training recipe", "message processor", "resume", "text-capable policy"],
+      "decision": "归档训练与运行时文本处理分离、解析后配方随配置保存、恢复/推理复用已保存 pipeline；属于数据与恢复契约更新，不据此改动当前课程日期和任务 ID。"
+    },
+    {
+      "type": "official_update",
+      "title": "LeRobot 增加社区维护的 Jetson 部署路径",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-10T00:07:45+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/71a11efe77f55e61f3ab2ce45b40da8cf626afa9",
+      "signals": ["JetPack 6.2", "CUDA 12.6", "Jetson", "source build"],
+      "decision": "记录为边缘部署工具更新；说明其为社区维护、尽力支持且不在 nightly CI，避免把安装说明误写成官方性能承诺。"
+    },
+    {
+      "type": "official_update",
+      "title": "LingBot-World-v2 补齐三种模型变体",
+      "source": "Robbyant LingBot-World-v2",
+      "publishedAt": "2026-09-10T09:59:32+08:00",
+      "url": "https://github.com/Robbyant/lingbot-world-v2/commit/dd3441ecfce914e76eb03d2d2cc618ec397c6f29",
+      "signals": ["14B causal-pretrained", "14B bidirectional", "1.3B causal-fast", "world model"],
+      "decision": "按同一 README 发布提交合并计一个模型更新簇；保留规模与因果/双向训练差异，不从仓库可用性外推真实机器人效果。"
+    }
+  ]
 }
