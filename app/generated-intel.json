@@ -1,25 +1,6 @@
 {
-  "updatedAt": "2026-09-12T23:36:23+08:00",
-  "status": "updated",
-  "summary": "新增 2 个官方技术更新簇；双研究线、可靠新岗位与新面经均无窗口内新增，课程主题不调整。",
-  "items": [
-    {
-      "type": "official_update",
-      "title": "Cosmos Framework 发布训练耐久性与批量自回归能力",
-      "source": "NVIDIA Cosmos Framework",
-      "publishedAt": "2026-09-11T16:20:13+08:00",
-      "url": "https://github.com/NVIDIA/cosmos-framework/commit/2b6c9a7061ae78dc83e29a4910ec5f8c9fe4b6ce",
-      "signals": ["async checkpoint", "batched autoregressive", "per-sample cache", "dynamic-shape compile"],
-      "decision": "按同一 Release 2026-09-11 提交合并为一个更新簇：异步 checkpoint 增加完成轮询与分布式失败兜底；批量自回归生成引入逐样本缓存长度、位置、FPS 和随机种子；sequence packing 可标记动态 token 轴减少重编译。属于训练基础设施与推理能力更新，不据此改动既定课程日期。"
-    },
-    {
-      "type": "official_update",
-      "title": "Cosmos Reasoner 增加 SGLang 服务与具身推理 cookbook",
-      "source": "NVIDIA Cosmos",
-      "publishedAt": "2026-09-12T09:30:23+08:00",
-      "url": "https://github.com/NVIDIA/cosmos/commit/5a68d9d4d34c9ca2bdcb0a1d9bbbb3a2d1b8d497",
-      "signals": ["SGLang", "vLLM", "video understanding", "action CoT", "physical plausibility"],
-      "decision": "新增 notebook 说明容器内以 SGLang/vLLM 服务 Cosmos Reasoner，并示范视频/图像理解、grounding、动作轨迹链式推理与物理合理性判断。归档为可复现服务入口，不把示例输出外推为真实机器人闭环指标。"
-    }
-  ]
+  "updatedAt": "2026-09-13T23:47:49+08:00",
+  "status": "no_change",
+  "summary": "连续覆盖窗口内无可靠官方技术更新；双研究线、可靠新岗位与新面经均无新增，课程主题不调整。",
+  "items": []
 }
