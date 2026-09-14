@@ -1,6 +1,43 @@
 {
-  "updatedAt": "2026-09-13T23:47:49+08:00",
-  "status": "no_change",
-  "summary": "连续覆盖窗口内无可靠官方技术更新；双研究线、可靠新岗位与新面经均无新增，课程主题不调整。",
-  "items": []
+  "updatedAt": "2026-09-14T23:07:39+08:00",
+  "status": "updated",
+  "summary": "新增 4 个官方技术更新簇；双研究线、可靠新岗位与新面经均无新增，课程主题不调整。",
+  "items": [
+    {
+      "type": "official_update",
+      "title": "LeRobot 修复样本身份与动作维名称契约",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-14T20:48:08+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/78e9066ce4ea27d2738c29e4b6777140f4cc01af",
+      "signals": ["frame_index", "processor round-trip", "grouped action names", "axis contract"],
+      "decision": "把 8c894413 与 78e9066c 合并为样本身份/动作轴契约簇：前者保留 batch↔transition 的 frame_index，后者按分组 value 展平真实动作维名称并保序。关联 09-15—09-17 数据工程延伸阅读，不重排总纲。"
+    },
+    {
+      "type": "official_update",
+      "title": "LeRobot rollout 统一策略与处理器设备",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-14T21:32:51+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/b641727abd531f8e85afe43cc40f807a0e384c18",
+      "signals": ["rollout", "device override", "policy config", "processor device"],
+      "decision": "在加载 policy 和构造 processors 前应用解析后的 runtime device，并提前拒绝缺失 policy。属于部署契约修复，不外推具体 CPU 控制频率或真机效果。"
+    },
+    {
+      "type": "official_update",
+      "title": "LeRobot WALL-X 增加语言运行时与文本监督",
+      "source": "Hugging Face LeRobot",
+      "publishedAt": "2026-09-14T21:33:07+08:00",
+      "url": "https://github.com/huggingface/lerobot/commit/89236ea0f4f81a81ca566081e20dd1ff5f823cbe",
+      "signals": ["WALL-X", "VQA", "next-subtask", "text loss", "flow action loss"],
+      "decision": "新增 recipe 驱动的 VQA/next-subtask 生成、interactive autosteer，以及 targeted assistant token 交叉熵与 low-level flow action 双目标。作为 VLA 语言—动作接口延伸，不视为安全闭环证据。"
+    },
+    {
+      "type": "official_update",
+      "title": "Cosmos 发布多视角解码与蒸馏导出兼容",
+      "source": "NVIDIA Cosmos Framework",
+      "publishedAt": "2026-09-14T15:31:27+08:00",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/2a8339d46a6e10e96f26c98509e6080d04ead490",
+      "signals": ["multiview decode", "CPU assembly", "distillation export", "replay policy"],
+      "decision": "同一 Release SHA 合并为一个簇：逐视角解码可在 CPU 汇总输出；旧 Transfer attention 显式迁移到 replay policy 并拒绝冲突；补充 Flex Attention 与 W&B 兼容。进入视觉/世界模型工程延伸阅读。"
+    }
+  ]
 }
