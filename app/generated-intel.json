@@ -1,16 +1,6 @@
 {
-  "updatedAt": "2026-09-15T22:53:16+08:00",
-  "status": "updated",
-  "summary": "新增 1 个官方技术更新簇；双研究线、可靠新岗位与新面经均无新增，课程主题不调整。",
-  "items": [
-    {
-      "type": "official_update",
-      "title": "Cosmos 恢复 4-step 蒸馏模型 vLLM-Omni 示例",
-      "source": "NVIDIA Cosmos",
-      "publishedAt": "2026-09-15T03:01:50+08:00",
-      "url": "https://github.com/NVIDIA/cosmos/commit/b0e54e88c322695dab188e6ed160c4d6d071c39d",
-      "signals": ["Cosmos3-Super", "4-step distilled", "vLLM-Omni", "Text2Image", "Image2Video"],
-      "decision": "恢复两个 4-step 蒸馏模型的容器启动、base URL 映射与 t2i_distil/i2v_distil 示例。属于独立 NVIDIA 部署配方修复，不归入双研究线，不外推训练方法、生成质量或机器人闭环效果。"
-    }
-  ]
+  "updatedAt": "2026-09-16T22:51:01+08:00",
+  "status": "no_change",
+  "summary": "过去 24 小时无可验证的课程相关官方技术更新、可靠新岗位或新面经；课程主题不调整。",
+  "items": []
 }
