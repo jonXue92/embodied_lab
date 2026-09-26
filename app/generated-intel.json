@@ -1,17 +1,18 @@
 {
-  "updatedAt": "2026-09-24T23:11:27+08:00",
+  "updatedAt": "2026-09-26T23:10:49+08:00",
   "status": "updated",
-  "summary": "过去 24 小时内可靠官方技术更新 0，新增 1 个上海补充校招方向簇，可靠新面经 0；Fei-Fei 与 LeCun 两条谱系均无已验证新增，单一岗位信号不足以调整总纲。",
+  "summary": "严格过去 24 小时及桥接段可靠技术、岗位、面经新增均为 0；补记此前漏审的 StanfordVL BEHAVIOR-1K v3.9.3，LeCun 谱系无已验证新增，不调整总纲。",
   "items": [
     {
-      "type": "job",
-      "title": "思谋科技 2027 校招具身智能算法方向",
-      "source": "华中科技大学就业信息网（企业校招信息）",
-      "location": "上海补充（优先 base 深圳/上海）",
-      "publishedAt": "2026-09-24",
-      "url": "https://job.hust.edu.cn/zpinfo1/2447453.htm",
-      "signals": ["具身智能", "强化学习", "运动控制", "SLAM", "机器人全栈"],
-      "decision": "记录为上海补充招聘簇；页面为方向级校招信息而非细化 JD，单一来源不足以调整总纲。"
+      "type": "technical-correction",
+      "title": "StanfordVL BEHAVIOR-1K v3.9.3 前窗口迟到纠正",
+      "source": "StanfordVL/BEHAVIOR-1K GitHub Release",
+      "lineage": "李飞飞相关线 · Stanford Vision and Learning Lab",
+      "publishedAt": "2026-09-23 21:51（GitHub 页面原样；未提供时区）",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/releases/tag/v3.9.3",
+      "commitSha": "6cbf70b075816096e9be53958780769f3264d25d",
+      "signals": ["Isaac Sim 下载失败显式化", "particle handle 刷新", "vector environment", "类型检查 CI", "评测 tag v3.9.3"],
+      "decision": "作为早于上一截止的漏记纠正，不计入过去 24 小时新增；更新 09-28 评测版本来源，不触发课程总纲重排。"
     }
   ]
 }
