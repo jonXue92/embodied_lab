@@ -57,12 +57,12 @@ export default function InstallPrompt() {
   return <aside className="install-prompt" aria-label="安装知行工坊">
     <span className="install-prompt-icon" aria-hidden="true">知</span>
     <div>
-      <b>添加到手机主屏幕</b>
+      <b>安装到本机，支持离线学习</b>
       <span>{installEvent
-        ? '像 App 一样直接打开，每天少一步。'
+        ? '安装后会保存课程；断网打卡会在联网时自动同步。'
         : isIos
           ? 'Safari 点“分享”，再选“添加到主屏幕”。'
-          : '在浏览器菜单中选择“添加到主屏幕”。'}</span>
+          : '在浏览器菜单中选择“安装应用”或“添加到主屏幕”。'}</span>
     </div>
     {installEvent ? <button className="install-prompt-action" onClick={install}>安装</button> : null}
     <button className="install-prompt-close" onClick={dismiss} aria-label="暂不安装">×</button>

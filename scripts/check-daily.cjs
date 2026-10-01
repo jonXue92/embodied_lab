@@ -91,7 +91,7 @@ function load(file) {
   clock = Date.parse('2026-09-03T15:27:48Z');
   const api = load('app/api/state/route.ts');
   const get = async (date) => (await api.GET(new Request(`https://audit.invalid/api/state?date=${date}`))).json();
-  const toggle = (date, track, completed = true, itemId = `${date}-${track}`) => api.POST(new Request('https://audit.invalid/api/state', { method: 'POST', body: JSON.stringify({ type: 'toggle-task', learningDate: date, itemId, taskType: track, completed }) }));
+  const toggle = (date, track, completed = true, itemId = `${date}-${track}`, sync = {}) => api.POST(new Request('https://audit.invalid/api/state', { method: 'POST', body: JSON.stringify({ type: 'toggle-task', learningDate: date, itemId, taskType: track, completed, ...sync }) }));
   assert.equal((await get('2026-09-01')).progressSummary.completedDays, 0);
   assert.equal((await get('2026-09-01')).progress.filter((r) => r.completed).length, 1);
   for (const track of ['foundation','code']) assert.equal((await toggle('2026-09-03',track)).status, 200);
@@ -100,6 +100,14 @@ function load(file) {
   assert.equal((await get('2026-09-03')).progressSummary.fullDayCompleted, true);
   await toggle('2026-09-03','code',false); assert.equal((await get('2026-09-03')).progressSummary.fullDayCompleted, false);
   await toggle('2026-09-03','code');
+  const syncTarget = '2026-09-03-foundation';
+  const newest = { operationId: 'offline-newest', clientUpdatedAt: '2026-09-03T15:27:49.000Z' };
+  assert.equal((await toggle('2026-09-03','foundation',true,syncTarget,newest)).status, 200);
+  assert.equal((await toggle('2026-09-03','foundation',false,syncTarget,{ operationId: 'offline-stale', clientUpdatedAt: '2026-09-03T15:27:47.000Z' })).status, 200);
+  assert.equal((await get('2026-09-03')).progress.find((row) => row.itemId === syncTarget).completed, 1, 'older offline operation must not overwrite newer progress');
+  const duplicate = await toggle('2026-09-03','foundation',false,syncTarget,{ ...newest, clientUpdatedAt: '2026-09-03T15:27:50.000Z' });
+  assert.equal((await duplicate.json()).duplicate, true, 'operation ids must be idempotent');
+  assert.equal(db.prepare('SELECT COUNT(*) AS count FROM sync_operations').get().count, 2);
   for (const track of ['foundation','code','insight']) await toggle('2026-09-02',track);
   assert.equal((await get('2026-09-03')).progressSummary.currentStreak, 2);
   for (const args of [['2026-09-04','foundation'],['2026-09-31','code'],['2026-09-03','code',true,'2026-09-03-fake'],['2026-09-03','code',true,'2026-09-03-foundation'],['2026-09-03','code','false']]) assert.equal((await toggle(...args)).status, 400);

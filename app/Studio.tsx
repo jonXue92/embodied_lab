@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import generatedIntel from './generated-intel.json';
 import InstallPrompt from './InstallPrompt';
 import NotesWidget, { type NoteItem } from './NotesWidget';
+import { loadLearningState, OFFLINE_STATE_EVENT, queueProgressChange } from './offline-state';
 import { observeShanghaiDate } from './learning-clock';
 import { answerQuestion, dailyEvidence, interviewItems, jobs, models, phases, type InterviewItem } from './content';
 import { addDays, COURSE_END_DATE, COURSE_START_DATE, getDailyLearningPlan, getUnitWeek, isCurriculumDate, resolveLearningDate, shanghaiDateKey, type DailyLearningPlan, type DailyQuestion } from './curriculum';
@@ -59,7 +60,8 @@ export default function Studio() {
 
   useEffect(() => {
     let active = true;
-    fetch(`/api/state?date=${selectedDate}`).then((response) => response.json() as Promise<StateResponse>).then((data) => {
+    const refresh = () => loadLearningState(selectedDate).then((raw) => {
+      const data = raw as unknown as StateResponse;
       if (!active) return;
       setDone((data.progress ?? []).filter((item: { completed: number }) => item.completed).map((item: { itemId: string }) => item.itemId));
       setFavorites(data.favorites ?? []);
@@ -68,7 +70,9 @@ export default function Studio() {
       setNotes(data.notes ?? []);
       setProgressSummary(data.progressSummary ?? { completedDays: 0, currentStreak: 0, fullDayCompleted: false, completedDates: [] });
     }).catch(() => undefined).finally(() => { if (active) setSyncing(false); });
-    return () => { active = false; };
+    refresh();
+    window.addEventListener(OFFLINE_STATE_EVENT, refresh);
+    return () => { active = false; window.removeEventListener(OFFLINE_STATE_EVENT, refresh); };
   }, [selectedDate]);
 
   useEffect(() => {
@@ -139,8 +143,7 @@ export default function Studio() {
     if (isFuture || plan.contentStatus !== 'ready') return;
     const completed = !done.includes(itemId);
     setDone(completed ? [...done, itemId] : done.filter((id) => id !== itemId));
-    await fetch('/api/state', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'toggle-task', learningDate: selectedDate, itemId, taskType, completed }) });
-    const refreshed = await fetch(`/api/state?date=${selectedDate}`).then((response) => response.json() as Promise<StateResponse>);
+    const refreshed = await queueProgressChange({ learningDate: selectedDate, itemId, taskType, completed }) as unknown as StateResponse;
     setDone((refreshed.progress ?? []).filter((item: { completed: number }) => item.completed).map((item: { itemId: string }) => item.itemId));
     setProgressSummary(refreshed.progressSummary);
   }

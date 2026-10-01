@@ -71,6 +71,15 @@ button,a { font:inherit; } button { color:inherit; } a { color:inherit; text-dec
 /* Iteration 4: date-aware daily curriculum and automatic full-day check-in */
 .day-switcher{display:grid;grid-template-columns:auto minmax(220px,1fr) auto auto;align-items:center;gap:10px;margin:4px 0 16px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:#faf9f4}.day-switcher>div{display:flex;align-items:center;justify-content:center;gap:10px;text-align:center}.day-switcher>div span,.day-switcher>div small{color:#87918c;font-size:8px}.day-switcher>div b{color:var(--green);font:600 12px/1 Georgia,"Songti SC",serif}.day-switcher button{padding:8px 11px;border:1px solid #d9dad2;border-radius:8px;background:#fffefa;color:#60736a;font-size:8px;font-weight:800;cursor:pointer}.day-switcher button:disabled,.task-controls button:disabled,.question-card button:disabled,.lesson-finish button:disabled{opacity:.38;cursor:not-allowed}.day-switcher .today-jump{border-color:#bfd1c7;background:#e5eee8;color:var(--green)}.streak-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:18px 0 14px}.streak-pair span{padding:10px;border-radius:8px;background:#f0eee6;color:#78837e;font-size:8px;text-align:center}.streak-pair b{color:var(--green);font-size:13px}.day-grid article{cursor:pointer;transition:.2s ease}.day-grid article:hover{border-color:#aebfb6;transform:translateY(-1px)}.day-grid article.active-day{border-color:var(--green);background:#e7efe9;box-shadow:inset 0 0 0 1px var(--green)}
 @media(max-width:760px){.day-switcher{grid-template-columns:1fr 1fr}.day-switcher>div{grid-column:1/-1;grid-row:1;flex-direction:column;gap:4px}.day-switcher .today-jump{grid-column:1/-1}.hero-copy h2{max-width:95%;font-size:29px}.streak-pair{grid-template-columns:1fr 1fr}}
+
+/* Offline-first course cache and progress outbox status. */
+.offline-status{position:fixed;z-index:120;bottom:18px;left:18px;display:flex;align-items:center;gap:8px;max-width:min(420px,calc(100vw - 36px));padding:9px 12px;border:1px solid #bfd1c7;border-radius:999px;background:rgb(250 249 244 / 96%);color:var(--green);box-shadow:0 8px 24px rgb(18 55 45 / 14%);backdrop-filter:blur(12px)}
+.offline-status span{width:8px;height:8px;flex:0 0 auto;border-radius:50%;background:#4d8d72;box-shadow:0 0 0 3px rgb(77 141 114 / 12%)}
+.offline-status b{overflow:hidden;font-size:.78rem;line-height:1.2;text-overflow:ellipsis;white-space:nowrap}
+.offline-status.offline,.offline-status.pending{border-color:#e1c69e;color:#855126}.offline-status.offline span,.offline-status.pending span{background:#d88742;box-shadow:0 0 0 3px rgb(216 135 66 / 12%)}
+.offline-status.syncing span{animation:offline-pulse 1s ease-in-out infinite}.offline-status.error{border-color:#e5b4aa;color:#9a4234}.offline-status.error span{background:#c95745}
+@keyframes offline-pulse{50%{opacity:.3;transform:scale(.75)}}
+@media(max-width:760px){.offline-status{bottom:calc(84px + env(safe-area-inset-bottom));left:14px;max-width:calc(100vw - 88px);padding:8px 10px}.offline-status b{font-size:.72rem}}
 /* Authored courseware: readable long-form lessons and accessible math. */
 .lesson-chapter p { font-size: 1rem; line-height: 1.95; margin-bottom: 1.15rem; }
 .lesson-formula { margin: 1.4rem 0; padding: 1.3rem; border-left: 3px solid #258d88; background: #f0f8f8; border-radius: 0 8px 8px 0; min-width: 0; }
@@ -96,7 +105,9 @@ button,a { font:inherit; } button { color:inherit; } a { color:inherit; text-dec
 @media (max-width: 700px) { .lesson-formula { padding: .8rem; } .lesson-context, .lesson-code-notes, .lesson-exercise { padding: 1rem; } }
 
 /* Mobile study surface and installable app */
-.nav-more,.mobile-more,.mobile-continue,.mobile-lesson-action,.install-prompt{display:none}
+.nav-more,.mobile-more,.mobile-continue,.mobile-lesson-action{display:none}
+.install-prompt{position:relative;z-index:15;display:flex;align-items:center;gap:12px;margin:14px 0 0;padding:12px 46px 12px 12px;border:1px solid #cad8d0;border-radius:13px;background:#eef3ef;box-shadow:0 10px 24px rgb(23 63 53 / 8%)}
+.install-prompt-icon{width:42px;height:42px;display:grid;place-items:center;flex:0 0 auto;border-radius:11px;background:var(--green);color:#f8b173;font:700 21px/1 Georgia,"Songti SC",serif}.install-prompt>div{display:grid;gap:4px;min-width:0;flex:1}.install-prompt>div b{font-size:14px}.install-prompt>div span{color:#6e7b75;font-size:12px;line-height:1.45}.install-prompt-action{min-width:58px;min-height:40px;border:0;border-radius:9px;background:var(--green);color:#fff;font-size:13px;font-weight:800;cursor:pointer}.install-prompt-close{position:absolute;top:4px;right:4px;width:36px;height:36px;border:0;background:transparent;color:#7d8983;font-size:20px;cursor:pointer}
 
 @media(max-width:760px){
   html{-webkit-text-size-adjust:100%;scroll-padding-bottom:calc(96px + env(safe-area-inset-bottom))}

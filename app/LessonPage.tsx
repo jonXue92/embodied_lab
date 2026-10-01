@@ -6,6 +6,7 @@ import NotesWidget from './NotesWidget';
 import { getDailyLearningPlan, getLessonById, shanghaiDateKey } from './curriculum';
 import Formula from './Formula';
 import { observeShanghaiDate } from './learning-clock';
+import { loadLearningState, OFFLINE_STATE_EVENT, queueProgressChange } from './offline-state';
 
 type Favorite = { itemId: string; itemType: string; title: string; summary: string };
 type LessonState = { favorites: Favorite[]; progress: { itemId: string; completed: number }[] };
@@ -34,10 +35,16 @@ export default function LessonPage({ lessonId }: { lessonId: string }) {
 
   useEffect(() => {
     if (!planDate) return;
-    fetch(`/api/state?date=${planDate}`).then((response) => response.json() as Promise<LessonState>).then((data) => {
+    let active = true;
+    const refresh = () => loadLearningState(planDate).then((raw) => {
+      const data = raw as unknown as LessonState;
+      if (!active) return;
       setFavorites(data.favorites ?? []);
       setDone((data.progress ?? []).some((item: { itemId: string; completed: number }) => item.itemId === lessonId && item.completed));
     }).catch(() => undefined);
+    refresh();
+    window.addEventListener(OFFLINE_STATE_EVENT, refresh);
+    return () => { active = false; window.removeEventListener(OFFLINE_STATE_EVENT, refresh); };
   }, [lessonId, planDate]);
 
   if (!lesson || !task || !plan) {
@@ -64,7 +71,8 @@ export default function LessonPage({ lessonId }: { lessonId: string }) {
   async function toggleComplete() {
     if (!plan || !task || isFuture) return;
     const completed = !done; setDone(completed);
-    await fetch('/api/state', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ type: 'toggle-task', learningDate: plan.date, itemId: lessonId, taskType: task.track, completed }) });
+    const next = await queueProgressChange({ learningDate: plan.date, itemId: lessonId, taskType: task.track, completed });
+    setDone(next.progress.some((item) => item.itemId === lessonId && item.completed));
   }
 
   const lessonFavorite: Favorite = { itemId: `lesson-${lessonId}`, itemType: lesson.type, title: lesson.title, summary: `${plan.date} · ${lesson.intro}` };

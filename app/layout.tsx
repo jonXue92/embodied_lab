@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import 'katex/dist/katex.min.css';
 import './globals.css';
+import OfflineRuntime from './OfflineRuntime';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -37,7 +38,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>{children}<OfflineRuntime /></body>
     </html>
   );
 }

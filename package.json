@@ -13,6 +13,7 @@
     "db:generate": "drizzle-kit generate",
     "check:curriculum": "node scripts/check-courseware.mjs",
     "test:daily": "node scripts/check-daily.cjs",
+    "test:offline": "node scripts/check-offline-sync.cjs && node --check public/sw.js",
     "test:examples": "node scripts/test-course-examples.mjs"
   },
   "dependencies": {

@@ -48,6 +48,14 @@ function streakFromDates(completedDates: string[], today: string) {
   return streak;
 }
 
+function validClientTimestamp(value: unknown, fallback: string) {
+  if (value === undefined) return fallback;
+  const text = String(value);
+  const timestamp = Date.parse(text);
+  if (!Number.isFinite(timestamp) || new Date(timestamp).toISOString() !== text) return null;
+  return text;
+}
+
 export async function GET(request: Request) {
   await ensureTables();
   const requestedDate = new URL(request.url).searchParams.get('date') ?? resolveLearningDate(shanghaiDateKey());
@@ -85,10 +93,27 @@ export async function POST(request: Request) {
     const taskType = String(body.taskType ?? '');
     const dailyPlan = getDailyLearningPlan(learningDate);
     const task = dailyPlan?.tasks.find((item) => item.id === itemId && item.track === taskType);
+    const operationId = body.operationId === undefined ? '' : String(body.operationId);
+    const clientUpdatedAt = validClientTimestamp(body.clientUpdatedAt, now);
     if (dailyPlan?.contentStatus !== 'ready' || learningDate > today || !task || typeof body.completed !== 'boolean') return Response.json({ error: '无效或尚未开放的每日课程' }, { status: 400 });
-    await env.DB.prepare('INSERT INTO daily_progress (id, learning_date, item_id, task_type, completed, updated_at) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET completed = excluded.completed, task_type = excluded.task_type, updated_at = excluded.updated_at')
-      .bind(itemId, learningDate, itemId, taskType, body.completed ? 1 : 0, now).run();
-    return Response.json({ ok: true });
+    if (operationId.length > 100 || !clientUpdatedAt) return Response.json({ error: '同步操作标识或客户端时间无效' }, { status: 400 });
+
+    if (operationId) {
+      const duplicate = await env.DB.prepare('SELECT operation_id AS operationId FROM sync_operations WHERE operation_id = ? LIMIT 1').bind(operationId).all();
+      if (duplicate.results.length) return Response.json({ ok: true, duplicate: true, updatedAt: clientUpdatedAt });
+    }
+
+    const statements = [env.DB.prepare(`INSERT INTO daily_progress (id, learning_date, item_id, task_type, completed, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET completed = excluded.completed, task_type = excluded.task_type, updated_at = excluded.updated_at
+      WHERE excluded.updated_at > daily_progress.updated_at
+        OR (? = '' AND excluded.updated_at = daily_progress.updated_at)`)
+      .bind(itemId, learningDate, itemId, taskType, body.completed ? 1 : 0, clientUpdatedAt, operationId)];
+    if (operationId) statements.push(env.DB.prepare(`INSERT OR IGNORE INTO sync_operations
+      (operation_id, operation_type, entity_id, client_updated_at, applied_at) VALUES (?, 'toggle-task', ?, ?, ?)`)
+      .bind(operationId, itemId, clientUpdatedAt, now));
+    await env.DB.batch(statements);
+    return Response.json({ ok: true, updatedAt: clientUpdatedAt });
   }
 
   if (body.type === 'toggle-favorite') {

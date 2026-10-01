@@ -18,6 +18,14 @@ export const dailyProgress = sqliteTable('daily_progress', {
   index('idx_daily_progress_date_completed').on(table.learningDate, table.completed),
 ]);
 
+export const syncOperations = sqliteTable('sync_operations', {
+  operationId: text('operation_id').primaryKey(),
+  operationType: text('operation_type').notNull(),
+  entityId: text('entity_id').notNull(),
+  clientUpdatedAt: text('client_updated_at').notNull(),
+  appliedAt: text('applied_at').notNull(),
+}, (table) => [index('idx_sync_operations_applied_at').on(table.appliedAt)]);
+
 export const favorites = sqliteTable('favorites', {
   itemId: text('item_id').primaryKey(),
   itemType: text('item_type').notNull(),
