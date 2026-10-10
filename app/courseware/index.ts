@@ -33,6 +33,15 @@ import { day32 } from './2026-10-02';
 import { day33 } from './2026-10-03';
 import { day34 } from './2026-10-04';
 import { day35 } from './2026-10-05';
+import { day36 } from './2026-10-06';
+import { day37 } from './2026-10-07';
+import { day38 } from './2026-10-08';
+import { day39 } from './2026-10-09';
+import { day40 } from './2026-10-10';
+import { day41 } from './2026-10-11';
+import { day42 } from './2026-10-12';
+import { day43 } from './2026-10-13';
+import { day44 } from './2026-10-14';
 
 // No generated fallback: an unregistered date is a syllabus, not a lesson.
 export const authoredDays: Record<string, AuthoredDay> = {
@@ -70,4 +79,13 @@ export const authoredDays: Record<string, AuthoredDay> = {
   '2026-10-03': day33,
   '2026-10-04': day34,
   '2026-10-05': day35,
+  '2026-10-06': day36,
+  '2026-10-07': day37,
+  '2026-10-08': day38,
+  '2026-10-09': day39,
+  '2026-10-10': day40,
+  '2026-10-11': day41,
+  '2026-10-12': day42,
+  '2026-10-13': day43,
+  '2026-10-14': day44,
 };
