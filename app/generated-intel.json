@@ -1,48 +1,18 @@
 {
-  "updatedAt": "2026-10-16T00:10:00+08:00",
+  "updatedAt": "2026-10-17T19:38:00+08:00",
   "status": "updated",
-  "summary": "严格窗口验证到 StanfordVL 依赖兼容更新 1 项、LeRobot 技术更新 3 项；LeCun 谱系、可靠岗位与面经无新增，不调整总纲。",
+  "summary": "严格24小时双团队、可靠岗位与面经无新增；补审发现GR00T N1.7 TensorRT部署更新簇，不调整总纲。",
   "items": [
     {
       "type": "technical",
-      "title": "BEHAVIOR-1K 固定 PyArrow 兼容上限",
-      "source": "StanfordVL/BEHAVIOR-1K GitHub commit",
-      "lineage": "李飞飞相关线 · Stanford Vision and Learning Lab",
-      "publishedAt": "2026-10-15T02:09:26Z",
-      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/7d6718cb8ac5f249bb3c610c23713627d97da1ef",
-      "commitSha": "7d6718cb8ac5f249bb3c610c23713627d97da1ef",
-      "signals": ["pyarrow<26", "NumPy 1.26", "Isaac Sim compatibility"],
-      "decision": "加入仿真安装与环境锁定延伸阅读；不改变任务、物理或评测，也不重排总纲。"
-    },
-    {
-      "type": "technical",
-      "title": "LeRobot rollout 接入外部 VLM planner",
-      "source": "huggingface/lerobot GitHub commit",
-      "publishedAt": "2026-10-15T12:54:04Z",
-      "url": "https://github.com/huggingface/lerobot/commit/297774fca4e3ad0aa34e7425fbf937111637e77b",
-      "commitSha": "297774fca4e3ad0aa34e7425fbf937111637e77b",
-      "signals": ["external planner", "VQA/autosteer", "history", "stale reply rejection"],
-      "decision": "进入大语义模型与小动作策略拆分的延伸阅读；硬件验证边界保留，不自动改纲。"
-    },
-    {
-      "type": "technical",
-      "title": "LeRobot Multi-Task DiT 编译与任务去重",
-      "source": "huggingface/lerobot GitHub commit",
-      "publishedAt": "2026-10-15T12:26:10Z",
-      "url": "https://github.com/huggingface/lerobot/commit/190a08649a4546e28a19d6177a77d0b2ae56e4be",
-      "commitSha": "190a08649a4546e28a19d6177a77d0b2ae56e4be",
-      "signals": ["torch.compile", "task dedup", "throughput", "peak memory"],
-      "decision": "作为训练吞吐优化案例；官方A100数字不外推到个人SO-101。"
-    },
-    {
-      "type": "technical",
-      "title": "LeRobot 修复流式响应释放与运行时兼容",
-      "source": "huggingface/lerobot GitHub commit",
-      "publishedAt": "2026-10-15T10:19:30Z",
-      "url": "https://github.com/huggingface/lerobot/commit/8975047fbb76e7fef3f482988ceccc17e2102a90",
-      "commitSha": "8975047fbb76e7fef3f482988ceccc17e2102a90",
-      "signals": ["HTTP response release", "streaming dataset", "TorchCodec", "runtime bounds"],
-      "decision": "加入数据流稳定性和依赖锁定延伸阅读；不作为模型精度更新。"
+      "title": "GR00T N1.7 TensorRT 与 Thor 优化",
+      "source": "NVIDIA/Isaac-GR00T GitHub commit cluster",
+      "publishedAt": "2026-10-15T21:46:24Z",
+      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/dac54b313160c201c450f97df0fd74ebd379c892",
+      "commitSha": "dac54b313160c201c450f97df0fd74ebd379c892",
+      "relatedCommitShas": ["ae90cd3aa7af7bedea0ba986f4e994961494d6f2"],
+      "signals": ["TensorRT", "cross-attention KV cache", "CUDA graphs", "mixed NVFP4", "calibration"],
+      "decision": "补审新增；进入GR00T部署与端到端时延延伸阅读。动作余弦一致不等于闭环成功，不自动改纲。"
     }
   ]
 }
