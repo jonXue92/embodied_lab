@@ -1,18 +1,6 @@
 {
-  "updatedAt": "2026-10-17T19:38:00+08:00",
-  "status": "updated",
-  "summary": "严格24小时双团队、可靠岗位与面经无新增；补审发现GR00T N1.7 TensorRT部署更新簇，不调整总纲。",
-  "items": [
-    {
-      "type": "technical",
-      "title": "GR00T N1.7 TensorRT 与 Thor 优化",
-      "source": "NVIDIA/Isaac-GR00T GitHub commit cluster",
-      "publishedAt": "2026-10-15T21:46:24Z",
-      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/dac54b313160c201c450f97df0fd74ebd379c892",
-      "commitSha": "dac54b313160c201c450f97df0fd74ebd379c892",
-      "relatedCommitShas": ["ae90cd3aa7af7bedea0ba986f4e994961494d6f2"],
-      "signals": ["TensorRT", "cross-attention KV cache", "CUDA graphs", "mixed NVFP4", "calibration"],
-      "decision": "补审新增；进入GR00T部署与端到端时延延伸阅读。动作余弦一致不等于闭环成功，不自动改纲。"
-    }
-  ]
+  "updatedAt": "2026-10-18T22:52:00+08:00",
+  "status": "no_change",
+  "summary": "严格24小时双团队、官方技术、杭州/上海可靠岗位与面经均无可登记新增；不调整总纲。",
+  "items": []
 }
