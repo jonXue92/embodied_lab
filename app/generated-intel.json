@@ -1,6 +1,38 @@
 {
-  "updatedAt": "2026-10-18T22:52:00+08:00",
-  "status": "no_change",
-  "summary": "严格24小时双团队、官方技术、杭州/上海可靠岗位与面经均无可登记新增；不调整总纲。",
-  "items": []
+  "updatedAt": "2026-10-19T23:46:00+08:00",
+  "status": "updated",
+  "summary": "严格24小时验证到 BEHAVIOR 评测分支更新簇 1 个、LeRobot 主分支技术更新 2 项；LeCun 谱系、可靠岗位与面经无新增，不调整总纲。",
+  "items": [
+    {
+      "type": "technical",
+      "title": "BEHAVIOR 批量评测 reset 与跨场景转移修复",
+      "source": "StanfordVL/BEHAVIOR-1K GitHub commits",
+      "lineage": "李飞飞相关线 · Stanford Vision and Learning Lab",
+      "publishedAt": "2026-10-19T14:56:59Z",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/38d2c9fb85659caee7065dde2a076cb0f8c0d9a6",
+      "commitSha": "38d2c9fb85659caee7065dde2a076cb0f8c0d9a6",
+      "signals": ["2026/eval branch", "reset rerender", "cross-scene transition", "deferred additions"],
+      "decision": "进入仿真评测与状态转换延伸阅读；尚非 main/release，不改变总纲。"
+    },
+    {
+      "type": "technical",
+      "title": "LeRobot 手机遥操作 dead-man 与状态修复",
+      "source": "huggingface/lerobot GitHub commit",
+      "publishedAt": "2026-10-19T14:44:05Z",
+      "url": "https://github.com/huggingface/lerobot/commit/b192c02dda8d7fa8560bfc15f9e8dae0f714e26e",
+      "commitSha": "b192c02dda8d7fa8560bfc15f9e8dae0f714e26e",
+      "signals": ["dead-man", "Mobile I/O", "axis mapping", "homing"],
+      "decision": "进入遥操作安全与动作身份延伸阅读；不作为模型精度更新。"
+    },
+    {
+      "type": "technical",
+      "title": "LeRobot 电机标定与安全写入重构",
+      "source": "huggingface/lerobot GitHub commit",
+      "publishedAt": "2026-10-19T12:06:56Z",
+      "url": "https://github.com/huggingface/lerobot/commit/326484d77d2ac90379e84222dfad21fe4acf1f71",
+      "commitSha": "326484d77d2ac90379e84222dfad21fe4acf1f71",
+      "signals": ["record_calibration", "torque off", "Drive_Mode", "resolution-1"],
+      "decision": "进入本体标定与方向往返测试清单；不作为 VLA 模型更新。"
+    }
+  ]
 }
