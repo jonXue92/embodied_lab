@@ -1,38 +1,86 @@
 {
-  "updatedAt": "2026-10-20T22:54:00+08:00",
+  "updatedAt": "2026-10-23T23:25:50+08:00",
   "status": "updated",
-  "summary": "严格24小时验证到 BEHAVIOR 升级分支技术更新 1 簇、LeRobot 主分支技术更新 2 簇；LeCun 谱系、可靠岗位与面经无新增，不调整总纲。",
+  "summary": "严格24小时内确认BEHAVIOR主线1项、GR00T基准1簇及LeRobot工程更新4项；LeCun谱系、World Labs、可靠新岗位与新面经无新增，不调整总纲。",
   "items": [
     {
-      "type": "technical",
-      "title": "BEHAVIOR Isaac Sim 6 移除 NumPy 旧上限",
-      "source": "StanfordVL/BEHAVIOR-1K GitHub commit",
-      "lineage": "李飞飞相关线 · Stanford Vision and Learning Lab",
-      "publishedAt": "2026-10-19T18:02:53Z",
-      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/e97ab4d7394b843ab446f8eac1bdaa9a51bd13ee",
-      "commitSha": "e97ab4d7394b843ab446f8eac1bdaa9a51bd13ee",
-      "signals": ["isaac-6.0-upgrade branch", "NumPy 2", "joylo", "setup dependency"],
-      "decision": "进入仿真依赖与升级回归延伸阅读；尚非 main/release，不改变总纲。"
+      "type": "research",
+      "title": "BEHAVIOR-1K 让 BDDL 包数据兼容 zip/PAR 资源读取",
+      "source": "StanfordVL/BEHAVIOR-1K",
+      "lineage": "李飞飞线 · StanfordVL",
+      "publishedAt": "2026-10-22T22:49:35Z",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/7330a54523823ed2389d246994d3db3d408ac8fc",
+      "commitSha": "7330a54523823ed2389d246994d3db3d408ac8fc",
+      "signals": [
+        "importlib.resources.files 与 Traversable 读取 domain、activity definition 和 taxonomy",
+        "支持 zip/PAR 等非普通文件系统安装形态，并修正旧 domain_filename 错误路径"
+      ],
+      "decision": "加入任务定义与评测资产可移植部署延伸阅读；不改总纲"
     },
     {
-      "type": "technical",
-      "title": "LeRobot Unitree G1 本体与命令安全更新",
-      "source": "huggingface/lerobot GitHub commits",
-      "publishedAt": "2026-10-19T20:56:56Z",
-      "url": "https://github.com/huggingface/lerobot/commit/3991580a5673f5f0219a4e8835a5f973eeccf9a7",
-      "commitSha": "3991580a5673f5f0219a4e8835a5f973eeccf9a7",
-      "signals": ["G1-23", "G1-29", "embodiment mapping", "DDS slots", "dq clearing"],
-      "decision": "进入本体映射与安全命令延伸阅读；不作为策略精度更新。"
+      "type": "engineering",
+      "title": "GR00T N1.7 公布边缘设备完整 policy-call 基准",
+      "source": "NVIDIA/Isaac-GR00T",
+      "publishedAt": "2026-10-22T21:49:58Z",
+      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/944fe70c4fd54e3fcb80a7d7258a328f9c061176",
+      "commitSha": "944fe70c4fd54e3fcb80a7d7258a328f9c061176",
+      "signals": [
+        "N1.7 LIBERO-10、batch 1、horizon 40、4 denoise steps、双256像素相机的统一采样",
+        "RTX Pro 6000 TensorRT 24.7ms、AGX Thor MAXN混合NVFP4 TensorRT 35.6ms；不含RPC且不是闭环成功率"
+      ],
+      "decision": "加入部署与时延预算延伸阅读；不据此推断任务质量"
     },
     {
-      "type": "technical",
-      "title": "LeRobot 策略采样接受外部起始噪声",
-      "source": "huggingface/lerobot GitHub commit",
-      "publishedAt": "2026-10-20T14:32:12Z",
-      "url": "https://github.com/huggingface/lerobot/commit/afbf3f14a13bdad3e5990e2bed629c6539605658",
-      "commitSha": "afbf3f14a13bdad3e5990e2bed629c6539605658",
-      "signals": ["starting noise", "predict_action_chunk", "device and dtype", "deterministic comparison"],
-      "decision": "进入固定噪声复现与导出一致性测试；不视为模型性能提升。"
+      "type": "engineering",
+      "title": "LeRobot 引入可选 Faster-WAM 推理路径",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-10-23T13:00:16Z",
+      "url": "https://github.com/huggingface/lerobot/commit/d3793b7e36522321c1c455f0dc4826db3793dceb",
+      "commitSha": "d3793b7e36522321c1c455f0dc4826db3793dceb",
+      "signals": [
+        "浅层action expert、Lite KV Fusion、收缩式1D RoPE与可选world-model-only conditioning",
+        "A100报告2.5至5.3倍推理加速；默认关闭且没有随提交发布训练checkpoint"
+      ],
+      "decision": "加入世界模型与推理优化延伸阅读；转换后仍需微调验证"
+    },
+    {
+      "type": "engineering",
+      "title": "LeRobot 集成 LingBot-VLA 2.0",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-10-23T12:39:56Z",
+      "url": "https://github.com/huggingface/lerobot/commit/8cd02c155c21f98663482e84de6772e5e04e4ed1",
+      "commitSha": "8cd02c155c21f98663482e84de6772e5e04e4ed1",
+      "signals": [
+        "Qwen3-VL-4B加32专家top-4稀疏MoE action expert，在canonical 55维空间做flow matching",
+        "加入slot映射、q01/q99归一化、64 token每相机、蒸馏与FSDP训练集成"
+      ],
+      "decision": "加入统一横评与动作接口延伸阅读；保留独立源码固定版本对照"
+    },
+    {
+      "type": "data",
+      "title": "LeRobot streaming sidecar 构建内存降低 91%",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-10-23T11:25:55Z",
+      "url": "https://github.com/huggingface/lerobot/commit/23979669f03d2a1b50f5d0593aa4bbbb8e60c8e9",
+      "commitSha": "23979669f03d2a1b50f5d0593aa4bbbb8e60c8e9",
+      "signals": [
+        "紧凑映射表与有界sidecar构建降低峰值内存",
+        "schema v3、显式发布、revision缓存与episode byte budget强化可复现数据流"
+      ],
+      "decision": "加入数据工程与流式数据集延伸阅读；不改总纲"
+    },
+    {
+      "type": "engineering",
+      "title": "LeRobot 遥操作接口接收最新原始 observation",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-10-23T12:39:06Z",
+      "url": "https://github.com/huggingface/lerobot/commit/1dd915528f55275d7a2eff8df1d11009292a4086",
+      "commitSha": "1dd915528f55275d7a2eff8df1d11009292a4086",
+      "signals": [
+        "teleop get_action新增可选observation参数并要求不得原地修改",
+        "为观测条件遥操作提供接口基础，不代表执行了真实机械臂控制"
+      ],
+      "decision": "加入SO-101数据采集接口延伸阅读；不执行硬件动作"
     }
   ]
 }
