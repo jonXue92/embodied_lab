@@ -1,21 +1,35 @@
 {
-  "updatedAt": "2026-10-24T23:42:41+08:00",
+  "updatedAt": "2026-10-25T23:24:28+08:00",
   "status": "updated",
-  "summary": "严格24小时内确认BEHAVIOR评测分支1项；World Labs与LeCun谱系、其他默认分支、可靠新岗位和新面经均无新增，不调整总纲。",
+  "summary": "双团队两条谱系无新增；LeRobot有PEFT/DCP与XVLA/LIBERO两个未合并更新簇，岗位面经无新增，不改总纲。",
   "items": [
     {
       "type": "research",
-      "title": "BEHAVIOR评测分支清理旧队列并修订共享计时",
-      "source": "StanfordVL/BEHAVIOR-1K",
-      "lineage": "李飞飞线 · StanfordVL",
-      "publishedAt": "2026-10-24T00:55:44Z",
-      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/c0052e8f9e16a6cfe0a75dc986a4b5316714d811",
-      "commitSha": "c0052e8f9e16a6cfe0a75dc986a4b5316714d811",
+      "title": "LeRobot分片训练增加PEFT/DCP恢复链",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 未合并分支",
+      "publishedAt": "2026-10-25T09:45:32Z",
+      "url": "https://github.com/huggingface/lerobot/commit/39705888f19f3e63b4dbaa89df1efa63f8840ceb",
+      "commitSha": "39705888f19f3e63b4dbaa89df1efa63f8840ceb",
       "signals": [
-        "删除旧eval-jobqueue，并把共享仿真计时分母固定为resident环境总数",
-        "r1pro_surround不再沿用R1/R1Pro评测基座增重；仅在2026/eval分支，main与release未变"
+        "sharded training支持PEFT adapter的DCP/safetensors保存恢复",
+        "cdeb73e续修DCP resume后base path丢失；只在feat/peft_sharded_training"
       ],
-      "decision": "加入评测与仿真延伸阅读；分支候选不冒充稳定release，不改总纲"
+      "decision": "加入训练工程与断点续训延伸阅读；未合并不冒充稳定功能，不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "LeRobot限制XVLA的LIBERO处理器并校验动作转换",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 未合并分支",
+      "publishedAt": "2026-10-24T16:52:39Z",
+      "url": "https://github.com/huggingface/lerobot/commit/907f321be0e857eebe17eeed7e940c560febea42",
+      "commitSha": "907f321be0e857eebe17eeed7e940c560febea42",
+      "signals": [
+        "XVLA专用processor仅对LiberoEnv启用，防止污染其他环境",
+        "至少10维输入硬检查，6D rotation转axis-angle后显式声明7维float32输出"
+      ],
+      "decision": "加入评测接口契约延伸阅读；只在fix/xvla-libero-env-processors，不改总纲"
     }
   ]
 }
