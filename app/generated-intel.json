@@ -1,35 +1,63 @@
 {
-  "updatedAt": "2026-10-25T23:24:28+08:00",
+  "updatedAt": "2026-10-26T23:13:43+08:00",
   "status": "updated",
-  "summary": "双团队两条谱系无新增；LeRobot有PEFT/DCP与XVLA/LIBERO两个未合并更新簇，岗位面经无新增，不改总纲。",
+  "summary": "双团队两条谱系无新增；LeRobot有PEFT主分支修复及统计、训练、仿真三个未合并更新簇，岗位面经无新增，不改总纲。",
   "items": [
     {
       "type": "research",
-      "title": "LeRobot分片训练增加PEFT/DCP恢复链",
+      "title": "LeRobot统一PEFT checkpoint与加载识别",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 未合并分支",
-      "publishedAt": "2026-10-25T09:45:32Z",
-      "url": "https://github.com/huggingface/lerobot/commit/39705888f19f3e63b4dbaa89df1efa63f8840ceb",
-      "commitSha": "39705888f19f3e63b4dbaa89df1efa63f8840ceb",
+      "lineage": "其他官方技术更新 · main",
+      "publishedAt": "2026-10-26T14:45:18Z",
+      "url": "https://github.com/huggingface/lerobot/commit/45cca1a6ba368cf29cc8b4e0f49a1db875d15f61",
+      "commitSha": "45cca1a6ba368cf29cc8b4e0f49a1db875d15f61",
       "signals": [
-        "sharded training支持PEFT adapter的DCP/safetensors保存恢复",
-        "cdeb73e续修DCP resume后base path丢失；只在feat/peft_sharded_training"
+        "把peft配置与policy.use_peft统一为一个开关并从checkpoint检测adapter",
+        "fresh LoRA、rollout与远程推理server共用cache-aware adapter检查"
       ],
-      "decision": "加入训练工程与断点续训延伸阅读；未合并不冒充稳定功能，不改总纲"
+      "decision": "加入PEFT/checkpoint加载与评测接口延伸阅读；属于训练工程，不改总纲"
     },
     {
       "type": "research",
-      "title": "LeRobot限制XVLA的LIBERO处理器并校验动作转换",
+      "title": "LeRobot用float64累积低方差统计量",
       "source": "huggingface/lerobot",
       "lineage": "其他官方技术更新 · 未合并分支",
-      "publishedAt": "2026-10-24T16:52:39Z",
-      "url": "https://github.com/huggingface/lerobot/commit/907f321be0e857eebe17eeed7e940c560febea42",
-      "commitSha": "907f321be0e857eebe17eeed7e940c560febea42",
+      "publishedAt": "2026-10-26T14:45:53Z",
+      "url": "https://github.com/huggingface/lerobot/commit/3c1d85c230c02461a62a5c32129f66c01000b1d6",
+      "commitSha": "3c1d85c230c02461a62a5c32129f66c01000b1d6",
       "signals": [
-        "XVLA专用processor仅对LiberoEnv启用，防止污染其他环境",
-        "至少10维输入硬检查，6D rotation转axis-angle后显式声明7维float32输出"
+        "避免float32下E[x²]-E[x]²灾难性抵消",
+        "修复relative rot6d等高均值低方差字段的零或偏置std"
       ],
-      "decision": "加入评测接口契约延伸阅读；只在fix/xvla-libero-env-processors，不改总纲"
+      "decision": "加入数据归一化与统计量审计延伸阅读；未合并不冒充稳定功能"
+    },
+    {
+      "type": "research",
+      "title": "LeRobot显式配置FSDP精度、TF32与WSD调度",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 三个未合并分支",
+      "publishedAt": "2026-10-26T12:10:03Z",
+      "url": "https://github.com/huggingface/lerobot/commit/e35546ee532ad089b4ddb710ff904421fd66e38c",
+      "commitSha": "e35546ee532ad089b4ddb710ff904421fd66e38c",
+      "signals": [
+        "FSDP2 mixed-precision policy与gradient sync显式化",
+        "训练/评测TF32开关及warmup-stable-decay scheduler"
+      ],
+      "decision": "加入训练数值与调度复现实验；三个分支不可视为已验证组合"
+    },
+    {
+      "type": "research",
+      "title": "LeRobot补齐仿真episode与vector边界",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 未合并分支",
+      "publishedAt": "2026-10-26T15:09:28Z",
+      "url": "https://github.com/huggingface/lerobot/commit/895d010353bc744a046837871b75c27824f5c00d",
+      "commitSha": "895d010353bc744a046837871b75c27824f5c00d",
+      "signals": [
+        "episode结束时停止rollout并清理recording、teleop与控制状态",
+        "保护EnvHub provider拥有的batch/vector语义并增加边界回归"
+      ],
+      "decision": "加入仿真done-reset与跨episode污染审计；未合并不改纲"
     }
   ]
 }
