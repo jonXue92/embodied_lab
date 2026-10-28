@@ -1,63 +1,21 @@
 {
-  "updatedAt": "2026-10-26T23:13:43+08:00",
+  "updatedAt": "2026-10-28T09:43:42+08:00",
   "status": "updated",
-  "summary": "双团队两条谱系无新增；LeRobot有PEFT主分支修复及统计、训练、仿真三个未合并更新簇，岗位面经无新增，不改总纲。",
+  "summary": "严格24小时内双团队及主要技术仓库无实质新增；补审确认LeRobot float64统计修复进入main，岗位面经无新增，不改总纲。",
   "items": [
     {
       "type": "research",
-      "title": "LeRobot统一PEFT checkpoint与加载识别",
+      "title": "LeRobot float64运行统计修复进入main",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · main",
-      "publishedAt": "2026-10-26T14:45:18Z",
-      "url": "https://github.com/huggingface/lerobot/commit/45cca1a6ba368cf29cc8b4e0f49a1db875d15f61",
-      "commitSha": "45cca1a6ba368cf29cc8b4e0f49a1db875d15f61",
+      "lineage": "其他官方技术更新 · 连续性补审 · main",
+      "publishedAt": "2026-10-26T23:18:09Z",
+      "url": "https://github.com/huggingface/lerobot/commit/dd5313e305ff7aaa5b6c7b4769d1b26650ce250b",
+      "commitSha": "dd5313e305ff7aaa5b6c7b4769d1b26650ce250b",
       "signals": [
-        "把peft配置与policy.use_peft统一为一个开关并从checkpoint检测adapter",
-        "fresh LoRA、rollout与远程推理server共用cache-aware adapter检查"
+        "compute_stats.py将batch转为np.float64后累积running stats",
+        "此前3c1d85c未合并簇现已进入main；按同一功能去重"
       ],
-      "decision": "加入PEFT/checkpoint加载与评测接口延伸阅读；属于训练工程，不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot用float64累积低方差统计量",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 未合并分支",
-      "publishedAt": "2026-10-26T14:45:53Z",
-      "url": "https://github.com/huggingface/lerobot/commit/3c1d85c230c02461a62a5c32129f66c01000b1d6",
-      "commitSha": "3c1d85c230c02461a62a5c32129f66c01000b1d6",
-      "signals": [
-        "避免float32下E[x²]-E[x]²灾难性抵消",
-        "修复relative rot6d等高均值低方差字段的零或偏置std"
-      ],
-      "decision": "加入数据归一化与统计量审计延伸阅读；未合并不冒充稳定功能"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot显式配置FSDP精度、TF32与WSD调度",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 三个未合并分支",
-      "publishedAt": "2026-10-26T12:10:03Z",
-      "url": "https://github.com/huggingface/lerobot/commit/e35546ee532ad089b4ddb710ff904421fd66e38c",
-      "commitSha": "e35546ee532ad089b4ddb710ff904421fd66e38c",
-      "signals": [
-        "FSDP2 mixed-precision policy与gradient sync显式化",
-        "训练/评测TF32开关及warmup-stable-decay scheduler"
-      ],
-      "decision": "加入训练数值与调度复现实验；三个分支不可视为已验证组合"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot补齐仿真episode与vector边界",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 未合并分支",
-      "publishedAt": "2026-10-26T15:09:28Z",
-      "url": "https://github.com/huggingface/lerobot/commit/895d010353bc744a046837871b75c27824f5c00d",
-      "commitSha": "895d010353bc744a046837871b75c27824f5c00d",
-      "signals": [
-        "episode结束时停止rollout并清理recording、teleop与控制状态",
-        "保护EnvHub provider拥有的batch/vector语义并增加边界回归"
-      ],
-      "decision": "加入仿真done-reset与跨episode污染审计；未合并不改纲"
+      "decision": "更新既有统计审计簇的发布状态；加入高均值低方差回归延伸阅读，不改总纲"
     }
   ]
 }
