@@ -1,8 +1,22 @@
 {
-  "updatedAt": "2026-10-28T09:43:42+08:00",
+  "updatedAt": "2026-10-28T22:54:02+08:00",
   "status": "updated",
-  "summary": "严格24小时内双团队及主要技术仓库无实质新增；补审确认LeRobot float64统计修复进入main，岗位面经无新增，不改总纲。",
+  "summary": "双团队专项无新增；LeRobot默认关闭W&B checkpoint artifact上传，岗位面经无新增，不改总纲。",
   "items": [
+    {
+      "type": "research",
+      "title": "LeRobot默认关闭W&B权重artifact上传",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 训练工程 · 资产治理",
+      "publishedAt": "2026-10-28T12:55:16Z",
+      "url": "https://github.com/huggingface/lerobot/commit/2b8aeee410753fcfaa44ec259707474bf6141b62",
+      "commitSha": "2b8aeee410753fcfaa44ec259707474bf6141b62",
+      "signals": [
+        "WandBConfig.disable_artifact默认值由false改为true",
+        "显式传--wandb.disable_artifact=false才恢复checkpoint artifact上传"
+      ],
+      "decision": "加入checkpoint与模型资产治理延伸阅读；提醒仍需权限、脱敏和出口审计，不改总纲"
+    },
     {
       "type": "research",
       "title": "LeRobot float64运行统计修复进入main",
