@@ -1,95 +1,62 @@
 {
-  "updatedAt": "2026-10-30T07:53:20+08:00",
+  "updatedAt": "2026-10-31T06:33:02+08:00",
   "status": "updated",
-  "summary": "双团队专项无新增；LeRobot新增Long-WAM、typed prediction、PEFT分片训练等六簇，连续性补审GR00T双mask修复；岗位面经无新增，不改总纲。",
+  "summary": "StanfordVL新增Isaac Sim 6.0迁移与axis-angle修复；LeRobot新增rollout监控、EMA/数值及数据性能三簇；World Labs、AMI、Meta/FAIR无新增，岗位面经无新增。",
   "items": [
     {
       "type": "research",
-      "title": "LeRobot原生集成Long-WAM",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 世界动作模型",
-      "publishedAt": "2026-10-29T14:35:12Z",
-      "url": "https://github.com/huggingface/lerobot/commit/c386ba8bfc1ad38e44d359314f5bf8968d9638cc",
-      "commitSha": "c386ba8bfc1ad38e44d359314f5bf8968d9638cc",
-      "signals": ["新增LongWAMConfig、processor、model、native checkpoint与同步action-chunk inference", "观察历史、future latent与action horizon分开；9069415修复inference resize设备"],
-      "decision": "加入长历史世界动作模型、mask与时延预算延伸阅读；固定checkpoint后再用于课程，不改总纲"
+      "title": "OmniGibson迁移Isaac Sim 6.0",
+      "source": "StanfordVL/BEHAVIOR-1K",
+      "lineage": "李飞飞相关谱系 · StanfordVL/OmniGibson",
+      "publishedAt": "2026-10-30T16:53:42Z",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/e24fdcd238517d9747537deed6b06caa787e0cef",
+      "commitSha": "e24fdcd238517d9747537deed6b06caa787e0cef",
+      "signals": ["Isaac Sim 5.1/Kit 107迁移至Isaac Sim 6.0/Kit 110", "更新VisionSensor语义映射、LeRobot RGB/depth与测试/安装合同"],
+      "decision": "进入URDF导入器版本身份与五级回归门；属于StanfordVL，不改署World Labs，不改总纲"
     },
     {
       "type": "research",
-      "title": "LeRobot贯通typed policy prediction",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 推理合同",
-      "publishedAt": "2026-10-29T16:27:25Z",
-      "url": "https://github.com/huggingface/lerobot/commit/af422027518734310740040f924c304b26a47875",
-      "commitSha": "af422027518734310740040f924c304b26a47875",
-      "signals": ["PolicyOutput可同时携action与observation/language/boxes prediction", "prediction贯通sync/RTC与Rerun/Foxglove；5bac1d0补充rollout失败资源关闭"],
-      "decision": "加入快慢计划provenance和world-model shadow output延伸阅读；prediction不替代闭环成功"
+      "title": "OmniGibson修复axis-angle幅值",
+      "source": "StanfordVL/BEHAVIOR-1K",
+      "lineage": "李飞飞相关谱系 · StanfordVL/OmniGibson",
+      "publishedAt": "2026-10-30T18:01:18Z",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/14bc29c66821eca9e2f7948a749397d9e7fddd13",
+      "commitSha": "14bc29c66821eca9e2f7948a749397d9e7fddd13",
+      "signals": ["vecs2axisangle先归一化cross再乘angle", "新增30度非正交回归测试，旧实现幅值为θsinθ"],
+      "decision": "进入11月3日坐标合同与测试辨识力案例；不外推为任务分数提升"
     },
     {
       "type": "research",
-      "title": "LeRobot统一生成噪声与chunk入口",
+      "title": "LeRobot增加rollout预算监控",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 生成动作复现",
-      "publishedAt": "2026-10-29T16:34:37Z",
-      "url": "https://github.com/huggingface/lerobot/commit/e5e190da6880395b7838faea28dd05d627dc1586",
-      "commitSha": "e5e190da6880395b7838faea28dd05d627dc1586",
-      "signals": ["EO-1/EVO-1/WALL-OSS/Wall-OSS-0.5支持外部starting noise", "38b975c让XVLA select_action复用predict_action_chunk"],
-      "decision": "加入固定noise identity、候选公平比较和action queue延伸阅读，不改总纲"
+      "lineage": "其他官方技术更新 · 部署可观测性",
+      "publishedAt": "2026-10-30T16:21:53Z",
+      "url": "https://github.com/huggingface/lerobot/commit/8cbac3f112b06c928657fbbcad61ce43c99d75a9",
+      "commitSha": "8cbac3f112b06c928657fbbcad61ce43c99d75a9",
+      "signals": ["周期记录cadence、inference latency、memory与over-budget", "action interpolation下区分command rate与policy rate"],
+      "decision": "加入控制频率、时延长尾与部署可观测性延伸阅读，不改总纲"
     },
     {
       "type": "research",
-      "title": "LeRobot批量解码Lance深度视频",
+      "title": "LeRobot扩展EMA与训练数值合同",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 数据吞吐",
-      "publishedAt": "2026-10-29T15:04:46Z",
-      "url": "https://github.com/huggingface/lerobot/commit/d986f03fad3bd7f5acdb2c65d425bc325986be83",
-      "commitSha": "d986f03fad3bd7f5acdb2c65d425bc325986be83",
-      "signals": ["Lance backend的depth video decoding改为批量路径", "吞吐优化不改变z/ray/metric深度语义，需做batch与逐帧等价测试"],
-      "decision": "加入视频解码、深度身份和吞吐守恒延伸阅读，不改总纲"
+      "lineage": "其他官方技术更新 · 训练与checkpoint",
+      "publishedAt": "2026-10-30T15:27:00Z",
+      "url": "https://github.com/huggingface/lerobot/commit/724b1b62ff41ed6ada55d5157b51101f52011cd6",
+      "commitSha": "724b1b62ff41ed6ada55d5157b51101f52011cd6",
+      "signals": ["原生constant/warmup/power EMA支持safetensors与DCP分片保存恢复", "同簇含WSD scheduler、TF32开关、FSDP2 MixedPrecisionPolicy与同步校验"],
+      "decision": "加入live/EMA、dtype、topology与恢复provenance延伸阅读；同功能合簇，不改总纲"
     },
     {
       "type": "research",
-      "title": "LeRobot支持PEFT分片训练恢复",
+      "title": "LeRobot优化GR00T与Lance数据路径",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 分布式训练",
-      "publishedAt": "2026-10-29T11:26:25Z",
-      "url": "https://github.com/huggingface/lerobot/commit/89cc0a8094774679c93ed23f6d3a836d407cfa0f",
-      "commitSha": "89cc0a8094774679c93ed23f6d3a836d407cfa0f",
-      "signals": ["FSDP2/HSDP下保存PEFT adapter与DCP resume shards", "wrapper解包、checkpoint格式与topology校验纳入测试"],
-      "decision": "加入adapter/base revision、分片恢复与部署转换延伸阅读；更新既有候选为main状态"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot实验追踪迁移到Trackio",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 实验追踪",
-      "publishedAt": "2026-10-29T16:52:10Z",
-      "url": "https://github.com/huggingface/lerobot/commit/8b00dab8fc277bd15cf3fbe7d260657b6f73ac85",
-      "commitSha": "8b00dab8fc277bd15cf3fbe7d260657b6f73ac85",
-      "signals": ["训练、RL learner、日志工具和model card由W&B接口重构为Trackio", "后端迁移影响日志与artifact审计，不代表模型算法变化"],
-      "decision": "加入追踪后端、默认外发与资产治理延伸阅读；上线前核对权限和离线模式"
-    },
-    {
-      "type": "research",
-      "title": "GR00T N1.7严格屏蔽VL与动作padding",
-      "source": "NVIDIA/Isaac-GR00T",
-      "lineage": "连续性补审 · 模型mask",
-      "publishedAt": "2026-10-28T18:24:28Z",
-      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/c56f54128d922c6c7689fe73597fbca90b480442",
-      "commitSha": "c56f54128d922c6c7689fe73597fbca90b480442",
-      "signals": ["53bc754先阻止plain DiT关注VL padding", "c56f541再屏蔽未使用action维/horizon token并校验model/processor/deployment一致性"],
-      "decision": "加入跨本体padding mask与训练部署一致性延伸阅读；因位于补审区间单列，不冒充严格24小时新增"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot评测保留checkpoint输出特征",
-      "source": "huggingface/lerobot",
-      "lineage": "连续性补审 · checkpoint一致性",
-      "publishedAt": "2026-10-28T17:51:58Z",
-      "url": "https://github.com/huggingface/lerobot/commit/626da71be9d2",
-      "commitSha": "626da71be9d2",
-      "signals": ["evaluation保留checkpoint的output features", "此前未合并候选现进入main；按同一功能去重"],
-      "decision": "更新既有checkpoint/eval一致性簇状态，不重复计为第二项功能"
+      "lineage": "其他官方技术更新 · 数据性能",
+      "publishedAt": "2026-10-30T13:17:45Z",
+      "url": "https://github.com/huggingface/lerobot/commit/69417e890bfec823093793206b478f4d16e35125",
+      "commitSha": "69417e890bfec823093793206b478f4d16e35125",
+      "signals": ["GR00T N1.7相机预处理保持在目标设备并增加parity测试", "9603c32将Lance episode subset映射改为O(num_episodes)索引"],
+      "decision": "加入设备/数值parity、episode身份与复杂度审计；无实测不宣称加速倍率"
     }
   ]
 }
