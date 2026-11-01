@@ -1,62 +1,6 @@
 {
-  "updatedAt": "2026-10-31T06:33:02+08:00",
-  "status": "updated",
-  "summary": "StanfordVL新增Isaac Sim 6.0迁移与axis-angle修复；LeRobot新增rollout监控、EMA/数值及数据性能三簇；World Labs、AMI、Meta/FAIR无新增，岗位面经无新增。",
-  "items": [
-    {
-      "type": "research",
-      "title": "OmniGibson迁移Isaac Sim 6.0",
-      "source": "StanfordVL/BEHAVIOR-1K",
-      "lineage": "李飞飞相关谱系 · StanfordVL/OmniGibson",
-      "publishedAt": "2026-10-30T16:53:42Z",
-      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/e24fdcd238517d9747537deed6b06caa787e0cef",
-      "commitSha": "e24fdcd238517d9747537deed6b06caa787e0cef",
-      "signals": ["Isaac Sim 5.1/Kit 107迁移至Isaac Sim 6.0/Kit 110", "更新VisionSensor语义映射、LeRobot RGB/depth与测试/安装合同"],
-      "decision": "进入URDF导入器版本身份与五级回归门；属于StanfordVL，不改署World Labs，不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "OmniGibson修复axis-angle幅值",
-      "source": "StanfordVL/BEHAVIOR-1K",
-      "lineage": "李飞飞相关谱系 · StanfordVL/OmniGibson",
-      "publishedAt": "2026-10-30T18:01:18Z",
-      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/14bc29c66821eca9e2f7948a749397d9e7fddd13",
-      "commitSha": "14bc29c66821eca9e2f7948a749397d9e7fddd13",
-      "signals": ["vecs2axisangle先归一化cross再乘angle", "新增30度非正交回归测试，旧实现幅值为θsinθ"],
-      "decision": "进入11月3日坐标合同与测试辨识力案例；不外推为任务分数提升"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot增加rollout预算监控",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 部署可观测性",
-      "publishedAt": "2026-10-30T16:21:53Z",
-      "url": "https://github.com/huggingface/lerobot/commit/8cbac3f112b06c928657fbbcad61ce43c99d75a9",
-      "commitSha": "8cbac3f112b06c928657fbbcad61ce43c99d75a9",
-      "signals": ["周期记录cadence、inference latency、memory与over-budget", "action interpolation下区分command rate与policy rate"],
-      "decision": "加入控制频率、时延长尾与部署可观测性延伸阅读，不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot扩展EMA与训练数值合同",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 训练与checkpoint",
-      "publishedAt": "2026-10-30T15:27:00Z",
-      "url": "https://github.com/huggingface/lerobot/commit/724b1b62ff41ed6ada55d5157b51101f52011cd6",
-      "commitSha": "724b1b62ff41ed6ada55d5157b51101f52011cd6",
-      "signals": ["原生constant/warmup/power EMA支持safetensors与DCP分片保存恢复", "同簇含WSD scheduler、TF32开关、FSDP2 MixedPrecisionPolicy与同步校验"],
-      "decision": "加入live/EMA、dtype、topology与恢复provenance延伸阅读；同功能合簇，不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot优化GR00T与Lance数据路径",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 数据性能",
-      "publishedAt": "2026-10-30T13:17:45Z",
-      "url": "https://github.com/huggingface/lerobot/commit/69417e890bfec823093793206b478f4d16e35125",
-      "commitSha": "69417e890bfec823093793206b478f4d16e35125",
-      "signals": ["GR00T N1.7相机预处理保持在目标设备并增加parity测试", "9603c32将Lance episode subset映射改为O(num_episodes)索引"],
-      "decision": "加入设备/数值parity、episode身份与复杂度审计；无实测不宣称加速倍率"
-    }
-  ]
+  "updatedAt": "2026-11-01T10:59:28+08:00",
+  "status": "no_change",
+  "summary": "严格24小时双团队、官方技术、杭州/上海可靠岗位与面经均无可登记新增；不调整总纲。",
+  "items": []
 }
