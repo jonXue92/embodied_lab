@@ -1,6 +1,49 @@
 {
-  "updatedAt": "2026-11-02T00:19:47+08:00",
-  "status": "no_change",
-  "summary": "严格24小时双团队、官方技术、杭州/上海可靠岗位与面经均无可登记新增；不调整总纲。",
-  "items": []
+  "updatedAt": "2026-11-02T23:10:43+08:00",
+  "status": "updated",
+  "summary": "双团队专项无新增；LeRobot登记EO-1设备修复、VLA-JEPA旧RoPE兼容与Hub迁移三簇，不改总纲。",
+  "items": [
+    {
+      "type": "research",
+      "title": "EO-1慢速Qwen处理器改用CPU图像",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · EO-1 · processor设备契约",
+      "publishedAt": "2026-11-02T14:36:34Z",
+      "url": "https://github.com/huggingface/lerobot/commit/f5c9bc02137c331b009eccd44ece6f11b62187a8",
+      "commitSha": "f5c9bc02137c331b009eccd44ece6f11b62187a8",
+      "signals": [
+        "slow Qwen2.5-VL processor进入apply_chat_template前把messages移到CPU",
+        "fast processor及最终输出回到policy device的路径保持不变"
+      ],
+      "decision": "加入视觉输入processor顺序与CPU/CUDA正负测试延伸阅读；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "VLA-JEPA旧world predictor增加RoPE兼容开关",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · VLA-JEPA · checkpoint语义版本",
+      "publishedAt": "2026-11-02T12:31:37Z",
+      "url": "https://github.com/huggingface/lerobot/commit/145cc7ea53e5864bd5efec4e9bb70ee799e47bd8",
+      "commitSha": "145cc7ea53e5864bd5efec4e9bb70ee799e47bd8",
+      "signals": [
+        "VLAJEPAConfig新增默认关闭的world_model_rope_legacy",
+        "legacy路径复现旧频率块重复；新训练默认仍使用相邻坐标对交错展开"
+      ],
+      "decision": "加入world predictor复现与旧checkpoint继续训练延伸阅读；LeRobot更新不改署Meta/AMI；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "LeRobot迁移到Hugging Face Hub 1.31至2.x接口",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 数据工程 · Hub兼容",
+      "publishedAt": "2026-11-02T11:10:05Z",
+      "url": "https://github.com/huggingface/lerobot/commit/ae32126a1e7a2c7aea26e10a6fa06f10ddee8ddc",
+      "commitSha": "ae32126a1e7a2c7aea26e10a6fa06f10ddee8ddc",
+      "signals": [
+        "依赖放宽到huggingface-hub>=1.31,<3并从huggingface_hub.utils取得httpx",
+        "废弃proxies/resume_download参数，统一upload_folder，并迁移hf auth与hf repos CLI"
+      ],
+      "decision": "与17aea13按Hub兼容合同合并；加入离线缓存、代理、私有token和大目录上传回归阅读；不改总纲"
+    }
+  ]
 }
