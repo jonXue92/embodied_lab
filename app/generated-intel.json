@@ -1,49 +1,106 @@
 {
-  "updatedAt": "2026-11-02T23:10:43+08:00",
+  "updatedAt": "2026-11-03T22:52:40+08:00",
   "status": "updated",
-  "summary": "双团队专项无新增；LeRobot登记EO-1设备修复、VLA-JEPA旧RoPE兼容与Hub迁移三簇，不改总纲。",
+  "summary": "双团队专项无新增；LeRobot登记7簇，Isaac Lab登记G1视觉部署与recorder批量存储2簇，不改总纲。",
   "items": [
     {
       "type": "research",
-      "title": "EO-1慢速Qwen处理器改用CPU图像",
+      "title": "LeRobot原生集成G0.5策略",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · EO-1 · processor设备契约",
-      "publishedAt": "2026-11-02T14:36:34Z",
-      "url": "https://github.com/huggingface/lerobot/commit/f5c9bc02137c331b009eccd44ece6f11b62187a8",
-      "commitSha": "f5c9bc02137c331b009eccd44ece6f11b62187a8",
-      "signals": [
-        "slow Qwen2.5-VL processor进入apply_chat_template前把messages移到CPU",
-        "fast processor及最终输出回到policy device的路径保持不变"
-      ],
-      "decision": "加入视觉输入processor顺序与CPU/CUDA正负测试延伸阅读；不改总纲"
+      "lineage": "其他官方技术更新 · VLA · SO-101",
+      "publishedAt": "2026-11-03T12:00:36Z",
+      "url": "https://github.com/huggingface/lerobot/commit/154fdfb595573ae9c7e0b3b48102b0318235e306",
+      "commitSha": "154fdfb595573ae9c7e0b3b48102b0318235e306",
+      "signals": ["Qwen3.5-2B backbone、action expert、flow/action codec与可选System 2 CoT", "包含SO-101配置、归一化和KI，但不等于已验证真机成绩"],
+      "decision": "加入VLA架构、配置合同和离线回归延伸阅读；不改总纲"
     },
     {
       "type": "research",
-      "title": "VLA-JEPA旧world predictor增加RoPE兼容开关",
+      "title": "FineART修正空间目标量化",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · VLA-JEPA · checkpoint语义版本",
-      "publishedAt": "2026-11-02T12:31:37Z",
-      "url": "https://github.com/huggingface/lerobot/commit/145cc7ea53e5864bd5efec4e9bb70ee799e47bd8",
-      "commitSha": "145cc7ea53e5864bd5efec4e9bb70ee799e47bd8",
-      "signals": [
-        "VLAJEPAConfig新增默认关闭的world_model_rope_legacy",
-        "legacy路径复现旧频率块重复；新训练默认仍使用相邻坐标对交错展开"
-      ],
-      "decision": "加入world predictor复现与旧checkpoint继续训练延伸阅读；LeRobot更新不改署Meta/AMI；不改总纲"
+      "lineage": "其他官方技术更新 · 空间目标 · token合同",
+      "publishedAt": "2026-11-03T12:53:29Z",
+      "url": "https://github.com/huggingface/lerobot/commit/e3d845e4a07a2c9402cbebc9f0318916c727b569",
+      "commitSha": "e3d845e4a07a2c9402cbebc9f0318916c727b569",
+      "signals": ["归一化[0,1]坐标直接乘1023生成location token", "补充边界与量化测试，避免旧路径压缩动态范围"],
+      "decision": "加入坐标系、归一化与边界正负测试延伸阅读；不改总纲"
     },
     {
       "type": "research",
-      "title": "LeRobot迁移到Hugging Face Hub 1.31至2.x接口",
+      "title": "数据集拆分拒绝重复episode索引",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 数据工程 · Hub兼容",
-      "publishedAt": "2026-11-02T11:10:05Z",
-      "url": "https://github.com/huggingface/lerobot/commit/ae32126a1e7a2c7aea26e10a6fa06f10ddee8ddc",
-      "commitSha": "ae32126a1e7a2c7aea26e10a6fa06f10ddee8ddc",
-      "signals": [
-        "依赖放宽到huggingface-hub>=1.31,<3并从huggingface_hub.utils取得httpx",
-        "废弃proxies/resume_download参数，统一upload_folder，并迁移hf auth与hf repos CLI"
-      ],
-      "decision": "与17aea13按Hub兼容合同合并；加入离线缓存、代理、私有token和大目录上传回归阅读；不改总纲"
+      "lineage": "其他官方技术更新 · 数据治理 · split_dataset",
+      "publishedAt": "2026-11-03T12:42:51Z",
+      "url": "https://github.com/huggingface/lerobot/commit/1d172cfca84666b6a116717521daf73c5cb14bd8",
+      "commitSha": "1d172cfca84666b6a116717521daf73c5cb14bd8",
+      "signals": ["输出前检测重复episode index", "阻止同一episode重复进入拆分结果"],
+      "decision": "加入数据血缘与拆分去重门禁；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "删episode时增加视频流复制快路",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 视频数据工程 · GOP边界",
+      "publishedAt": "2026-11-03T11:12:04Z",
+      "url": "https://github.com/huggingface/lerobot/commit/772bc21ef1ab17b72e17ebb1593ff78725a21d55",
+      "commitSha": "772bc21ef1ab17b72e17ebb1593ff78725a21d55",
+      "signals": ["关键帧/GOP合同成立时流复制保留packet", "合同不成立时回退重编码并保留验证"],
+      "decision": "加入视频裁剪、关键帧与回退路径正负测试；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "分布式训练同步主模型与EMA保存",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 分布式训练 · checkpoint",
+      "publishedAt": "2026-11-03T10:41:38Z",
+      "url": "https://github.com/huggingface/lerobot/commit/6636d28615debc7cc8c3e581a9d2b85fc18fcf75",
+      "commitSha": "6636d28615debc7cc8c3e581a9d2b85fc18fcf75",
+      "signals": ["暴露Accelerate InitProcessGroupKwargs配置", "同步主模型与EMA checkpoint保存"],
+      "decision": "加入多进程恢复和单写者一致性测试；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "预训练revision贯穿训练评测加载链",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 资产版本 · pretrained_revision",
+      "publishedAt": "2026-11-03T10:16:58Z",
+      "url": "https://github.com/huggingface/lerobot/commit/b65b05f7f909de72f02ef4ba7854ad40230aa722",
+      "commitSha": "b65b05f7f909de72f02ef4ba7854ad40230aa722",
+      "signals": ["训练与评测尊重policy.pretrained_revision", "Pi0家族与PEFT base load使用固定revision"],
+      "decision": "加入模型资产可复现与revision漂移测试；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "PEFT评测透传预测latent",
+      "source": "huggingface/lerobot",
+      "lineage": "其他官方技术更新 · 评测可观测性 · PEFT",
+      "publishedAt": "2026-11-03T09:43:34Z",
+      "url": "https://github.com/huggingface/lerobot/commit/aacf46397e6eb90e688e201e002ba6dea3354eb9",
+      "commitSha": "aacf46397e6eb90e688e201e002ba6dea3354eb9",
+      "signals": ["经get_base_model取得last_predicted_latents", "阻止包装层使评测诊断量静默丢失"],
+      "decision": "加入wrapped/unwrapped评测等价性回归；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "Isaac Lab加入G1视觉locomotion流水线",
+      "source": "isaac-sim/IsaacLab",
+      "lineage": "其他官方技术更新 · 视觉运动 · 安全部署",
+      "publishedAt": "2026-11-02T22:32:45Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/171a0a917b489b30c6714c7f068476cda9f03cfb",
+      "commitSha": "171a0a917b489b30c6714c7f068476cda9f03cfb",
+      "signals": ["teacher、depth-student、LEAPP export与Isaac ROS Deploy串成流水线", "官方提交明确未做物理G1或训练策略行走验证"],
+      "decision": "加入训练部署合同与watchdog负测试；不把集成写成真机验证；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "Isaac Lab解耦采集与批量episode存储",
+      "source": "isaac-sim/IsaacLab",
+      "lineage": "其他官方技术更新 · 数据采集 · RecorderManager",
+      "publishedAt": "2026-11-02T21:57:05Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/7da2a027600a8d965c063e9c9da43f9cdaeea90f",
+      "commitSha": "7da2a027600a8d965c063e9c9da43f9cdaeea90f",
+      "signals": ["预分配批量tensor替代逐world Python episode列表", "改变post-step observation与EpisodeData/recorder API"],
+      "decision": "加入breaking migration和storage-only benchmark边界阅读；不外推仿真训练吞吐；不改总纲"
     }
   ]
 }
