@@ -1,106 +1,116 @@
 {
-  "updatedAt": "2026-11-03T22:52:40+08:00",
+  "updatedAt": "2026-11-04T22:52:40+08:00",
   "status": "updated",
-  "summary": "双团队专项无新增；LeRobot登记7簇，Isaac Lab登记G1视觉部署与recorder批量存储2簇，不改总纲。",
+  "summary": "双团队专项无新增；LeRobot登记3簇、Isaac Lab登记6簇，并新增1个上海/无锡官方World Sim岗位，不改总纲。",
   "items": [
     {
       "type": "research",
-      "title": "LeRobot原生集成G0.5策略",
+      "title": "LeRobot原生集成Cosmos 3世界动作模型",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · VLA · SO-101",
-      "publishedAt": "2026-11-03T12:00:36Z",
-      "url": "https://github.com/huggingface/lerobot/commit/154fdfb595573ae9c7e0b3b48102b0318235e306",
-      "commitSha": "154fdfb595573ae9c7e0b3b48102b0318235e306",
-      "signals": ["Qwen3.5-2B backbone、action expert、flow/action codec与可选System 2 CoT", "包含SO-101配置、归一化和KI，但不等于已验证真机成绩"],
-      "decision": "加入VLA架构、配置合同和离线回归延伸阅读；不改总纲"
+      "lineage": "其他官方技术更新 · World Action Model · 视频—动作联合预测",
+      "publishedAt": "2026-11-03T16:31:39Z",
+      "url": "https://github.com/huggingface/lerobot/commit/02655292cdadd7dd2f8fc5daa31a7437b44354ee",
+      "commitSha": "02655292cdadd7dd2f8fc5daa31a7437b44354ee",
+      "signals": ["新增Cosmos3 Nano/Edge配置、模型、processor和训练/评测入口", "联合预测未来视频与action chunk，并修正padding loss与三相机布局"],
+      "decision": "加入世界动作模型与mask合同延伸阅读；不把代码集成写成真机成绩"
     },
     {
       "type": "research",
-      "title": "FineART修正空间目标量化",
+      "title": "FastWAM加入相对动作RA-BC",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 空间目标 · token合同",
-      "publishedAt": "2026-11-03T12:53:29Z",
-      "url": "https://github.com/huggingface/lerobot/commit/e3d845e4a07a2c9402cbebc9f0318916c727b569",
-      "commitSha": "e3d845e4a07a2c9402cbebc9f0318916c727b569",
-      "signals": ["归一化[0,1]坐标直接乘1023生成location token", "补充边界与量化测试，避免旧路径压缩动态范围"],
-      "decision": "加入坐标系、归一化与边界正负测试延伸阅读；不改总纲"
+      "lineage": "其他官方技术更新 · FastWAM · 动作语义",
+      "publishedAt": "2026-11-03T16:46:47Z",
+      "url": "https://github.com/huggingface/lerobot/commit/ba83e4cf43737e2665be0aafcb5f513b83c7d0f3",
+      "commitSha": "ba83e4cf43737e2665be0aafcb5f513b83c7d0f3",
+      "signals": ["加入relative action与per-sample loss reduction", "增加proprio_dim、旧checkpoint兼容和prompt embedding cache"],
+      "decision": "加入绝对/相对动作、checkpoint迁移和loss reduction测试；不改总纲"
     },
     {
       "type": "research",
-      "title": "数据集拆分拒绝重复episode索引",
+      "title": "XVLA将LIBERO processor限制在对应环境",
       "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 数据治理 · split_dataset",
-      "publishedAt": "2026-11-03T12:42:51Z",
-      "url": "https://github.com/huggingface/lerobot/commit/1d172cfca84666b6a116717521daf73c5cb14bd8",
-      "commitSha": "1d172cfca84666b6a116717521daf73c5cb14bd8",
-      "signals": ["输出前检测重复episode index", "阻止同一episode重复进入拆分结果"],
-      "decision": "加入数据血缘与拆分去重门禁；不改总纲"
+      "lineage": "其他官方技术更新 · XVLA · 环境动作合同",
+      "publishedAt": "2026-11-04T14:19:19Z",
+      "url": "https://github.com/huggingface/lerobot/commit/6e3b67c5f0b77c93a5179d88d7c1d6a5f7ff7b27",
+      "commitSha": "6e3b67c5f0b77c93a5179d88d7c1d6a5f7ff7b27",
+      "signals": ["仅LiberoEnv应用LIBERO pre/post processor", "增加动作转换检查，防止环境特定变换外溢"],
+      "decision": "加入processor作用域和跨环境动作负测试；不改总纲"
     },
     {
       "type": "research",
-      "title": "删episode时增加视频流复制快路",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 视频数据工程 · GOP边界",
-      "publishedAt": "2026-11-03T11:12:04Z",
-      "url": "https://github.com/huggingface/lerobot/commit/772bc21ef1ab17b72e17ebb1593ff78725a21d55",
-      "commitSha": "772bc21ef1ab17b72e17ebb1593ff78725a21d55",
-      "signals": ["关键帧/GOP合同成立时流复制保留packet", "合同不成立时回退重编码并保留验证"],
-      "decision": "加入视频裁剪、关键帧与回退路径正负测试；不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "分布式训练同步主模型与EMA保存",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 分布式训练 · checkpoint",
-      "publishedAt": "2026-11-03T10:41:38Z",
-      "url": "https://github.com/huggingface/lerobot/commit/6636d28615debc7cc8c3e581a9d2b85fc18fcf75",
-      "commitSha": "6636d28615debc7cc8c3e581a9d2b85fc18fcf75",
-      "signals": ["暴露Accelerate InitProcessGroupKwargs配置", "同步主模型与EMA checkpoint保存"],
-      "decision": "加入多进程恢复和单写者一致性测试；不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "预训练revision贯穿训练评测加载链",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 资产版本 · pretrained_revision",
-      "publishedAt": "2026-11-03T10:16:58Z",
-      "url": "https://github.com/huggingface/lerobot/commit/b65b05f7f909de72f02ef4ba7854ad40230aa722",
-      "commitSha": "b65b05f7f909de72f02ef4ba7854ad40230aa722",
-      "signals": ["训练与评测尊重policy.pretrained_revision", "Pi0家族与PEFT base load使用固定revision"],
-      "decision": "加入模型资产可复现与revision漂移测试；不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "PEFT评测透传预测latent",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术更新 · 评测可观测性 · PEFT",
-      "publishedAt": "2026-11-03T09:43:34Z",
-      "url": "https://github.com/huggingface/lerobot/commit/aacf46397e6eb90e688e201e002ba6dea3354eb9",
-      "commitSha": "aacf46397e6eb90e688e201e002ba6dea3354eb9",
-      "signals": ["经get_base_model取得last_predicted_latents", "阻止包装层使评测诊断量静默丢失"],
-      "decision": "加入wrapped/unwrapped评测等价性回归；不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "Isaac Lab加入G1视觉locomotion流水线",
+      "title": "Isaac Lab过滤零深度伪点",
       "source": "isaac-sim/IsaacLab",
-      "lineage": "其他官方技术更新 · 视觉运动 · 安全部署",
-      "publishedAt": "2026-11-02T22:32:45Z",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/171a0a917b489b30c6714c7f068476cda9f03cfb",
-      "commitSha": "171a0a917b489b30c6714c7f068476cda9f03cfb",
-      "signals": ["teacher、depth-student、LEAPP export与Isaac ROS Deploy串成流水线", "官方提交明确未做物理G1或训练策略行走验证"],
-      "decision": "加入训练部署合同与watchdog负测试；不把集成写成真机验证；不改总纲"
+      "lineage": "其他官方技术更新 · 深度相机 · 点云",
+      "publishedAt": "2026-11-04T07:04:58Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/dc01ec356052f2acd04246752a92a55162f6cd68",
+      "commitSha": "dc01ec356052f2acd04246752a92a55162f6cd68",
+      "signals": ["depth=0不再反投影为相机原点的有限伪点", "RGBD路径同步删除对应颜色"],
+      "decision": "加入depth validity与RGB对齐正负测试；不改总纲"
     },
     {
       "type": "research",
-      "title": "Isaac Lab解耦采集与批量episode存储",
+      "title": "MicroDuck加入左右对称数据增强",
       "source": "isaac-sim/IsaacLab",
-      "lineage": "其他官方技术更新 · 数据采集 · RecorderManager",
-      "publishedAt": "2026-11-02T21:57:05Z",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/7da2a027600a8d965c063e9c9da43f9cdaeea90f",
-      "commitSha": "7da2a027600a8d965c063e9c9da43f9cdaeea90f",
-      "signals": ["预分配批量tensor替代逐world Python episode列表", "改变post-step observation与EpisodeData/recorder API"],
-      "decision": "加入breaking migration和storage-only benchmark边界阅读；不外推仿真训练吞吐；不改总纲"
+      "lineage": "其他官方技术更新 · locomotion · symmetry",
+      "publishedAt": "2026-11-03T18:27:00Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/515fdd711e303914d3aa53a5c9ab8e7968e7de90",
+      "commitSha": "515fdd711e303914d3aa53a5c9ab8e7968e7de90",
+      "signals": ["rough默认recipe调整环境规模、动作平滑与curriculum", "加入left/right观测动作镜像布局与测试"],
+      "decision": "加入机器人等变性与默认值消融阅读；不外推通用收益"
+    },
+    {
+      "type": "research",
+      "title": "Actuator Warp graph缩小模块加载范围",
+      "source": "isaac-sim/IsaacLab",
+      "lineage": "其他官方技术更新 · actuator runtime · 启动性能",
+      "publishedAt": "2026-11-03T17:27:34Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/304c62a140356653862d48b30f210c18dd396536",
+      "commitSha": "304c62a140356653862d48b30f210c18dd396536",
+      "signals": ["不再为actuator graph强制加载全部已导入Warp模块", "降低OvPhysX/PhysX首次reset的无关kernel编译"],
+      "decision": "加入cold-start与steady-state吞吐边界阅读；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "LiDAR共享固定ray pattern存储",
+      "source": "isaac-sim/IsaacLab",
+      "lineage": "其他官方技术更新 · LiDAR · 批量内存",
+      "publishedAt": "2026-11-03T17:11:34Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/a01c17a34c38ebca6da1542c3be06dff62e39d3f",
+      "commitSha": "a01c17a34c38ebca6da1542c3be06dff62e39d3f",
+      "signals": ["局部ray origin/direction改为zero-stride广播view", "world ray、pose、drift与hit仍逐环境独立"],
+      "decision": "加入共享/独立传感器状态和内存布局测试；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "Newton mesh contact容量改为自动估计",
+      "source": "isaac-sim/IsaacLab",
+      "lineage": "其他官方技术更新 · collision · 多环境",
+      "publishedAt": "2026-11-03T17:04:54Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/3a59b2b0b1be32cdd1dd88c5464534471f86f191",
+      "commitSha": "3a59b2b0b1be32cdd1dd88c5464534471f86f191",
+      "signals": ["max_triangle_pairs从固定一百万改为按模型自动估计", "避免大规模mesh world中buffer overflow后丢contact"],
+      "decision": "加入接触容量与dropped-contact可观测性；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "MJWarp修复稀疏导入下的reset同步",
+      "source": "isaac-sim/IsaacLab",
+      "lineage": "其他官方技术更新 · reset · 多环境状态",
+      "publishedAt": "2026-11-03T16:59:07Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/e4a79c7fd6db24db14b5758d881202f9c7420530",
+      "commitSha": "e4a79c7fd6db24db14b5758d881202f9c7420530",
+      "signals": ["同步被标记world的authored joint state", "防止CUDA graph replay恢复旧MuJoCo状态并保留未选world"],
+      "decision": "加入reset/state identity和多环境隔离回归；不改总纲"
+    },
+    {
+      "type": "job",
+      "title": "Caterpillar招聘World Sim仿真工程师",
+      "source": "Caterpillar Careers",
+      "lineage": "岗位 · 上海/无锡 · 仿真/VLA/World Model",
+      "publishedAt": "2026-11-04",
+      "url": "https://careers.caterpillar.com/en/jobs/r0000403164/autonomy-simulation-engineer-world-sim/",
+      "signals": ["3DGS/NeRF真实场景迁移、VLA与World Model", "仿真数据生成、闭环验证、Python/PyTorch/Linux"],
+      "decision": "与视觉/LiDAR/数据背景匹配；单一岗位且面向2027届，不改总纲"
     }
   ]
 }
