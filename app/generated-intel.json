@@ -1,169 +1,155 @@
 {
-  "updatedAt": "2026-11-05T22:52:40+08:00",
+  "updatedAt": "2026-11-07T13:00:00+08:00",
   "status": "updated",
-  "summary": "StanfordVL新增2簇，World Labs、AMI及Meta历史追踪无新增；另有LeRobot/Isaac Lab/GR00T共8簇，可靠岗位和面经新增均0，不改总纲。",
+  "summary": "StanfordVL新增1簇；World Labs、AMI与Meta历史两仓无已验证新增；Isaac Lab5簇、GR00T3簇。严格时间确认岗位0，另有上海日期级候选1；可靠面经0，不改总纲。",
   "items": [
     {
       "type": "research",
-      "title": "BEHAVIOR 显式指定张量 device",
+      "title": "OmniGibson 禁用多tick渲染以避免卡死",
       "source": "StanfordVL/BEHAVIOR-1K",
       "lineage": "StanfordVL · BEHAVIOR/OmniGibson",
-      "publishedAt": "2026-11-05T05:48:01Z",
-      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/362127ee441b1e6d806351c2dd811e9d09ae363b",
-      "commitSha": "362127ee441b1e6d806351c2dd811e9d09ae363b",
+      "publishedAt": "2026-11-07T02:28:12Z",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/e5aad1d66a497cf17ad3e3bbcf628022a187dc70",
+      "commitSha": "e5aad1d66a497cf17ad3e3bbcf628022a187dc70",
       "relatedCommitShas": [
-        "362127ee441b1e6d806351c2dd811e9d09ae363b"
+        "e5aad1d66a497cf17ad3e3bbcf628022a187dc70"
       ],
       "signals": [
-        "补齐 curobo、抓取 primitive、控制器序列化等张量构造的 device；避免 CPU 默认张量与模拟器 GPU 状态混用。"
+        "omnigibson_6_0.kit设置rtx.hydra.supportMultiTickRate=false，避免新RTX view注册为定时sensor路径导致主线程长停与descriptor fatal；不是扩容显存结论。"
       ],
-      "decision": "进入设备契约、序列化与状态恢复延伸阅读；不宣称本地跑过 OmniGibson；不改总纲"
+      "decision": "关联11月11日长尾与模拟运行配置；未本地运行RTX；不改总纲"
     },
     {
       "type": "research",
-      "title": "BEHAVIOR 分离物理与渲染后端接口",
-      "source": "StanfordVL/BEHAVIOR-1K",
-      "lineage": "StanfordVL · BEHAVIOR/OmniGibson",
-      "publishedAt": "2026-11-04T18:46:09Z",
-      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/129b6c6f0b6f05699f3c60ef9a3d108a83ed25a2",
-      "commitSha": "129b6c6f0b6f05699f3c60ef9a3d108a83ed25a2",
-      "relatedCommitShas": [
-        "129b6c6f0b6f05699f3c60ef9a3d108a83ed25a2"
-      ],
-      "signals": [
-        "将 Kit 相关调用下沉到 physics/render backend，clear 使用 before_clear/after_clear/finalize 生命周期；接触查询改经 physics_backend。"
-      ],
-      "decision": "关联 11 月 5 日三时钟与 11 月 9 日版本固定，不把 main 当正式挑战 tag；不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot 统一模拟核心并接入 RoboLab",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术 · 仿真集成",
-      "publishedAt": "2026-11-05T14:41:52Z",
-      "url": "https://github.com/huggingface/lerobot/commit/16d50416981dce02d92603b2fb0f532b3a62bc6b",
-      "commitSha": "16d50416981dce02d92603b2fb0f532b3a62bc6b",
-      "relatedCommitShas": [
-        "d100b030d860c48019b89524e5eb2d34bf54cc7b",
-        "16d50416981dce02d92603b2fb0f532b3a62bc6b"
-      ],
-      "signals": [
-        "同一模拟核心支持批量环境和模拟机器人、进程内或服务模式；新增 RoboLab vector_env_fns 与 120 桌面任务接入。按同一模拟集成功能合为一簇。"
-      ],
-      "decision": "进入 11 月 9 日评测与 vector reset 延伸阅读，未运行 RTX/Isaac Sim 基准；不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "LeRobot 新增 YAM motorbridge 驱动",
-      "source": "huggingface/lerobot",
-      "lineage": "其他官方技术 · 机器人驱动",
-      "publishedAt": "2026-11-04T18:39:55Z",
-      "url": "https://github.com/huggingface/lerobot/commit/9e5ee9859480e425a97a6836bb3fee479539beb5",
-      "commitSha": "9e5ee9859480e425a97a6836bb3fee479539beb5",
-      "relatedCommitShas": [
-        "9e5ee9859480e425a97a6836bb3fee479539beb5"
-      ],
-      "signals": [
-        "增加 YAM 机器人集成、位置保持支持和 command_timeout_s 下的 hold/float idle_mode 合同。"
-      ],
-      "decision": "关联后续 watchdog/控制合同；不是 SO-101 的驱动变更，不连接真实设备；不改总纲"
-    },
-    {
-      "type": "research",
-      "title": "Isaac Lab 跨后端共享传感器存储",
+      "title": "任务空间裁剪按动作分量解析",
       "source": "isaac-sim/IsaacLab",
-      "lineage": "其他官方技术 · 传感器后端",
-      "publishedAt": "2026-11-05T00:27:42Z",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/f644e1f8f1103aa2c8c859aabd5eb877b3619484",
-      "commitSha": "f644e1f8f1103aa2c8c859aabd5eb877b3619484",
+      "lineage": "其他官方技术 · 控制合同",
+      "publishedAt": "2026-11-06T23:25:11Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/0a02a298dc759a8f771f2f8ec109ad10b4db0aa5",
+      "commitSha": "0a02a298dc759a8f771f2f8ec109ad10b4db0aa5",
       "relatedCommitShas": [
-        "f644e1f8f1103aa2c8c859aabd5eb877b3619484"
+        "0a02a298dc759a8f771f2f8ec109ad10b4db0aa5"
       ],
       "signals": [
-        "PVA 输出存储与能力开关共享；可选加速度等按需编译，复用 IMU/frame-transformer/reset 数学，保留后端原生采集。建议从 sensor.data 读测量。"
+        "DiffIK/OSC的clip改匹配pos_x、rot_x等task-space action_names；修复用关节索引裁姿态及OSC忽略clip；未匹配键与四元数分量裁剪报错。"
       ],
-      "decision": "关联模态、数据轴与 reset 测试；不把启动改进写成已实测吞吐；不改总纲"
+      "decision": "进入11月10日动作语义延伸阅读，不能对四元数逐元素夹紧；不改总纲"
     },
     {
       "type": "research",
-      "title": "OVStage 0.4 克隆前准备 CPU hierarchy",
+      "title": "移除3.1到期的执行器别名",
       "source": "isaac-sim/IsaacLab",
-      "lineage": "其他官方技术 · 场景克隆",
-      "publishedAt": "2026-11-04T22:41:47Z",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/f023588cbe828b75245bfce872617543138b9602",
-      "commitSha": "f023588cbe828b75245bfce872617543138b9602",
+      "lineage": "其他官方技术 · 配置迁移",
+      "publishedAt": "2026-11-06T07:23:55Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/8a9e6eba406bfeffb705464c2c39424d21294026",
+      "commitSha": "8a9e6eba406bfeffb705464c2c39424d21294026",
       "relatedCommitShas": [
-        "f023588cbe828b75245bfce872617543138b9602"
+        "8a9e6eba406bfeffb705464c2c39424d21294026"
       ],
       "signals": [
-        "对 0.4 release line 含开发版在 clone 前准备 CPU transform hierarchy，运行时仍保留 GPU hierarchy 默认。"
+        "移除effort_limit/velocity_limit等旧别名及gain写入转发；模型限制使用actuator_*，求解器限制使用joint_*；3.2弃用项仍按原计划。"
       ],
-      "decision": "关联初始化与运行性能分开测量；不改总纲"
+      "decision": "关联11月10日单位与模型/求解器边界；固定课程源码不自动升级；不改总纲"
     },
     {
       "type": "research",
-      "title": "HDF5 文件句柄禁止子进程继承",
+      "title": "Newton实例驱动与接触observables迁移",
       "source": "isaac-sim/IsaacLab",
-      "lineage": "其他官方技术 · 数据工程",
-      "publishedAt": "2026-11-04T18:35:34Z",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/d8a4cdd27c1d19e8fe4921da5d5c187870eae287",
-      "commitSha": "d8a4cdd27c1d19e8fe4921da5d5c187870eae287",
+      "lineage": "其他官方技术 · 仿真后端",
+      "publishedAt": "2026-11-07T00:21:15Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/b0d88de4e8440aa9c09a7bde81330a17fc0418fe",
+      "commitSha": "b0d88de4e8440aa9c09a7bde81330a17fc0418fe",
       "relatedCommitShas": [
-        "d8a4cdd27c1d19e8fe4921da5d5c187870eae287"
+        "b0d88de4e8440aa9c09a7bde81330a17fc0418fe",
+        "0ff9d07521753d7e7e2f7175f8cba4bebd3bbee6",
+        "bb4d9915f48e0529b6fc5c2982629aed0891b574"
       ],
       "signals": [
-        "HDF5DatasetFileHandler 通过 os.set_inheritable 关闭句柄继承，防止子进程保留文件锁导致 close 后 reopen 出现 BlockingIOError。"
+        "连续Newton更新合簇：solver_ops改为持有cfg/native的实例驱动，更新Newton1.9/MuJoCo3.17；接触力经CONTACT_F observables在环境末substep请求，迟注册sensor使图失效。Featherstone与implicit MPM当前不支持该contact sensor路径。"
       ],
-      "decision": "关联数据加载与资源生命周期回归；不改总纲"
+      "decision": "关联三时钟、接触数据和状态版本；上游测试不是此次本地实跑；不改总纲"
     },
     {
       "type": "research",
-      "title": "修复逐环境光照场景分区",
+      "title": "远端资产访问改用OVStorage",
       "source": "isaac-sim/IsaacLab",
-      "lineage": "其他官方技术 · 视觉随机化",
-      "publishedAt": "2026-11-04T17:29:04Z",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/fbb48284309c122a02b49b1bade02d87f3daff36",
-      "commitSha": "fbb48284309c122a02b49b1bade02d87f3daff36",
+      "lineage": "其他官方技术 · 资产工程",
+      "publishedAt": "2026-11-07T00:33:14Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/08eaa241f32e5d8c5824db1056d56ebd48a8a6cc",
+      "commitSha": "08eaa241f32e5d8c5824db1056d56ebd48a8a6cc",
       "relatedCommitShas": [
-        "fbb48284309c122a02b49b1bade02d87f3daff36"
+        "08eaa241f32e5d8c5824db1056d56ebd48a8a6cc"
       ],
       "signals": [
-        "环境内非实例 light 绑定匹配 partition selector；USD instance 内 light 和 dome background 仍有限制，不能把跨环境独立光照视为无条件成立。"
+        "isaaclab.utils.assets由omni.client迁到OVStorage，区域profile存储走CDN；既有cache首次重新下载，旧routing配置函数弃用且无效果。"
       ],
-      "decision": "关联 11 月 6 日外观随机化和 RAW/RGB 对照，先检验光照隔离；不改总纲"
+      "decision": "关联资产版本与冷启动耗时，单列首次下载和稳态；不改总纲"
     },
     {
       "type": "research",
-      "title": "配置字段拼写错误现在给出警告",
+      "title": "高度场生成器明确返回合同错误",
       "source": "isaac-sim/IsaacLab",
-      "lineage": "其他官方技术 · 配置审计",
-      "publishedAt": "2026-11-04T17:09:20Z",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/7bf1c97fa1c8226e3df0703e5d65d1de6c02d451",
-      "commitSha": "7bf1c97fa1c8226e3df0703e5d65d1de6c02d451",
+      "lineage": "其他官方技术 · 数据合同",
+      "publishedAt": "2026-11-06T21:13:13Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/753ef40a256de9c1f74975e6faa577a6ad3586e4",
+      "commitSha": "753ef40a256de9c1f74975e6faa577a6ad3586e4",
       "relatedCommitShas": [
-        "7bf1c97fa1c8226e3df0703e5d65d1de6c02d451"
+        "753ef40a256de9c1f74975e6faa577a6ad3586e4"
       ],
       "signals": [
-        "Hydra class 字段 override 不存在时警告，不再静默只增加错误属性；字典键不在此检查范围，未改为一律拒绝。"
+        "height_field_to_mesh仅收到height field而缺origin时明确抛TypeError并指明生成器/返回合同；失败后恢复临时修改的terrain size。"
       ],
-      "decision": "关联 manifest 与参数生效验证；不改总纲"
+      "decision": "关联接口错误诊断与失败清理；不改总纲"
     },
     {
       "type": "research",
-      "title": "GR00T 批量 padding 与 TensorRT mask 对齐",
+      "title": "VL padding隔离与位置编码兼容",
       "source": "NVIDIA/Isaac-GR00T",
-      "lineage": "其他官方技术 · 模型与部署",
-      "publishedAt": "2026-11-04T23:11:50Z",
-      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/f4a9c89bb74d513612c4c3bc1d78a733ef6a4f63",
-      "commitSha": "f4a9c89bb74d513612c4c3bc1d78a733ef6a4f63",
+      "lineage": "其他官方技术 · 融合部署",
+      "publishedAt": "2026-11-06T23:42:30Z",
+      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/7540b530844412bc2b6973abbaece2b42f8a1867",
+      "commitSha": "7540b530844412bc2b6973abbaece2b42f8a1867",
       "relatedCommitShas": [
-        "bc5d21a2ea1d41306318486faac3c8992440b499",
-        "f4a9c89bb74d513612c4c3bc1d78a733ef6a4f63"
+        "7540b530844412bc2b6973abbaece2b42f8a1867",
+        "8af93e5f793cc4601bef4cd956255167496b61c0",
+        "9fbe86ad985f909d412165033267e9cff239b64c"
       ],
       "signals": [
-        "VL padding 不再隐式影响严格 mask 配置的动作；动作 padding 严格模式接入 TensorRT mask 合同与引擎输入检查。两次提交按 padding 一致性功能合为一簇。"
+        "fusion每层mask padded keys，TRT导出/运行校验mask binding；有绝对位置编码时加载警告并关闭fusion mask，DiT仍mask，显式要求严格模式的训练请求拒绝。新增TRT回归按同功能合簇。"
       ],
-      "decision": "进入 11 月 8/9 日混合 batch 和评测延伸阅读；旧 checkpoint 默认行为与导出能力边界须保留；不改总纲"
+      "decision": "关联混合batch和导出合同；不是所有checkpoint都获得padding不变性；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "修复长padding下TRT非有限输出",
+      "source": "NVIDIA/Isaac-GR00T",
+      "lineage": "其他官方技术 · 数值部署",
+      "publishedAt": "2026-11-06T23:42:30Z",
+      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/4d9f8886fcf3023ece9c5138b7ebfeffc40aedf7",
+      "commitSha": "4d9f8886fcf3023ece9c5138b7ebfeffc40aedf7",
+      "relatedCommitShas": [
+        "4d9f8886fcf3023ece9c5138b7ebfeffc40aedf7"
+      ],
+      "signals": [
+        "TensorRT DiT导出attention mask从负无穷bias改为dtype有限最小值，针对H100批量长VL padding出现NaN的路径。"
+      ],
+      "decision": "关联11月11日批量吞吐与数值回归；不声称本地H100测试；不改总纲"
+    },
+    {
+      "type": "research",
+      "title": "混合数据恒定维度方差归零",
+      "source": "NVIDIA/Isaac-GR00T",
+      "lineage": "其他官方技术 · 数据统计",
+      "publishedAt": "2026-11-06T23:42:30Z",
+      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/077733e721becbf803feed70421e7cffc3542877",
+      "commitSha": "077733e721becbf803feed70421e7cffc3542877",
+      "relatedCommitShas": [
+        "077733e721becbf803feed70421e7cffc3542877"
+      ],
+      "signals": [
+        "merge_statistics把二阶矩相减方差夹到非负，并对全局min=max维度置零，避免浮点抵消导致NaN或微小假标准差。"
+      ],
+      "decision": "关联归一化及多来源统计；不使用零std直接作除数；不改总纲"
     }
   ]
 }
