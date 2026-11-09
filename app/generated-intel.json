@@ -1,14 +1,68 @@
 {
-  "updatedAt": "2026-11-08T23:00:00+08:00",
-  "status": "no_change",
-  "summary": "24小时审核无已验证技术新增；StanfordVL/World Labs、AMI/Meta历史分别无新增。杭州上海可靠新岗位与面经均0；新增11月12日既定课程，不改总纲。",
-  "items": [],
+  "updatedAt": "2026-11-09T23:44:19+08:00",
+  "status": "updated",
+  "summary": "核实 GR00T 加载器、Isaac Lab 两项传感修复及 LeRobot 仿真依赖，共四项技术更新。双团队无已验证新增，杭州上海可靠新岗位及面经均为 0，总纲保持原序。",
+  "items": [
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac-GR00T 默认切换到 fast 训练加载器",
+      "source": "NVIDIA/Isaac-GR00T",
+      "publishedAt": "2026-11-08T17:27:10Z",
+      "commitSha": "7aa0bca50f1097f8b17f5c274c98264b72a1419f",
+      "signals": [
+        "LeRobot 数据稀疏解码、shard split 预取与有界打散",
+        "fast 为默认，stock 可选。author date 为 2026-11-08T00:55:56Z，窗口依据为主分支提交时间。"
+      ],
+      "decision": "GR00T 微调数据接口与吞吐复现延伸阅读，核对取样顺序和跨 epoch 行为。",
+      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/7aa0bca50f1097f8b17f5c274c98264b72a1419f"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 修复 TF32 下的相机坐标转换",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-08T19:47:45Z",
+      "commitSha": "1be7689096a718cdebcfcefad2e2cd5fe04dfdeb",
+      "signals": [
+        "world 与 OpenGL 的固定旋转改用带符号的列置换，消除该转换的 TF32 matmul 路径。"
+      ],
+      "decision": "相机坐标与多视角融合延伸阅读，核对基向量和往返旋转。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/1be7689096a718cdebcfcefad2e2cd5fe04dfdeb"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab Newton 显式拒绝不支持的接触位姿",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-09T07:37:05Z",
+      "commitSha": "4cfdfcfa52d7cb64eb83ab293b2fcfc92452aaf1",
+      "signals": [
+        "track_pose 开启时读取 Newton 接触传感器位姿会抛 NotImplementedError，避免把未写入的零值当有效位姿。"
+      ],
+      "decision": "已加至 11 月 13 日状态机路线课延伸阅读。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/4cfdfcfa52d7cb64eb83ab293b2fcfc92452aaf1"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "LeRobot 合并仿真镜像依赖求解",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-09T13:23:29Z",
+      "commitSha": "81b8c5bfdd5591ec59e512cfc7ac6db8151c70ee",
+      "signals": [
+        "Dockerfile.sim 将 editable robosuite 与包括 mujoco==3.3.1 的固定依赖放到同一次 uv pip install。"
+      ],
+      "decision": "仿真环境锁定与回归延伸阅读。",
+      "url": "https://github.com/huggingface/lerobot/commit/81b8c5bfdd5591ec59e512cfc7ac6db8151c70ee"
+    }
+  ],
   "auditReview": {
-    "reviewedAt": "2026-11-08T23:00:00+08:00",
-    "windowStart": "2026-11-07T23:00:00+08:00",
-    "windowEnd": "2026-11-08T23:00:00+08:00",
-    "newClustersSinceEarlierRun": 0,
-    "summary": "重点六仓commit/release无窗口新增；第三方上海岗位日期未获官方确认。",
+    "reviewedAt": "2026-11-09T23:44:19+08:00",
+    "windowStart": "2026-11-08T23:44:19+08:00",
+    "windowEnd": "2026-11-09T23:44:19+08:00",
+    "newClustersSinceEarlierRun": 4,
+    "summary": "核实 GR00T 加载器、Isaac Lab 两项传感修复及 LeRobot 仿真依赖，共四项技术更新。双团队无已验证新增，杭州上海可靠新岗位及面经均为 0，总纲保持原序。",
     "lineages": {
       "StanfordVL": "no_verified_change",
       "WorldLabs": "no_verified_change",
