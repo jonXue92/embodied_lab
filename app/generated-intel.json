@@ -1,74 +1,104 @@
 {
-  "updatedAt": "2026-11-09T23:44:19+08:00",
+  "updatedAt": "2026-11-10T22:10:33+08:00",
   "status": "updated",
-  "summary": "核实 GR00T 加载器、Isaac Lab 两项传感修复及 LeRobot 仿真依赖，共四项技术更新。双团队无已验证新增，杭州上海可靠新岗位及面经均为 0，总纲保持原序。",
+  "summary": "核实 LingBot-Touch、GR00T 2、Isaac Lab 两项与 Cosmos3 基准，共五个技术簇。双团队窗口内无已验证新增，补记 AMI 联署的十月论文。杭州上海可靠新岗位及面经均为 0，总纲保持原序。",
   "items": [
     {
       "type": "research",
       "lineage": "其他官方技术更新",
-      "title": "Isaac-GR00T 默认切换到 fast 训练加载器",
-      "source": "NVIDIA/Isaac-GR00T",
-      "publishedAt": "2026-11-08T17:27:10Z",
-      "commitSha": "7aa0bca50f1097f8b17f5c274c98264b72a1419f",
+      "title": "LingBot-Touch 发布异构触觉表征",
+      "source": "Robbyant",
+      "publishedAt": "2026-11-10T09:23:00Z",
+      "paperVersion": "arXiv:2611.12806v1",
+      "commitSha": "c6268dd3e5d2f6f5c33d3fa4a9e999683a937086",
       "signals": [
-        "LeRobot 数据稀疏解码、shard split 预取与有界打散",
-        "fast 为默认，stock 可选。author date 为 2026-11-08T00:55:56Z，窗口依据为主分支提交时间。"
+        "磁触觉、压阻和视触觉用专用 tokenizer 和共享 Transformer 进行掩码潜表征预测",
+        "公开推理代码、冻结编码器和样例，输出含时间、手指和空间地址的 token。权重在独立仓库，访问权限未实测。"
       ],
-      "decision": "GR00T 微调数据接口与吞吐复现延伸阅读，核对取样顺序和跨 epoch 行为。",
-      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/7aa0bca50f1097f8b17f5c274c98264b72a1419f"
+      "decision": "纳入 11 月 14 日路线课选读。配对检验视觉退化时的接触证据，保持传感时间和几何合同。",
+      "url": "https://arxiv.org/abs/2611.12806v1"
     },
     {
       "type": "research",
       "lineage": "其他官方技术更新",
-      "title": "Isaac Lab 修复 TF32 下的相机坐标转换",
+      "title": "NVIDIA GEAR 公布 GR00T 2 世界动作模型",
+      "source": "NVIDIA GEAR",
+      "publishedAt": "2026-11-09T20:59:06.891Z",
+      "signals": [
+        "时间来自 NVIDIA Developer 官方发布帖，模型联合去噪未来视频和动作段。",
+        "上层代理在掉件或停滞时调用恢复技能，再交还任务。项目页将代码开放列为 12 月。"
+      ],
+      "decision": "纳入 11 月 14 日路线课选读，分别审计任务恢复和安全停机；属于技术披露，未实测。",
+      "url": "https://research.nvidia.com/labs/gear/gr00t-2/"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab Newton 迁移耦合与子步动作接口",
       "source": "isaac-sim/IsaacLab",
-      "publishedAt": "2026-11-08T19:47:45Z",
-      "commitSha": "1be7689096a718cdebcfcefad2e2cd5fe04dfdeb",
-      "signals": [
-        "world 与 OpenGL 的固定旋转改用带符号的列置换，消除该转换的 TF32 matmul 路径。"
+      "publishedAt": "2026-11-10T04:06:59Z",
+      "commitSha": "43359cf99658adcf4ce1657c80a0270d84ba1db2",
+      "relatedCommitShas": [
+        "299af19313671417c03b9c355f5f6fffbace7bad"
       ],
-      "decision": "相机坐标与多视角融合延伸阅读，核对基向量和往返旋转。",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/1be7689096a718cdebcfcefad2e2cd5fe04dfdeb"
+      "signals": [
+        "耦合入口迁入 isaaclab_newton，移除旧手写示例求解器。",
+        "符合条件时动作及写入移至逐物理步回调，processed_actions 原地更新，历史轨迹需复制。"
+      ],
+      "decision": "合为 Newton 后端重构一簇，纳入 11 月 14 日代码课选读。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/43359cf99658adcf4ce1657c80a0270d84ba1db2"
     },
     {
       "type": "research",
       "lineage": "其他官方技术更新",
-      "title": "Isaac Lab Newton 显式拒绝不支持的接触位姿",
+      "title": "Isaac Lab OVPhysX 取消强制 broadphase 环境位数",
       "source": "isaac-sim/IsaacLab",
-      "publishedAt": "2026-11-09T07:37:05Z",
-      "commitSha": "4cfdfcfa52d7cb64eb83ab293b2fcfc92452aaf1",
+      "publishedAt": "2026-11-09T23:29:28Z",
+      "commitSha": "2742c2d5e6b950d0150781e384bcd8388c29e3ee",
       "signals": [
-        "track_pose 开启时读取 Newton 接触传感器位姿会抛 NotImplementedError，避免把未写入的零值当有效位姿。"
+        "_warmup_and_load 移除克隆环境时固定 envIdInBoundsBitCount=4 的写入。",
+        "上游关联共享地面时的吞吐回退，未复测吞吐。"
       ],
-      "decision": "已加至 11 月 13 日状态机路线课延伸阅读。",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/4cfdfcfa52d7cb64eb83ab293b2fcfc92452aaf1"
+      "decision": "纳入 11 月 14 日路线课选读。用固定克隆数和地面条件比较故障注入。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/2742c2d5e6b950d0150781e384bcd8388c29e3ee"
     },
     {
       "type": "research",
       "lineage": "其他官方技术更新",
-      "title": "LeRobot 合并仿真镜像依赖求解",
-      "source": "huggingface/lerobot",
-      "publishedAt": "2026-11-09T13:23:29Z",
-      "commitSha": "81b8c5bfdd5591ec59e512cfc7ac6db8151c70ee",
+      "title": "Cosmos3 扩充推理基准与计时口径",
+      "source": "NVIDIA/cosmos",
+      "publishedAt": "2026-11-10T01:44:52Z",
+      "commitSha": "81c5298f76af994e830fb5f68b380f1b65131701",
       "signals": [
-        "Dockerfile.sim 将 editable robosuite 与包括 mujoco==3.3.1 的固定依赖放到同一次 uv pip install。"
+        "区分 Generator 与 Reasoner、GPU 数、精度、视频长度、生成、去噪和请求时间。",
+        "空值表示无经验证的测量，包含尚未验证或运行失败的配置。"
       ],
-      "decision": "仿真环境锁定与回归延伸阅读。",
-      "url": "https://github.com/huggingface/lerobot/commit/81b8c5bfdd5591ec59e512cfc7ac6db8151c70ee"
+      "decision": "属新增技术测量材料，纳入 11 月 14 日基础课计时选读。",
+      "url": "https://github.com/NVIDIA/cosmos/commit/81c5298f76af994e830fb5f68b380f1b65131701"
     }
   ],
   "auditReview": {
-    "reviewedAt": "2026-11-09T23:44:19+08:00",
-    "windowStart": "2026-11-08T23:44:19+08:00",
-    "windowEnd": "2026-11-09T23:44:19+08:00",
-    "newClustersSinceEarlierRun": 4,
-    "summary": "核实 GR00T 加载器、Isaac Lab 两项传感修复及 LeRobot 仿真依赖，共四项技术更新。双团队无已验证新增，杭州上海可靠新岗位及面经均为 0，总纲保持原序。",
+    "reviewedAt": "2026-11-10T22:10:33+08:00",
+    "windowStart": "2026-11-09T22:10:33+08:00",
+    "windowEnd": "2026-11-10T22:10:33+08:00",
+    "newClustersSinceEarlierRun": 5,
+    "summary": "核实 LingBot-Touch、GR00T 2、Isaac Lab 两项与 Cosmos3 基准，共五个技术簇。双团队窗口内无已验证新增，补记 AMI 联署的十月论文。杭州上海可靠新岗位及面经均为 0，总纲保持原序。",
     "lineages": {
       "StanfordVL": "no_verified_change",
       "WorldLabs": "no_verified_change",
       "AMI": "no_verified_change",
       "MetaHistorical": "no_verified_change"
-    }
+    },
+    "historicalCatchups": [
+      {
+        "title": "Proving and Improving the Platonic Representation Hypothesis with JEPAs",
+        "source": "Brown University / New York University / AMI Labs",
+        "publishedAt": "2026-10-29T03:49:53Z",
+        "version": "arXiv:2610.39302v1",
+        "url": "https://arxiv.org/html/2610.39302v1",
+        "curriculumRelation": "共享正样本和对齐假设对应多模态配对与表征分析，论文 §2.1 明确不覆盖动作条件预测。"
+      }
+    ]
   },
   "previousAuditReview": {
     "reviewedAt": "2026-11-07T23:06:44+08:00",
