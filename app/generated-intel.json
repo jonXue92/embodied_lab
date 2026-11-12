@@ -1,8 +1,36 @@
 {
-  "updatedAt": "2026-11-12T10:30:52+08:00",
+  "updatedAt": "2026-11-12T23:06:38+08:00",
   "status": "updated",
-  "summary": "核实 Praxis-1 开放权重与 LeRobot 集成、LeRobot 和 Isaac Lab 回归、Cosmos3 推理配方，共 8 簇。具身大模型新增 1 簇，具身 Agent 与双团队无已验证新增。杭州和上海的新岗位、面经各 0。",
+  "summary": "晚间新增 LeRobot 远程 Lance 与 G1 遥操作两簇。具身 Agent、具身大模型与双团队无未归档的已验证新增。补记 Astra 参赛仿真并收入 11 月 17 日选读。杭州和上海经核新岗位、面经各 0。",
   "items": [
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "LeRobot G1 遥操作输入与关节目标边界",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-12T10:48:14Z",
+      "commitSha": "1ef599dc5a7fd6aca6ad2ded8cf710e4d0e3f1be",
+      "signals": [
+        "分离无线和外骨骼输入状态，同一串口样本供角度和摇杆，补动作按钮及目标变化限制。",
+        "证据为软件回归和作者 SDK 替身测试。"
+      ],
+      "decision": "用于 11 月 17 日代码课，核对执行动作来源及采样身份。",
+      "url": "https://github.com/huggingface/lerobot/commit/1ef599dc5a7fd6aca6ad2ded8cf710e4d0e3f1be"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "LeRobot 远程 Lance 数据读取与缓存身份",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-12T09:43:41Z",
+      "commitSha": "2f05d8f64d62a865c368a9fdf0ba3d8423e28035",
+      "signals": [
+        "连接参数贯穿远程元数据、数据集切分与 reader 重开。显式路由隔离缓存。",
+        "用本地 Lance 模拟双端点，作者另外报告 TOS PushT 样本读取。"
+      ],
+      "decision": "映射后续固定 replay dataset，复核远程数据来源、修订和缓存。",
+      "url": "https://github.com/huggingface/lerobot/commit/2f05d8f64d62a865c368a9fdf0ba3d8423e28035"
+    },
     {
       "type": "research",
       "lineage": "具身 + 大模型",
@@ -124,6 +152,80 @@
     }
   ],
   "auditReview": {
+    "reviewedAt": "2026-11-12T23:06:38+08:00",
+    "windowStart": "2026-11-11T23:06:38+08:00",
+    "windowEnd": "2026-11-12T23:06:38+08:00",
+    "newClustersSinceEarlierRun": 2,
+    "summary": "晚间新增 LeRobot 远程 Lance 与 G1 遥操作两簇。具身 Agent、具身大模型与双团队无未归档的已验证新增。补记 Astra 参赛仿真并收入 11 月 17 日选读。杭州和上海经核新岗位、面经各 0。",
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://agentic-robotics-workshop.github.io/",
+          "https://arxiv.org/html/2611.14432v1"
+        ],
+        "curriculumRelation": "11 月 17 日主动观察、重规划和 π0.5 回退。"
+      },
+      "EmbodiedLargeModels": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://arxiv.org/html/2611.14432v1",
+          "https://developers.openai.com/api/docs/models/gpt-6-astra",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://runway.com/news/company-news/praxis-1-is-now-available"
+        ],
+        "curriculumRelation": "11 月 16 日 Praxis 已归档，11 月 17 日 Astra 仿真路由作历史对照。"
+      }
+    },
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "historicalCatchups": [
+      {
+        "title": "One Policy for 100 Household Tasks",
+        "source": "Robot Learning Collective",
+        "publishedAt": "2026-11-10T18:06:16Z",
+        "version": "arXiv:2611.14432v1",
+        "url": "https://arxiv.org/html/2611.14432v1",
+        "tracks": [
+          "EmbodiedAgent",
+          "EmbodiedLargeModels"
+        ],
+        "curriculumRelation": "11 月 17 日选读。预选任务上 Astra 调工具，运行错误或超时后交还 π0.5；OmniGibson 交互仿真。"
+      }
+    ],
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false
+  },
+  "previousAuditReview": {
+    "reviewedAt": "2026-11-07T23:06:44+08:00",
+    "windowStart": "2026-11-06T23:00:00+08:00",
+    "windowEnd": "2026-11-07T23:00:00+08:00",
+    "newClustersSinceEarlierRun": 0,
+    "publicationStatus": "local-only-sites-tool-unavailable",
+    "summary": "六仓API复核无未归档新技术簇；World Labs Frameboy为11月5日历史漏记，补记不算窗口新增；岗位面经严格新增0。",
+    "historicalCatchups": [
+      {
+        "title": "Frameboy: Atlas in Real-time",
+        "source": "World Labs",
+        "publishedDate": "2026-11-05",
+        "url": "https://www.worldlabs.ai/blog/atlas-realtime",
+        "signals": [
+          "优化Atlas变体云端生成相机视角、最高15fps厂商主张、Viewfinder流式overlay",
+          "未本地实测，不证明物理模拟或SO-101控制性能"
+        ],
+        "curriculumRelation": "11月11日吞吐与年龄；世界模型及毕业项目延伸阅读候选",
+        "decision": "窗口外历史补记，不改纲、不改已完成课文"
+      }
+    ]
+  },
+  "earlierSameDayAuditReview": {
     "reviewedAt": "2026-11-12T10:30:52+08:00",
     "windowStart": "2026-11-11T10:30:52+08:00",
     "windowEnd": "2026-11-12T10:30:52+08:00",
@@ -169,27 +271,5 @@
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
     "curriculumChanged": false
-  },
-  "previousAuditReview": {
-    "reviewedAt": "2026-11-07T23:06:44+08:00",
-    "windowStart": "2026-11-06T23:00:00+08:00",
-    "windowEnd": "2026-11-07T23:00:00+08:00",
-    "newClustersSinceEarlierRun": 0,
-    "publicationStatus": "local-only-sites-tool-unavailable",
-    "summary": "六仓API复核无未归档新技术簇；World Labs Frameboy为11月5日历史漏记，补记不算窗口新增；岗位面经严格新增0。",
-    "historicalCatchups": [
-      {
-        "title": "Frameboy: Atlas in Real-time",
-        "source": "World Labs",
-        "publishedDate": "2026-11-05",
-        "url": "https://www.worldlabs.ai/blog/atlas-realtime",
-        "signals": [
-          "优化Atlas变体云端生成相机视角、最高15fps厂商主张、Viewfinder流式overlay",
-          "未本地实测，不证明物理模拟或SO-101控制性能"
-        ],
-        "curriculumRelation": "11月11日吞吐与年龄；世界模型及毕业项目延伸阅读候选",
-        "decision": "窗口外历史补记，不改纲、不改已完成课文"
-      }
-    ]
   }
 }
