@@ -1,88 +1,155 @@
 {
-  "updatedAt": "2026-11-10T22:10:33+08:00",
+  "updatedAt": "2026-11-12T10:30:52+08:00",
   "status": "updated",
-  "summary": "核实 LingBot-Touch、GR00T 2、Isaac Lab 两项与 Cosmos3 基准，共五个技术簇。双团队窗口内无已验证新增，补记 AMI 联署的十月论文。杭州上海可靠新岗位及面经均为 0，总纲保持原序。",
+  "summary": "核实 Praxis-1 开放权重与 LeRobot 集成、LeRobot 和 Isaac Lab 回归、Cosmos3 推理配方，共 8 簇。具身大模型新增 1 簇，具身 Agent 与双团队无已验证新增。杭州和上海的新岗位、面经各 0。",
   "items": [
     {
       "type": "research",
-      "lineage": "其他官方技术更新",
-      "title": "LingBot-Touch 发布异构触觉表征",
-      "source": "Robbyant",
-      "publishedAt": "2026-11-10T09:23:00Z",
-      "paperVersion": "arXiv:2611.12806v1",
-      "commitSha": "c6268dd3e5d2f6f5c33d3fa4a9e999683a937086",
+      "lineage": "具身 + 大模型",
+      "title": "Runway 开放 Praxis-1 权重并接入 LeRobot",
+      "source": "Runway / huggingface/lerobot",
+      "publishedAt": "2026-11-11T14:56:42Z",
+      "commitSha": "4864a7ec6ad6ad5259d08f121f0c1b44983b4582",
       "signals": [
-        "磁触觉、压阻和视触觉用专用 tokenizer 和共享 Transformer 进行掩码潜表征预测",
-        "公开推理代码、冻结编码器和样例，输出含时间、手指和空间地址的 token。权重在独立仓库，访问权限未实测。"
+        "原公告标 11 月 11 日，提交时间对应 LeRobot 接入。Qwen3.5-2B 只编码语言，视频骨干和动作专家联合生成未来视频与末端动作段。",
+        "RoboLab-120 的 DROID 微调模型 555/1200 属交互仿真；Franka/YAM 等为报告中独立真机条件。公开模型卡可读，未本机实跑。"
       ],
-      "decision": "纳入 11 月 14 日路线课选读。配对检验视觉退化时的接触证据，保持传感时间和几何合同。",
-      "url": "https://arxiv.org/abs/2611.12806v1"
-    },
-    {
-      "type": "research",
-      "lineage": "其他官方技术更新",
-      "title": "NVIDIA GEAR 公布 GR00T 2 世界动作模型",
-      "source": "NVIDIA GEAR",
-      "publishedAt": "2026-11-09T20:59:06.891Z",
-      "signals": [
-        "时间来自 NVIDIA Developer 官方发布帖，模型联合去噪未来视频和动作段。",
-        "上层代理在掉件或停滞时调用恢复技能，再交还任务。项目页将代码开放列为 12 月。"
-      ],
-      "decision": "纳入 11 月 14 日路线课选读，分别审计任务恢复和安全停机；属于技术披露，未实测。",
-      "url": "https://research.nvidia.com/labs/gear/gr00t-2/"
-    },
-    {
-      "type": "research",
-      "lineage": "其他官方技术更新",
-      "title": "Isaac Lab Newton 迁移耦合与子步动作接口",
-      "source": "isaac-sim/IsaacLab",
-      "publishedAt": "2026-11-10T04:06:59Z",
-      "commitSha": "43359cf99658adcf4ce1657c80a0270d84ba1db2",
+      "decision": "具身大模型专项新增 1 簇，进入 11 月 16 日路线课选读。分开计量段内执行、下一次观察与失败。",
+      "url": "https://runway.com/news/company-news/praxis-1-is-now-available",
       "relatedCommitShas": [
-        "299af19313671417c03b9c355f5f6fffbace7bad"
+        "e581c1d5701f846788662079d4ac08835c96def9",
+        "fdd940f563331f859250a22846b76079d577365c",
+        "e89c1bc9e67617c3b0608921840036d629170282"
       ],
-      "signals": [
-        "耦合入口迁入 isaaclab_newton，移除旧手写示例求解器。",
-        "符合条件时动作及写入移至逐物理步回调，processed_actions 原地更新，历史轨迹需复制。"
-      ],
-      "decision": "合为 Newton 后端重构一簇，纳入 11 月 14 日代码课选读。",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/43359cf99658adcf4ce1657c80a0270d84ba1db2"
+      "modelVersion": "Praxis-1 DROID · 6bb70750663e53592cc38f46e531a5a01a12d291"
     },
     {
       "type": "research",
       "lineage": "其他官方技术更新",
-      "title": "Isaac Lab OVPhysX 取消强制 broadphase 环境位数",
+      "title": "LeRobot 分片 safetensors 加载",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-11T13:07:22Z",
+      "commitSha": "37aee5935534a11c0dd9be027a65fa8388ebd843",
+      "signals": [
+        "支持分片索引、键和形状检查，测试缺失缓冲区、绑权重和多余键。"
+      ],
+      "decision": "进入 11 月 16 日代码课选读，验收清单固定索引和全部权重分片。",
+      "url": "https://github.com/huggingface/lerobot/commit/37aee5935534a11c0dd9be027a65fa8388ebd843"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "LeRobot 拒绝数据字段重名",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-11T13:12:15Z",
+      "commitSha": "ff0acf5ee6434369eeeb9d26e76d1e2ddc20c0d2",
+      "signals": [
+        "统一字段重命名，遇到动作键及其 _is_pad 互相覆盖时报错。"
+      ],
+      "decision": "用于 11 月 16 日软件 smoke 的后续对照。",
+      "url": "https://github.com/huggingface/lerobot/commit/ff0acf5ee6434369eeeb9d26e76d1e2ddc20c0d2"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab Newton 容量对齐与 CPU 物理步捕获",
       "source": "isaac-sim/IsaacLab",
-      "publishedAt": "2026-11-09T23:29:28Z",
-      "commitSha": "2742c2d5e6b950d0150781e384bcd8388c29e3ee",
+      "publishedAt": "2026-11-11T06:13:53Z",
+      "commitSha": "05cb7eba1aee085514995bd4d8595c685711dd3f",
       "signals": [
-        "_warmup_and_load 移除克隆环境时固定 envIdInBoundsBitCount=4 的写入。",
-        "上游关联共享地面时的吞吐回退，未复测吞吐。"
+        "初始化对齐接触容量，Warp CPU 捕获需固定形状及可捕获回调。未测吞吐。"
       ],
-      "decision": "纳入 11 月 14 日路线课选读。用固定克隆数和地面条件比较故障注入。",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/2742c2d5e6b950d0150781e384bcd8388c29e3ee"
+      "decision": "关联仿真后端回归、控制部署时延和接触评测。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/05cb7eba1aee085514995bd4d8595c685711dd3f",
+      "relatedCommitShas": [
+        "5571528743968e20f4a50b07d19a060fc3ee2390"
+      ]
     },
     {
       "type": "research",
       "lineage": "其他官方技术更新",
-      "title": "Cosmos3 扩充推理基准与计时口径",
-      "source": "NVIDIA/cosmos",
-      "publishedAt": "2026-11-10T01:44:52Z",
-      "commitSha": "81c5298f76af994e830fb5f68b380f1b65131701",
+      "title": "Isaac Lab 加强 reset 首帧回归",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-11T12:50:17Z",
+      "commitSha": "4c5343f0818871c1a824fe40c82535961f050aa1",
       "signals": [
-        "区分 Generator 与 Reasoner、GPU 数、精度、视频长度、生成、去噪和请求时间。",
-        "空值表示无经验证的测量，包含尚未验证或运行失败的配置。"
+        "直接对照 Fabric 位姿、深度与不推进物理步的条件。"
       ],
-      "decision": "属新增技术测量材料，纳入 11 月 14 日基础课计时选读。",
-      "url": "https://github.com/NVIDIA/cosmos/commit/81c5298f76af994e830fb5f68b380f1b65131701"
+      "decision": "进入 11 月 16 日路线课选读，隔离首帧几何与渲染滞后。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/4c5343f0818871c1a824fe40c82535961f050aa1"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab OVPhysX 接触计时回归确定化",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-11T12:51:18Z",
+      "commitSha": "fc48dd6ceeab11825aeebcbfbde7f62c4a96c652",
+      "signals": [
+        "固定地形 RNG，重设位姿同时清零速度，去掉 flaky 重试。"
+      ],
+      "decision": "进入 11 月 16 日路线课选读，比较接触与腾空计时。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/fc48dd6ceeab11825aeebcbfbde7f62c4a96c652"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 验证重排关节的随机化作用域",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-11T18:12:22Z",
+      "commitSha": "adcb3c12fb20f18c638e536dbb008d14a66f6ef0",
+      "signals": [
+        "夹具使前后端关节顺序不同，检查名称选择、其他关节和其他环境。"
+      ],
+      "decision": "用于后续仿真部署回归，检查映射后的动作与状态。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/adcb3c12fb20f18c638e536dbb008d14a66f6ef0"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "NVIDIA Cosmos3 发布可调用推理配方与 smoke",
+      "source": "NVIDIA/cosmos-framework",
+      "publishedAt": "2026-11-11T05:03:12Z",
+      "commitSha": "3a84cd3b67f60520f523e184fa7b82011bc75cb4",
+      "signals": [
+        "动作推理分正向动力学、逆向动力学和策略，Transfer 以控制输入生成视频。来源说明未执行本分支 GPU eval。"
+      ],
+      "decision": "关联接口验收和评测，未作为新具身闭环 Agent。",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/3a84cd3b67f60520f523e184fa7b82011bc75cb4",
+      "relatedCommitShas": [
+        "5f8e317aff8b52ba507c3470bcc0c12aea05de4d",
+        "964d6e5864b228894bc9c2b26f92de6072ed0e33",
+        "540106233a1a834f00fddd368dd6e3e818575696"
+      ]
     }
   ],
   "auditReview": {
-    "reviewedAt": "2026-11-10T22:10:33+08:00",
-    "windowStart": "2026-11-09T22:10:33+08:00",
-    "windowEnd": "2026-11-10T22:10:33+08:00",
-    "newClustersSinceEarlierRun": 5,
-    "summary": "核实 LingBot-Touch、GR00T 2、Isaac Lab 两项与 Cosmos3 基准，共五个技术簇。双团队窗口内无已验证新增，补记 AMI 联署的十月论文。杭州上海可靠新岗位及面经均为 0，总纲保持原序。",
+    "reviewedAt": "2026-11-12T10:30:52+08:00",
+    "windowStart": "2026-11-11T10:30:52+08:00",
+    "windowEnd": "2026-11-12T10:30:52+08:00",
+    "newClustersSinceEarlierRun": 8,
+    "summary": "核实 Praxis-1 开放权重与 LeRobot 集成、LeRobot 和 Isaac Lab 回归、Cosmos3 推理配方，共 8 簇。具身大模型新增 1 簇，具身 Agent 与双团队无已验证新增。杭州和上海的新岗位、面经各 0。",
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://agentic-robotics-workshop.github.io/",
+          "https://arxiv.org/abs/2611.14488"
+        ],
+        "curriculumRelation": "11 月 15 日关联重试、历史回放与闭环恢复。"
+      },
+      "EmbodiedLargeModels": {
+        "status": "updated",
+        "newClusters": 1,
+        "evidence": [
+          "https://runway.com/news/company-news/praxis-1-is-now-available",
+          "https://developers.openai.com/api/docs/models/gpt-6-astra",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2"
+        ],
+        "curriculumRelation": "11 月 16 日 Praxis 的文本编码、动作专家、段执行和观测回流。"
+      }
+    },
     "lineages": {
       "StanfordVL": "no_verified_change",
       "WorldLabs": "no_verified_change",
@@ -91,14 +158,17 @@
     },
     "historicalCatchups": [
       {
-        "title": "Proving and Improving the Platonic Representation Hypothesis with JEPAs",
-        "source": "Brown University / New York University / AMI Labs",
-        "publishedAt": "2026-10-29T03:49:53Z",
-        "version": "arXiv:2610.39302v1",
-        "url": "https://arxiv.org/html/2610.39302v1",
-        "curriculumRelation": "共享正样本和对齐假设对应多模态配对与表征分析，论文 §2.1 明确不覆盖动作条件预测。"
+        "title": "Temporal Shortcuts in Memory-Augmented VLA Policies",
+        "source": "Nanyang Technological University",
+        "publishedAt": "2026-11-10T18:47:57Z",
+        "version": "arXiv:2611.14488v1",
+        "url": "https://arxiv.org/html/2611.14488v1",
+        "curriculumRelation": "11 月 15 日选读，交互仿真对照任务进度与采样时间。"
       }
-    ]
+    ],
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false
   },
   "previousAuditReview": {
     "reviewedAt": "2026-11-07T23:06:44+08:00",
