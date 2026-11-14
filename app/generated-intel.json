@@ -1,8 +1,131 @@
 {
-  "updatedAt": "2026-11-12T23:06:38+08:00",
+  "updatedAt": "2026-11-14T04:03:58+08:00",
   "status": "updated",
-  "summary": "晚间新增 LeRobot 远程 Lance 与 G1 遥操作两簇。具身 Agent、具身大模型与双团队无未归档的已验证新增。补记 Astra 参赛仿真并收入 11 月 17 日选读。杭州和上海经核新岗位、面经各 0。",
+  "summary": "严格 24 小时核实 7 簇，具身大模型新增 Praxis-1 SO-101，具身 Agent 与双团队无窗口内新增。补审确认 HEIR 双标及 World Labs Atlas 开放。杭州、上海可核新岗位和面经均 0。",
   "items": [
+    {
+      "type": "research",
+      "lineage": "具身 + 大模型",
+      "title": "Praxis-1 新增 SO-101 关节空间接口",
+      "source": "runwayml/praxis-1-oss",
+      "publishedAt": "2026-11-12T22:14:39Z",
+      "commitSha": "afef2e18a0af22b2e9926e9f743dc4694ab8b6b5",
+      "signals": [
+        "Qwen3.5-2B 编码语言，模型结合关节状态与一或两路相机预测动作段。LeRobot 客户端执行六维关节目标并回传观测。",
+        "证据为源码和配置，权重链接未独立读取，未核实新增成功率。"
+      ],
+      "decision": "11 月 18 日选读，毕业项目复核关节单位和执行时钟。",
+      "url": "https://github.com/runwayml/praxis-1-oss/commit/afef2e18a0af22b2e9926e9f743dc4694ab8b6b5",
+      "modelVersion": "praxis-1-so101 / praxis-1-so101-nvfp4"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 新增 Asimov-1 速度任务",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-13T19:08:50Z",
+      "commitSha": "de92598dfe4d8548cf52e62d17f744a7f786e7b5",
+      "signals": [
+        "新增资产和仿真任务配置。"
+      ],
+      "decision": "关联强化学习实验对照。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/de92598dfe4d8548cf52e62d17f744a7f786e7b5"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "LeRobot 修复视频拼接清单路径",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-13T11:40:40Z",
+      "commitSha": "6e1095036b489b4d40d941b03d67bd99aa295160",
+      "signals": [
+        "视频路径转义及视频编码回归。"
+      ],
+      "decision": "关联视频与帧索引验收。",
+      "url": "https://github.com/huggingface/lerobot/commit/6e1095036b489b4d40d941b03d67bd99aa295160"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "LeRobot 保留小旋转向量",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-13T11:26:56Z",
+      "commitSha": "866dc27e0a077373f4712214231880f9a61887d2",
+      "signals": [
+        "新增 from_rotvec 微小旋转回归。"
+      ],
+      "decision": "关联微幅修正回放。",
+      "url": "https://github.com/huggingface/lerobot/commit/866dc27e0a077373f4712214231880f9a61887d2"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "LeRobot EnvHub 环境加载与构造",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-13T09:48:05Z",
+      "commitSha": "d7a36af45eff170c5a41ade4bd9f49979cf48ffc",
+      "signals": [
+        "显式信任、保留仓库内容及工厂构造环境。"
+      ],
+      "decision": "关联评测复现和环境版本。",
+      "url": "https://github.com/huggingface/lerobot/commit/d7a36af45eff170c5a41ade4bd9f49979cf48ffc",
+      "relatedCommitShas": [
+        "977ce26306d24d9298ecf60f0ce8d08fb6385021"
+      ]
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Cosmos 修复 aarch64 FP8 依赖",
+      "source": "NVIDIA/cosmos-framework",
+      "publishedAt": "2026-11-13T06:25:49Z",
+      "commitSha": "1f1737931214166d5e7b253def319c562cf7a1eb",
+      "signals": [
+        "在 aarch64 安装组加入 torchao，作者核对 GB200/CUDA 13.0。"
+      ],
+      "decision": "关联权重和运行环境验收。",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/1f1737931214166d5e7b253def319c562cf7a1eb"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 修复 Newton CPU 捕获",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-12T21:13:21Z",
+      "commitSha": "616f517707da0d91910e89ab8fc9b05b34ed4dcc",
+      "signals": [
+        "将 Torch 目标交给 Warp 视图，回归验证重放时的原位更新。"
+      ],
+      "decision": "关联执行目标与仿真回归。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/616f517707da0d91910e89ab8fc9b05b34ed4dcc"
+    },
+    {
+      "type": "research",
+      "lineage": "具身 + Agent / 具身 + 大模型",
+      "title": "HEIR 以 Qwen 规划分派导航与操作",
+      "source": "HEIR 作者团队",
+      "publishedAt": "2026-11-12T18:25:41Z",
+      "modelVersion": "arXiv:2611.17238v1 · Qwen3.5-4B",
+      "signals": [
+        "补审间隔。Qwen3.5-4B 输出继续、切换或结束，InternVLA-N1 与 Lingbot-VLA2 分别执行。",
+        "真机 5/27 完整回合，导航 26/32 子任务，独立分母。"
+      ],
+      "decision": "收入 11 月 18 日路线课选读。",
+      "url": "https://arxiv.org/html/2611.17238v1"
+    },
+    {
+      "type": "research",
+      "lineage": "李飞飞相关线 · World Labs",
+      "title": "World Labs 开放 Atlas 工具与 API",
+      "source": "World Labs",
+      "publishedAt": "2026-11-12T18:09:20Z",
+      "signals": [
+        "补审间隔。Viewfinder 重建场景、Chisel 约束几何，支持网格转换与 API。",
+        "官方索引给日期，帖号换算时分；原帖 403，产品文档可读。没有新增机器人硬件评测。"
+      ],
+      "decision": "关联隐藏实例和毕业项目的仿真场景导入，复核动力学与传感条件。",
+      "url": "https://worldlabs.ai/atlas"
+    },
     {
       "type": "research",
       "lineage": "其他官方技术更新",
@@ -152,6 +275,80 @@
     }
   ],
   "auditReview": {
+    "reviewedAt": "2026-11-14T04:03:58+08:00",
+    "windowStart": "2026-11-13T04:03:58+08:00",
+    "windowEnd": "2026-11-14T04:03:58+08:00",
+    "newClustersSinceEarlierRun": 9,
+    "strictWindowClusters": 7,
+    "summary": "严格 24 小时核实 7 簇，具身大模型新增 Praxis-1 SO-101，具身 Agent 与双团队无窗口内新增。补审确认 HEIR 双标及 World Labs Atlas 开放。杭州、上海可核新岗位和面经均 0。",
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "gapClusters": 1,
+        "evidence": [
+          "https://arxiv.org/html/2611.17238v1"
+        ],
+        "curriculumRelation": "HEIR 补审进入 11 月 18 日路线课。"
+      },
+      "EmbodiedLargeModels": {
+        "status": "updated",
+        "newClusters": 1,
+        "gapClusters": 1,
+        "evidence": [
+          "https://github.com/runwayml/praxis-1-oss/commit/afef2e18a0af22b2e9926e9f743dc4694ab8b6b5",
+          "https://arxiv.org/html/2611.17238v1",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://developers.openai.com/api/docs/models/gpt-6-astra"
+        ],
+        "curriculumRelation": "11 月 18 日 Praxis-1 与 HEIR 选读。"
+      }
+    },
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "gapReview": {
+      "start": "2026-11-12T23:06:38+08:00",
+      "end": "2026-11-13T04:03:58+08:00",
+      "clusters": [
+        {
+          "type": "research",
+          "lineage": "具身 + Agent / 具身 + 大模型",
+          "title": "HEIR 以 Qwen 规划分派导航与操作",
+          "source": "HEIR 作者团队",
+          "publishedAt": "2026-11-12T18:25:41Z",
+          "modelVersion": "arXiv:2611.17238v1 · Qwen3.5-4B",
+          "signals": [
+            "补审间隔。Qwen3.5-4B 输出继续、切换或结束，InternVLA-N1 与 Lingbot-VLA2 分别执行。",
+            "真机 5/27 完整回合，导航 26/32 子任务，独立分母。"
+          ],
+          "decision": "收入 11 月 18 日路线课选读。",
+          "url": "https://arxiv.org/html/2611.17238v1"
+        },
+        {
+          "type": "research",
+          "lineage": "李飞飞相关线 · World Labs",
+          "title": "World Labs 开放 Atlas 工具与 API",
+          "source": "World Labs",
+          "publishedAt": "2026-11-12T18:09:20Z",
+          "signals": [
+            "补审间隔。Viewfinder 重建场景、Chisel 约束几何，支持网格转换与 API。",
+            "官方索引给日期，帖号换算时分；原帖 403，产品文档可读。没有新增机器人硬件评测。"
+          ],
+          "decision": "关联隐藏实例和毕业项目的仿真场景导入，复核动力学与传感条件。",
+          "url": "https://worldlabs.ai/atlas"
+        }
+      ],
+      "deduplicatedCount": 2
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false
+  },
+  "previousAuditReview": {
     "reviewedAt": "2026-11-12T23:06:38+08:00",
     "windowStart": "2026-11-11T23:06:38+08:00",
     "windowEnd": "2026-11-12T23:06:38+08:00",
@@ -202,28 +399,6 @@
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
     "curriculumChanged": false
-  },
-  "previousAuditReview": {
-    "reviewedAt": "2026-11-07T23:06:44+08:00",
-    "windowStart": "2026-11-06T23:00:00+08:00",
-    "windowEnd": "2026-11-07T23:00:00+08:00",
-    "newClustersSinceEarlierRun": 0,
-    "publicationStatus": "local-only-sites-tool-unavailable",
-    "summary": "六仓API复核无未归档新技术簇；World Labs Frameboy为11月5日历史漏记，补记不算窗口新增；岗位面经严格新增0。",
-    "historicalCatchups": [
-      {
-        "title": "Frameboy: Atlas in Real-time",
-        "source": "World Labs",
-        "publishedDate": "2026-11-05",
-        "url": "https://www.worldlabs.ai/blog/atlas-realtime",
-        "signals": [
-          "优化Atlas变体云端生成相机视角、最高15fps厂商主张、Viewfinder流式overlay",
-          "未本地实测，不证明物理模拟或SO-101控制性能"
-        ],
-        "curriculumRelation": "11月11日吞吐与年龄；世界模型及毕业项目延伸阅读候选",
-        "decision": "窗口外历史补记，不改纲、不改已完成课文"
-      }
-    ]
   },
   "earlierSameDayAuditReview": {
     "reviewedAt": "2026-11-12T10:30:52+08:00",
