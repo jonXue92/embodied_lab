@@ -1,8 +1,47 @@
 {
-  "updatedAt": "2026-11-14T04:03:58+08:00",
+  "updatedAt": "2026-11-14T22:37:57+08:00",
   "status": "updated",
-  "summary": "严格 24 小时核实 7 簇，具身大模型新增 Praxis-1 SO-101，具身 Agent 与双团队无窗口内新增。补审确认 HEIR 双标及 World Labs Atlas 开放。杭州、上海可核新岗位和面经均 0。",
+  "summary": "严格 24 小时核实 4 个 Isaac Lab 更新簇，3 个为本轮首录。具身 Agent、具身大模型及双团队均无已验证新增，杭州和上海可核新岗位、面经均 0。",
   "items": [
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 调整共享 OVStage 初始化顺序",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-13T22:02:18Z",
+      "commitSha": "47af01eff32613d13518042c9b0fc2db88233104",
+      "signals": [
+        "先绑定物理和接触等数据，再展开渲染副本。共享模式为实验开关，未独立实测性能。"
+      ],
+      "decision": "用于仿真后端及重置条件的复现。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/47af01eff32613d13518042c9b0fc2db88233104"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 统一 Warp 环境选择接口",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-13T21:32:35Z",
+      "commitSha": "3e5ceeb2ecca928b6bcb4ece667e1765e85722d4",
+      "signals": [
+        "共享解析函数处理 ID 或掩码，部分 Newton 写入直接沿用掩码。未独立复测 GPU 性能。"
+      ],
+      "decision": "关联并行环境选择与仿真回归。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/3e5ceeb2ecca928b6bcb4ece667e1765e85722d4"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 修复 SB3 线性调度共享初值",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-13T19:09:24Z",
+      "commitSha": "5d410ae69be77f3b5fa707e7f4da0263d0b9f6c8",
+      "signals": [
+        "多个 lin_ 配置现在分别绑定初值，影响自定义学习率或 PPO 裁剪范围。复核归并 PR #8639。"
+      ],
+      "decision": "已收入 11 月 19 日代码课，固定优化器配置后比较 GAE。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/5d410ae69be77f3b5fa707e7f4da0263d0b9f6c8"
+    },
     {
       "type": "research",
       "lineage": "具身 + 大模型",
@@ -275,33 +314,34 @@
     }
   ],
   "auditReview": {
-    "reviewedAt": "2026-11-14T04:03:58+08:00",
-    "windowStart": "2026-11-13T04:03:58+08:00",
-    "windowEnd": "2026-11-14T04:03:58+08:00",
-    "newClustersSinceEarlierRun": 9,
-    "strictWindowClusters": 7,
-    "summary": "严格 24 小时核实 7 簇，具身大模型新增 Praxis-1 SO-101，具身 Agent 与双团队无窗口内新增。补审确认 HEIR 双标及 World Labs Atlas 开放。杭州、上海可核新岗位和面经均 0。",
+    "reviewedAt": "2026-11-14T22:37:57+08:00",
+    "windowStart": "2026-11-13T22:37:57+08:00",
+    "windowEnd": "2026-11-14T22:37:57+08:00",
+    "newClustersSinceEarlierRun": 3,
+    "strictWindowClusters": 4,
+    "summary": "严格 24 小时核实 4 个 Isaac Lab 更新簇，3 个为本轮首录。具身 Agent、具身大模型及双团队均无已验证新增，杭州和上海可核新岗位、面经均 0。",
     "researchTracks": {
       "EmbodiedAgent": {
         "status": "no_verified_change",
         "newClusters": 0,
-        "gapClusters": 1,
         "evidence": [
-          "https://arxiv.org/html/2611.17238v1"
+          "https://research.nvidia.com/labs/srl/projects/astranomy/",
+          "https://arxiv.org/html/2611.16246v1",
+          "https://arxiv.org/html/2611.16419v1"
         ],
-        "curriculumRelation": "HEIR 补审进入 11 月 18 日路线课。"
+        "curriculumRelation": "后续长程任务、交还与失败恢复时复查历史对照。"
       },
       "EmbodiedLargeModels": {
-        "status": "updated",
-        "newClusters": 1,
-        "gapClusters": 1,
+        "status": "no_verified_change",
+        "newClusters": 0,
         "evidence": [
-          "https://github.com/runwayml/praxis-1-oss/commit/afef2e18a0af22b2e9926e9f743dc4694ab8b6b5",
-          "https://arxiv.org/html/2611.17238v1",
+          "https://developers.openai.com/api/docs/models/gpt-6-astra",
           "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://developers.openai.com/api/docs/models/gpt-6-astra"
+          "https://platform.qianwenai.com/docs/changelog/models",
+          "https://arxiv.org/abs/2609.19613v2",
+          "https://www.merl.com/publications/TR2026-173"
         ],
-        "curriculumRelation": "11 月 18 日 Praxis-1 与 HEIR 选读。"
+        "curriculumRelation": "后续触觉消融和失败样本利用复查 TacSushi。"
       }
     },
     "lineages": {
@@ -309,40 +349,6 @@
       "WorldLabs": "no_verified_change",
       "AMI": "no_verified_change",
       "MetaHistorical": "no_verified_change"
-    },
-    "gapReview": {
-      "start": "2026-11-12T23:06:38+08:00",
-      "end": "2026-11-13T04:03:58+08:00",
-      "clusters": [
-        {
-          "type": "research",
-          "lineage": "具身 + Agent / 具身 + 大模型",
-          "title": "HEIR 以 Qwen 规划分派导航与操作",
-          "source": "HEIR 作者团队",
-          "publishedAt": "2026-11-12T18:25:41Z",
-          "modelVersion": "arXiv:2611.17238v1 · Qwen3.5-4B",
-          "signals": [
-            "补审间隔。Qwen3.5-4B 输出继续、切换或结束，InternVLA-N1 与 Lingbot-VLA2 分别执行。",
-            "真机 5/27 完整回合，导航 26/32 子任务，独立分母。"
-          ],
-          "decision": "收入 11 月 18 日路线课选读。",
-          "url": "https://arxiv.org/html/2611.17238v1"
-        },
-        {
-          "type": "research",
-          "lineage": "李飞飞相关线 · World Labs",
-          "title": "World Labs 开放 Atlas 工具与 API",
-          "source": "World Labs",
-          "publishedAt": "2026-11-12T18:09:20Z",
-          "signals": [
-            "补审间隔。Viewfinder 重建场景、Chisel 约束几何，支持网格转换与 API。",
-            "官方索引给日期，帖号换算时分；原帖 403，产品文档可读。没有新增机器人硬件评测。"
-          ],
-          "decision": "关联隐藏实例和毕业项目的仿真场景导入，复核动力学与传感条件。",
-          "url": "https://worldlabs.ai/atlas"
-        }
-      ],
-      "deduplicatedCount": 2
     },
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
@@ -443,6 +449,80 @@
         "curriculumRelation": "11 月 15 日选读，交互仿真对照任务进度与采样时间。"
       }
     ],
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false
+  },
+  "earlierSameDateAuditReview": {
+    "reviewedAt": "2026-11-14T04:03:58+08:00",
+    "windowStart": "2026-11-13T04:03:58+08:00",
+    "windowEnd": "2026-11-14T04:03:58+08:00",
+    "newClustersSinceEarlierRun": 9,
+    "strictWindowClusters": 7,
+    "summary": "严格 24 小时核实 7 簇，具身大模型新增 Praxis-1 SO-101，具身 Agent 与双团队无窗口内新增。补审确认 HEIR 双标及 World Labs Atlas 开放。杭州、上海可核新岗位和面经均 0。",
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "gapClusters": 1,
+        "evidence": [
+          "https://arxiv.org/html/2611.17238v1"
+        ],
+        "curriculumRelation": "HEIR 补审进入 11 月 18 日路线课。"
+      },
+      "EmbodiedLargeModels": {
+        "status": "updated",
+        "newClusters": 1,
+        "gapClusters": 1,
+        "evidence": [
+          "https://github.com/runwayml/praxis-1-oss/commit/afef2e18a0af22b2e9926e9f743dc4694ab8b6b5",
+          "https://arxiv.org/html/2611.17238v1",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://developers.openai.com/api/docs/models/gpt-6-astra"
+        ],
+        "curriculumRelation": "11 月 18 日 Praxis-1 与 HEIR 选读。"
+      }
+    },
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "gapReview": {
+      "start": "2026-11-12T23:06:38+08:00",
+      "end": "2026-11-13T04:03:58+08:00",
+      "clusters": [
+        {
+          "type": "research",
+          "lineage": "具身 + Agent / 具身 + 大模型",
+          "title": "HEIR 以 Qwen 规划分派导航与操作",
+          "source": "HEIR 作者团队",
+          "publishedAt": "2026-11-12T18:25:41Z",
+          "modelVersion": "arXiv:2611.17238v1 · Qwen3.5-4B",
+          "signals": [
+            "补审间隔。Qwen3.5-4B 输出继续、切换或结束，InternVLA-N1 与 Lingbot-VLA2 分别执行。",
+            "真机 5/27 完整回合，导航 26/32 子任务，独立分母。"
+          ],
+          "decision": "收入 11 月 18 日路线课选读。",
+          "url": "https://arxiv.org/html/2611.17238v1"
+        },
+        {
+          "type": "research",
+          "lineage": "李飞飞相关线 · World Labs",
+          "title": "World Labs 开放 Atlas 工具与 API",
+          "source": "World Labs",
+          "publishedAt": "2026-11-12T18:09:20Z",
+          "signals": [
+            "补审间隔。Viewfinder 重建场景、Chisel 约束几何，支持网格转换与 API。",
+            "官方索引给日期，帖号换算时分；原帖 403，产品文档可读。没有新增机器人硬件评测。"
+          ],
+          "decision": "关联隐藏实例和毕业项目的仿真场景导入，复核动力学与传感条件。",
+          "url": "https://worldlabs.ai/atlas"
+        }
+      ],
+      "deduplicatedCount": 2
+    },
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
     "curriculumChanged": false
