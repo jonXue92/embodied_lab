@@ -1,8 +1,29 @@
 {
-  "updatedAt": "2026-11-14T22:37:57+08:00",
+  "updatedAt": "2026-11-15T22:52:57+08:00",
   "status": "updated",
-  "summary": "严格 24 小时核实 4 个 Isaac Lab 更新簇，3 个为本轮首录。具身 Agent、具身大模型及双团队均无已验证新增，杭州和上海可核新岗位、面经均 0。",
+  "summary": "严格 24 小时核实 Isaac Lab Warp 一项续更，与既有更新合簇。具身 Agent、具身大模型及双团队无已验证新增，两地可核新岗位和面经均 0。",
   "items": [
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab Warp 环境选择续更至 PhysX 肌腱",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-15T08:06:34Z",
+      "commitSha": "eceac1ac19e6ddaf63bb6bd79c0d71fe904b8ed5",
+      "signals": [
+        "Warp 1a 共享 ID 与掩码解析。1b 让 PhysX 肌腱 setter 直接用掩码写缓冲，向仿真提交仍用索引。",
+        "作者在 RTX PRO 6000、4096 环境选半数时报告约 83–91 µs 降至 18.5 µs；证据为单次调用耗时。"
+      ],
+      "decision": "11 月 20 日路线课选读，11 月 23 日复查缓冲写入、重置及控制循环的测量边界。",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/eceac1ac19e6ddaf63bb6bd79c0d71fe904b8ed5",
+      "relatedCommits": [
+        {
+          "commitSha": "3e5ceeb2ecca928b6bcb4ece667e1765e85722d4",
+          "publishedAt": "2026-11-13T21:32:35Z",
+          "url": "https://github.com/isaac-sim/IsaacLab/commit/3e5ceeb2ecca928b6bcb4ece667e1765e85722d4"
+        }
+      ]
+    },
     {
       "type": "research",
       "lineage": "其他官方技术更新",
@@ -15,19 +36,6 @@
       ],
       "decision": "用于仿真后端及重置条件的复现。",
       "url": "https://github.com/isaac-sim/IsaacLab/commit/47af01eff32613d13518042c9b0fc2db88233104"
-    },
-    {
-      "type": "research",
-      "lineage": "其他官方技术更新",
-      "title": "Isaac Lab 统一 Warp 环境选择接口",
-      "source": "isaac-sim/IsaacLab",
-      "publishedAt": "2026-11-13T21:32:35Z",
-      "commitSha": "3e5ceeb2ecca928b6bcb4ece667e1765e85722d4",
-      "signals": [
-        "共享解析函数处理 ID 或掩码，部分 Newton 写入直接沿用掩码。未独立复测 GPU 性能。"
-      ],
-      "decision": "关联并行环境选择与仿真回归。",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/3e5ceeb2ecca928b6bcb4ece667e1765e85722d4"
     },
     {
       "type": "research",
@@ -314,6 +322,53 @@
     }
   ],
   "auditReview": {
+    "reviewedAt": "2026-11-15T22:52:57+08:00",
+    "windowStart": "2026-11-14T22:52:57+08:00",
+    "windowEnd": "2026-11-15T22:52:57+08:00",
+    "newClustersSinceEarlierRun": 0,
+    "updatedExistingClusters": 1,
+    "strictWindowClusters": 1,
+    "summary": "严格 24 小时核实 Isaac Lab Warp 一项续更，与既有更新合簇。具身 Agent、具身大模型及双团队无已验证新增，两地可核新岗位和面经均 0。",
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://embodied-agent-arena.github.io/embodied-agent-arena/findings.html",
+          "https://arxiv.org/abs/2611.15317v1",
+          "https://arxiv.org/abs/2611.16386v1"
+        ],
+        "curriculumRelation": "长程任务、历史进展跟踪与失败恢复，区分恢复执行和完成目标。"
+      },
+      "EmbodiedLargeModels": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://developers.openai.com/api/docs/models/gpt-6-astra",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://platform.qianwenai.com/docs/changelog/models",
+          "https://arxiv.org/abs/2611.12806v1"
+        ],
+        "curriculumRelation": "后续感知消融、具身基准、控制权和闭环验收。"
+      }
+    },
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "gapReview": {
+      "start": "2026-11-14T22:37:57+08:00",
+      "end": "2026-11-14T22:52:57+08:00",
+      "clusters": [],
+      "deduplicatedCount": 0
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false
+  },
+  "previousAuditReview": {
     "reviewedAt": "2026-11-14T22:37:57+08:00",
     "windowStart": "2026-11-13T22:37:57+08:00",
     "windowEnd": "2026-11-14T22:37:57+08:00",
@@ -350,58 +405,6 @@
       "AMI": "no_verified_change",
       "MetaHistorical": "no_verified_change"
     },
-    "verifiedJobCount": 0,
-    "verifiedInterviewCount": 0,
-    "curriculumChanged": false
-  },
-  "previousAuditReview": {
-    "reviewedAt": "2026-11-12T23:06:38+08:00",
-    "windowStart": "2026-11-11T23:06:38+08:00",
-    "windowEnd": "2026-11-12T23:06:38+08:00",
-    "newClustersSinceEarlierRun": 2,
-    "summary": "晚间新增 LeRobot 远程 Lance 与 G1 遥操作两簇。具身 Agent、具身大模型与双团队无未归档的已验证新增。补记 Astra 参赛仿真并收入 11 月 17 日选读。杭州和上海经核新岗位、面经各 0。",
-    "researchTracks": {
-      "EmbodiedAgent": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://agentic-robotics-workshop.github.io/",
-          "https://arxiv.org/html/2611.14432v1"
-        ],
-        "curriculumRelation": "11 月 17 日主动观察、重规划和 π0.5 回退。"
-      },
-      "EmbodiedLargeModels": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://arxiv.org/html/2611.14432v1",
-          "https://developers.openai.com/api/docs/models/gpt-6-astra",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://runway.com/news/company-news/praxis-1-is-now-available"
-        ],
-        "curriculumRelation": "11 月 16 日 Praxis 已归档，11 月 17 日 Astra 仿真路由作历史对照。"
-      }
-    },
-    "lineages": {
-      "StanfordVL": "no_verified_change",
-      "WorldLabs": "no_verified_change",
-      "AMI": "no_verified_change",
-      "MetaHistorical": "no_verified_change"
-    },
-    "historicalCatchups": [
-      {
-        "title": "One Policy for 100 Household Tasks",
-        "source": "Robot Learning Collective",
-        "publishedAt": "2026-11-10T18:06:16Z",
-        "version": "arXiv:2611.14432v1",
-        "url": "https://arxiv.org/html/2611.14432v1",
-        "tracks": [
-          "EmbodiedAgent",
-          "EmbodiedLargeModels"
-        ],
-        "curriculumRelation": "11 月 17 日选读。预选任务上 Astra 调工具，运行错误或超时后交还 π0.5；OmniGibson 交互仿真。"
-      }
-    ],
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
     "curriculumChanged": false
