@@ -1,8 +1,82 @@
 {
-  "updatedAt": "2026-11-15T22:52:57+08:00",
+  "updatedAt": "2026-11-16T22:04:55+08:00",
   "status": "updated",
-  "summary": "严格 24 小时核实 Isaac Lab Warp 一项续更，与既有更新合簇。具身 Agent、具身大模型及双团队无已验证新增，两地可核新岗位和面经均 0。",
+  "summary": "严格 24 小时核实 5 簇，具身大模型 1 簇为 GR00T N1.5 仿真后训练修复。具身 Agent 与双团队无已验证新增，杭州和上海可核新岗位、面经均为 0。",
   "items": [
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "LeRobot OpenArm 修复连接归零和握手解码",
+      "source": "huggingface/lerobot",
+      "commitSha": "781d3daccc64e8ce3e3d0910e64b2b0180551059",
+      "publishedAt": "2026-11-16T12:37:49Z",
+      "url": "https://github.com/huggingface/lerobot/commit/781d3daccc64e8ce3e3d0910e64b2b0180551059",
+      "signals": [
+        "保留显式标定归零；读取电机握手响应。作者用模拟 CAN 检查。"
+      ],
+      "decision": "关联毕业项目硬件标定和动作接口验收。"
+    },
+    {
+      "type": "research",
+      "lineage": "具身 + 大模型",
+      "title": "Isaac Lab 修复 GR00T N1.5 仿真后训练",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "d44733f0485db619fa142fce7705cb0972402900",
+      "publishedAt": "2026-11-16T05:50:53Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/d44733f0485db619fa142fce7705cb0972402900",
+      "signals": [
+        "RLinf 0.3 恢复动作投影 ID、rollout 权重同步和阶段更新，修复腰部限速并增 Newton 后端。",
+        "Newton 的 16 GPU PPO 在插入阶段约 122 步达到约 67% 的五步训中移动平均。PhysX 修复前后作者测 0/8 与 4/8。"
+      ],
+      "decision": "11 月 21 日路线课选读，区分框架回归、训中统计与留出评测。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 修正两处 AMP 四元数轴序",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "ed2d3ef03ae6509ed037dc4ad3485d9d0e166b57",
+      "publishedAt": "2026-11-16T04:48:58Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/ed2d3ef03ae6509ed037dc4ad3485d9d0e166b57",
+      "signals": [
+        "保留加载器 wxyz，重置姿态和参考特征进入 xyzw 消费者前转换。"
+      ],
+      "decision": "11 月 23 日用作训练诊断中的坐标契约选读。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Cosmos Transfer 修复样本负提示与读取规则",
+      "source": "NVIDIA/cosmos-framework",
+      "commitSha": "4f0088f89511c3a65a479aec38fedf2e5e8630c6",
+      "publishedAt": "2026-11-16T02:28:26Z",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/4f0088f89511c3a65a479aec38fedf2e5e8630c6",
+      "signals": [
+        "内置默认值不再覆盖样本指定的负提示文件，验证端与加载端统一查找规则。",
+        "六个现有 Transfer spec 的条件生成路径受影响。"
+      ],
+      "decision": "关联生成数据的输入配置和版本变更后重评。",
+      "relatedCommits": [
+        {
+          "commitSha": "e40831fa068fd171894b6cfb269308b441e80a85",
+          "publishedAt": "2026-11-16T03:18:58Z",
+          "url": "https://github.com/NVIDIA/cosmos-framework/commit/e40831fa068fd171894b6cfb269308b441e80a85"
+        }
+      ]
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 修复资产微基准初始化与计时",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "b1c22cdcef80a2776928b0af8ffe78fea122a12b",
+      "publishedAt": "2026-11-15T19:58:55Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/b1c22cdcef80a2776928b0af8ffe78fea122a12b",
+      "signals": [
+        "补读写初始化与计时隔离，作者在 RTX 5090 上复核三后端、三资产的正确性。"
+      ],
+      "decision": "11 月 23 日复查计时与端到端任务测量的证据边界。"
+    },
     {
       "type": "research",
       "lineage": "其他官方技术更新",
@@ -322,6 +396,59 @@
     }
   ],
   "auditReview": {
+    "reviewedAt": "2026-11-16T22:04:55+08:00",
+    "windowStart": "2026-11-15T22:04:55+08:00",
+    "windowEnd": "2026-11-16T22:04:55+08:00",
+    "newClustersSinceEarlierRun": 5,
+    "strictWindowClusters": 5,
+    "summary": "严格 24 小时核实 5 簇，具身大模型 1 簇为 GR00T N1.5 仿真后训练修复。具身 Agent 与双团队无已验证新增，杭州和上海可核新岗位、面经均为 0。",
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://arxiv.org/abs/2611.18562v1",
+          "https://github.com/mit-han-lab/pear/commit/d604856a1b16fdccd47e22a27d4dd935e3a62014",
+          "https://arxiv.org/abs/2611.18359"
+        ],
+        "curriculumRelation": "11 月 21 日补读窗口外 PEAR 的末端位姿接口、IK 重试与分母。"
+      },
+      "EmbodiedLargeModels": {
+        "status": "updated",
+        "newClusters": 1,
+        "evidence": [
+          "https://github.com/isaac-sim/IsaacLab/commit/d44733f0485db619fa142fce7705cb0972402900",
+          "https://github.com/isaac-sim/IsaacLab/pull/8771",
+          "https://platform.qianwenai.com/docs/changelog/models"
+        ],
+        "curriculumRelation": "11 月 21 日比较 GR00T N1.5 仿真后训练与 PEAR 的机器人使用强化学习。"
+      }
+    },
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "historicalCatchups": [
+      {
+        "title": "PEAR · Qwen3.8-27B 机器人使用强化学习",
+        "source": "MIT、UC Berkeley、UCSD、NVIDIA、Inco AI",
+        "publishedAt": "2026-11-13T18:59:02Z",
+        "version": "arXiv:2611.18562v1",
+        "url": "https://arxiv.org/html/2611.18562v1",
+        "researchTracks": [
+          "EmbodiedAgent",
+          "EmbodiedLargeModels"
+        ],
+        "curriculumRelation": "11 月 21 日选读；相机与本体输入、末端位姿输出、IK/控制器执行与观测回流，YAM 双臂 18/30。"
+      }
+    ],
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false
+  },
+  "previousAuditReview": {
     "reviewedAt": "2026-11-15T22:52:57+08:00",
     "windowStart": "2026-11-14T22:52:57+08:00",
     "windowEnd": "2026-11-15T22:52:57+08:00",
@@ -363,47 +490,6 @@
       "end": "2026-11-14T22:52:57+08:00",
       "clusters": [],
       "deduplicatedCount": 0
-    },
-    "verifiedJobCount": 0,
-    "verifiedInterviewCount": 0,
-    "curriculumChanged": false
-  },
-  "previousAuditReview": {
-    "reviewedAt": "2026-11-14T22:37:57+08:00",
-    "windowStart": "2026-11-13T22:37:57+08:00",
-    "windowEnd": "2026-11-14T22:37:57+08:00",
-    "newClustersSinceEarlierRun": 3,
-    "strictWindowClusters": 4,
-    "summary": "严格 24 小时核实 4 个 Isaac Lab 更新簇，3 个为本轮首录。具身 Agent、具身大模型及双团队均无已验证新增，杭州和上海可核新岗位、面经均 0。",
-    "researchTracks": {
-      "EmbodiedAgent": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://research.nvidia.com/labs/srl/projects/astranomy/",
-          "https://arxiv.org/html/2611.16246v1",
-          "https://arxiv.org/html/2611.16419v1"
-        ],
-        "curriculumRelation": "后续长程任务、交还与失败恢复时复查历史对照。"
-      },
-      "EmbodiedLargeModels": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://developers.openai.com/api/docs/models/gpt-6-astra",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://platform.qianwenai.com/docs/changelog/models",
-          "https://arxiv.org/abs/2609.19613v2",
-          "https://www.merl.com/publications/TR2026-173"
-        ],
-        "curriculumRelation": "后续触觉消融和失败样本利用复查 TacSushi。"
-      }
-    },
-    "lineages": {
-      "StanfordVL": "no_verified_change",
-      "WorldLabs": "no_verified_change",
-      "AMI": "no_verified_change",
-      "MetaHistorical": "no_verified_change"
     },
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
