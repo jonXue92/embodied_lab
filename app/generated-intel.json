@@ -1,8 +1,234 @@
 {
-  "updatedAt": "2026-11-16T22:04:55+08:00",
+  "updatedAt": "2026-11-17T22:46:43+08:00",
   "status": "updated",
-  "summary": "严格 24 小时核实 5 簇，具身大模型 1 簇为 GR00T N1.5 仿真后训练修复。具身 Agent 与双团队无已验证新增，杭州和上海可核新岗位、面经均为 0。",
+  "summary": "严格 24 小时归档 16 个已验证更新簇。具身 Agent 2 簇，具身大模型 2 簇。StanfordVL 2 簇，World Labs、AMI Labs 及 Meta/FAIR 历史谱系无已验证新增。杭州、上海可核新岗位与可靠新面经均为 0。",
   "items": [
+    {
+      "type": "research",
+      "lineage": "具身 + Agent",
+      "title": "Lazy-MOSAIC 用技能效果模型筛选物理仿真",
+      "source": "Carnegie Mellon University / Technion",
+      "publishedAt": "2026-11-16T18:10:52Z",
+      "url": "https://arxiv.org/html/2611.21517v1",
+      "modelVersion": "arXiv:2611.21517v1",
+      "signals": [
+        "以状态、技能及参数预测可行性和结果，用高保真模拟器认证提议，按实际仿真末状态修图。技能控制器先在模拟器中执行参数化动作；论文随附真机演示。",
+        "货架八种设置各 20 次，104/160 个计划成功，对照 81/160。双方能求解的设置中仅计成功试次，规划快 2.1–6.6 倍，仿真查询少 64–69%。未给有分母的真机成功率或在线故障恢复时延。"
+      ],
+      "decision": "11 月 22 日路线课选读，从高层技能认证区分低层 SAC 执行；12 月 26 日复查闭环恢复证据。"
+    },
+    {
+      "type": "research",
+      "lineage": "具身 + Agent",
+      "title": "CALDS 用动力系统协同两个移动机械臂",
+      "source": "TU Delft",
+      "publishedAt": "2026-11-16T14:52:49Z",
+      "url": "https://arxiv.org/html/2611.21198v1",
+      "modelVersion": "arXiv:2611.21198v1",
+      "signals": [
+        "共享状态和任务约束选双机的示教动力系统，再调节时间缩放以保留动作路径；低层控制器执行，闭环模拟按带噪状态重新规划。",
+        "两台 9 自由度移动机械臂、三类模拟任务，每类 200 次随机运行。主实验总成功 91–100%；带噪闭环的 dsmpman 版抽屉与穿衣各 98%，餐厅 79%。没有真机评测。"
+      ],
+      "decision": "关联 12 月 18 日隐藏扰动与重规划时延的分层结果。"
+    },
+    {
+      "type": "research",
+      "lineage": "具身 + 大模型",
+      "title": "ScaleVLA 用 552B DeepSeek 骨干为动作头提供表征",
+      "source": "清华大学 / 北京大学 / 上海交通大学 / 银河通用",
+      "publishedAt": "2026-11-16T18:59:37Z",
+      "url": "https://arxiv.org/html/2611.21607v1",
+      "modelVersion": "arXiv:2611.21607v1 · DeepSeek-V4.1-Flash-1017",
+      "signals": [
+        "冻结的 VLM 编码图像和文本，动作 DiT 读取特征及机器人状态后做四步 flow 生成动作段，动作由机器人控制侧执行，重读图像和状态供下一段预测。GPT-6 Astra 是论文动机引用。",
+        "LIBERO-PRO 仿真成功率 45.1%，较小骨干最好 31.3%；同论文真机充电插入为 9/10 对 4/10。216 ms 是 RoboCasa 动作段推理中位数，非真机端到端周期。当前确认论文可读，作者项目页本轮不可访问，未核到完整策略和权重。"
+      ],
+      "decision": "11 月 22 日路线课选读，区分离线示教适配和在线 replay；毕业项目记录各段延迟。"
+    },
+    {
+      "type": "research",
+      "lineage": "李飞飞相关线 · StanfordVL",
+      "title": "OmniGibson 修正非 Newton 后端的张量设备与布料属性",
+      "source": "StanfordVL/BEHAVIOR-1K",
+      "commitSha": "cc8f4ce0c89fa5a2f4be510b187989aa0dc69761",
+      "publishedAt": "2026-11-16T21:55:31Z",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/cc8f4ce0c89fa5a2f4be510b187989aa0dc69761",
+      "prUrl": "https://github.com/StanfordVL/BEHAVIOR-1K/pull/2383",
+      "signals": [
+        "张量跟随 og.sim.device，布料视觉网格支持更深层路径，未写入的粒子组属性返回 0。默认分支修复，原 PR 未提供新的策略评测。"
+      ],
+      "decision": "关联 11 月 23 日仿真诊断及 12 月 18 日物理扰动检查。"
+    },
+    {
+      "type": "research",
+      "lineage": "李飞飞相关线 · StanfordVL",
+      "title": "BEHAVIOR-1K 按任务选择下载仿真资产",
+      "source": "StanfordVL/BEHAVIOR-1K",
+      "commitSha": "9f07945ad20b8c5ce21f9a5ee5b6ffd561e1114f",
+      "publishedAt": "2026-11-16T21:55:13Z",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/9f07945ad20b8c5ce21f9a5ee5b6ffd561e1114f",
+      "prUrl": "https://github.com/StanfordVL/BEHAVIOR-1K/pull/2387",
+      "signals": [
+        "按任务选取所需资产。合并 PR 继承早期 #2370；其旧性能/CI 记录不作本次固定 SHA 的基准。"
+      ],
+      "decision": "关联 12 月 18 日隐藏任务资产清单与 12 月 29 日复现验收。"
+    },
+    {
+      "type": "research",
+      "lineage": "具身 + 大模型",
+      "title": "LeRobot 修正 Praxis-1 的反传精度、帧栈、设备与夹爪状态",
+      "source": "huggingface/lerobot",
+      "commitSha": "7910c20a75834ad3fa6a9792df4d44a614d1bba6",
+      "publishedAt": "2026-11-16T17:47:55Z",
+      "url": "https://github.com/huggingface/lerobot/commit/7910c20a75834ad3fa6a9792df4d44a614d1bba6",
+      "prUrl": "https://github.com/huggingface/lerobot/pull/5328",
+      "signals": [
+        "Praxis-1 视觉/语言及本体条件进入动作专家，真实 21 行之后的 3 行补齐帧不再污染下段观测。批量推理消费动作段的是外部执行器。其余修复保持 MoE 重算精度、合并设备、双臂原始夹爪值。",
+        "作者 H100 软件回归 147 通过、2 跳过，另用 DROID checkpoint 跑 1 个 LoRA 训练步；未报告新的真机成功率。"
+      ],
+      "decision": "关联 11 月 23 日故障诊断和 12 月 20 日帧身份回归。",
+      "modelVersion": "Praxis-1 · LeRobot 默认分支"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "LeRobot YAM 同帧读反馈、状态和年龄",
+      "source": "huggingface/lerobot",
+      "commitSha": "d7705563b2a184573d6f87f94090d3bea8f971cd",
+      "publishedAt": "2026-11-17T11:08:17Z",
+      "url": "https://github.com/huggingface/lerobot/commit/d7705563b2a184573d6f87f94090d3bea8f971cd",
+      "prUrl": "https://github.com/huggingface/lerobot/pull/5380",
+      "signals": [
+        "motorbridge 0.6 的单调时钟快照替代独立 CAN 读取，启停和故障恢复规则更严格。作者报告 123 项通过，并列出单/双臂 YAM 硬件检查。"
+      ],
+      "decision": "关联 12 月 23 日反馈时钟与故障处理。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Cosmos 拒绝错误相机命令并报告帧数偏差",
+      "source": "NVIDIA/cosmos-framework",
+      "commitSha": "0822f1d1f79f0e75a249ddddcb77c929932e881e",
+      "publishedAt": "2026-11-17T07:59:09Z",
+      "url": "https://github.com/NVIDIA/cosmos-framework/commit/0822f1d1f79f0e75a249ddddcb77c929932e881e",
+      "prUrl": "https://github.com/NVIDIA/cosmos-framework/pull/403",
+      "signals": [
+        "解析失败时给出具名错误；有效轨迹 1062 组位姿逐字节不变。作者用 Cosmos3-Nano-Sim-Bimanual、61 帧、seed 42 验证相机轨迹，结果属于视频生成路径。"
+      ],
+      "decision": "关联 12 月 20 日生成配置指纹与帧数回归。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 补齐 PhysX 与 OvPhysX 关节 armature",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "5b3f070b9cf79a7b95d0eb0402516d8ffbadce63",
+      "publishedAt": "2026-11-17T12:02:25Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/5b3f070b9cf79a7b95d0eb0402516d8ffbadce63",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/8424",
+      "signals": [
+        "缓存质量矩阵按公开关节顺序加一次关节 armature，浮动基行保持。作者 RTX 5090 上 OvPhysX 5 通过，PhysX 1 通过、1 已知 xfail。"
+      ],
+      "decision": "关联 11 月 23 日按物理后端定位 value 突变。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 任务空间裁剪按动作名解析",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "3013b468d7a466bc7a98a8c3bd300be463a36280",
+      "publishedAt": "2026-11-16T21:26:01Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/3013b468d7a466bc7a98a8c3bd300be463a36280",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/9040",
+      "signals": [
+        "RMPFlow 和非完整约束基座动作按任务空间 action_names 匹配，关节名不再误索引动作向量。PR 说明当前内置任务没有为这两项设置 clip。"
+      ],
+      "decision": "11 月 22 日回放契约的选读，核对限幅前后动作坐标。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 保留共享场景相机曝光默认值",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "f72cf8bd9e4a822abad8858c4108022db8827195",
+      "publishedAt": "2026-11-16T17:09:30Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/f72cf8bd9e4a822abad8858c4108022db8827195",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/9045",
+      "signals": [
+        "物理人口初始化跳过 exposure 字段，避免 USD 默认值覆盖 RTX 曝光导致画面饱和。PR 未给策略指标。"
+      ],
+      "decision": "关联 11 月 23 日曝光漂移与训练诊断。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 新增 Unitree H2 速度跟踪任务",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "13b6b9dd9af3fde9da242c1a0836af0c7efb199e",
+      "publishedAt": "2026-11-16T20:24:49Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/13b6b9dd9af3fde9da242c1a0836af0c7efb199e",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/8908",
+      "signals": [
+        "平地与粗糙地形 RSL-RL PPO 任务复用步态奖励和课程。Newton/MuJoCo Warp 3.17 与 OvPhysX 均跑每配置 8 环境×128 步有限值烟测。"
+      ],
+      "decision": "关联 11 月 23 日区分仿真烟测和训练验收。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 恢复 G1 最小任务并隔离 29-DoF teacher",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "3e7e6137089d1db8823f3011941ab1ee73cc9954",
+      "publishedAt": "2026-11-17T07:57:11Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/3e7e6137089d1db8823f3011941ab1ee73cc9954",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/8911",
+      "signals": [
+        "恢复原粗糙/平地配置与 policy 观测组，29-DoF teacher 保留独立注册。作者完成配置对比、烟测发现和静态检查，未运行物理回合。"
+      ],
+      "decision": "关联 11 月 23 日区分任务标识和 checkpoint 变化。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 速度任务使用最小碰撞体变体",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "f9af6e3c52ccb43533996713985808fed2cd46db",
+      "publishedAt": "2026-11-17T06:14:56Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/f9af6e3c52ccb43533996713985808fed2cd46db",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/9039",
+      "signals": [
+        "Go2、ANYmal-D 与 G1 29-DoF 的有效碰撞体分别由 27、17、25 减至 5；作者检查资产哈希与 6 个任务配置，未重训。"
+      ],
+      "decision": "关联 11 月 23 日和 12 月 20 日的物理配置回归。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 缓存 OvPhysX 重力，减少共享场景 seal",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "014b8870cbf3f8335b1b14a727d296fdca69706f",
+      "publishedAt": "2026-11-17T12:01:48Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/014b8870cbf3f8335b1b14a727d296fdca69706f",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/9046",
+      "signals": [
+        "固定 RGB 64×64 和 OvPhysX 0.7.0，作者在 GTL-B40 的非 RL 单/双相机任务测 28.4k→33.3k 与 12.1k→16.3k FPS。"
+      ],
+      "decision": "关联 11 月 23 日区分仿真吞吐和策略学习速度。"
+    },
+    {
+      "type": "research",
+      "lineage": "其他官方技术更新",
+      "title": "Isaac Lab 对接 OvPhysX 0.8.0 人口描述接口",
+      "source": "isaac-sim/IsaacLab",
+      "commitSha": "7dd36fd4abf157c32f51f168d1174cd08a284886",
+      "publishedAt": "2026-11-17T12:36:07Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/7dd36fd4abf157c32f51f168d1174cd08a284886",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/9048",
+      "signals": [
+        "作者用尚非默认依赖的 OvPhysX 0.8.0 运行四组共享场景，RGB64，50 步预热后测 500 步，单次配对快 1.6–4.7%，最终位姿逐位相等。"
+      ],
+      "decision": "关联 11 月 23 日吞吐对比的版本和重复次数。"
+    },
     {
       "type": "research",
       "lineage": "其他官方技术更新",
@@ -396,6 +622,43 @@
     }
   ],
   "auditReview": {
+    "reviewedAt": "2026-11-17T22:46:43+08:00",
+    "windowStart": "2026-11-16T22:46:43+08:00",
+    "windowEnd": "2026-11-17T22:46:43+08:00",
+    "newClustersSinceEarlierRun": 16,
+    "strictWindowClusters": 16,
+    "summary": "严格 24 小时归档 16 个已验证更新簇。具身 Agent 2 簇，具身大模型 2 簇。StanfordVL 2 簇，World Labs、AMI Labs 及 Meta/FAIR 历史谱系无已验证新增。杭州、上海可核新岗位与可靠新面经均为 0。",
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "updated",
+        "newClusters": 2,
+        "evidence": [
+          "https://arxiv.org/html/2611.21517v1",
+          "https://arxiv.org/html/2611.21198v1"
+        ],
+        "curriculumRelation": "11 月 22 日技能认证与执行对照；12 月 18 日仿真扰动与时间约束。"
+      },
+      "EmbodiedLargeModels": {
+        "status": "updated",
+        "newClusters": 2,
+        "evidence": [
+          "https://arxiv.org/html/2611.21607v1",
+          "https://github.com/huggingface/lerobot/commit/7910c20a75834ad3fa6a9792df4d44a614d1bba6"
+        ],
+        "curriculumRelation": "11 月 22 日 DeepSeek 表征与动作头选读，11 月 23 日 Praxis 回放帧身份诊断。"
+      }
+    },
+    "lineages": {
+      "StanfordVL": "updated",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false
+  },
+  "previousAuditReview": {
     "reviewedAt": "2026-11-16T22:04:55+08:00",
     "windowStart": "2026-11-15T22:04:55+08:00",
     "windowEnd": "2026-11-16T22:04:55+08:00",
@@ -444,53 +707,6 @@
         "curriculumRelation": "11 月 21 日选读；相机与本体输入、末端位姿输出、IK/控制器执行与观测回流，YAM 双臂 18/30。"
       }
     ],
-    "verifiedJobCount": 0,
-    "verifiedInterviewCount": 0,
-    "curriculumChanged": false
-  },
-  "previousAuditReview": {
-    "reviewedAt": "2026-11-15T22:52:57+08:00",
-    "windowStart": "2026-11-14T22:52:57+08:00",
-    "windowEnd": "2026-11-15T22:52:57+08:00",
-    "newClustersSinceEarlierRun": 0,
-    "updatedExistingClusters": 1,
-    "strictWindowClusters": 1,
-    "summary": "严格 24 小时核实 Isaac Lab Warp 一项续更，与既有更新合簇。具身 Agent、具身大模型及双团队无已验证新增，两地可核新岗位和面经均 0。",
-    "researchTracks": {
-      "EmbodiedAgent": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://embodied-agent-arena.github.io/embodied-agent-arena/findings.html",
-          "https://arxiv.org/abs/2611.15317v1",
-          "https://arxiv.org/abs/2611.16386v1"
-        ],
-        "curriculumRelation": "长程任务、历史进展跟踪与失败恢复，区分恢复执行和完成目标。"
-      },
-      "EmbodiedLargeModels": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://developers.openai.com/api/docs/models/gpt-6-astra",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://platform.qianwenai.com/docs/changelog/models",
-          "https://arxiv.org/abs/2611.12806v1"
-        ],
-        "curriculumRelation": "后续感知消融、具身基准、控制权和闭环验收。"
-      }
-    },
-    "lineages": {
-      "StanfordVL": "no_verified_change",
-      "WorldLabs": "no_verified_change",
-      "AMI": "no_verified_change",
-      "MetaHistorical": "no_verified_change"
-    },
-    "gapReview": {
-      "start": "2026-11-14T22:37:57+08:00",
-      "end": "2026-11-14T22:52:57+08:00",
-      "clusters": [],
-      "deduplicatedCount": 0
-    },
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
     "curriculumChanged": false
@@ -611,6 +827,53 @@
         }
       ],
       "deduplicatedCount": 2
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false
+  },
+  "priorAuditReview": {
+    "reviewedAt": "2026-11-15T22:52:57+08:00",
+    "windowStart": "2026-11-14T22:52:57+08:00",
+    "windowEnd": "2026-11-15T22:52:57+08:00",
+    "newClustersSinceEarlierRun": 0,
+    "updatedExistingClusters": 1,
+    "strictWindowClusters": 1,
+    "summary": "严格 24 小时核实 Isaac Lab Warp 一项续更，与既有更新合簇。具身 Agent、具身大模型及双团队无已验证新增，两地可核新岗位和面经均 0。",
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://embodied-agent-arena.github.io/embodied-agent-arena/findings.html",
+          "https://arxiv.org/abs/2611.15317v1",
+          "https://arxiv.org/abs/2611.16386v1"
+        ],
+        "curriculumRelation": "长程任务、历史进展跟踪与失败恢复，区分恢复执行和完成目标。"
+      },
+      "EmbodiedLargeModels": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://developers.openai.com/api/docs/models/gpt-6-astra",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://platform.qianwenai.com/docs/changelog/models",
+          "https://arxiv.org/abs/2611.12806v1"
+        ],
+        "curriculumRelation": "后续感知消融、具身基准、控制权和闭环验收。"
+      }
+    },
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "gapReview": {
+      "start": "2026-11-14T22:37:57+08:00",
+      "end": "2026-11-14T22:52:57+08:00",
+      "clusters": [],
+      "deduplicatedCount": 0
     },
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
