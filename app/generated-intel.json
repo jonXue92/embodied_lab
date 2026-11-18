@@ -1,8 +1,135 @@
 {
-  "updatedAt": "2026-11-17T22:46:43+08:00",
+  "updatedAt": "2026-11-18T22:03:26+08:00",
   "status": "updated",
-  "summary": "严格 24 小时归档 16 个已验证更新簇。具身 Agent 2 簇，具身大模型 2 簇。StanfordVL 2 簇，World Labs、AMI Labs 及 Meta/FAIR 历史谱系无已验证新增。杭州、上海可核新岗位与可靠新面经均为 0。",
+  "summary": "严格24小时选择9个已验证技术更新簇；具身Agent和具身大模型各1簇（PAIR双标合计1）。双团队无已验证研究/模型新增，StanfordVL另有1项CI维护。杭州上海可靠新岗位、面经均0。",
   "items": [
+    {
+      "type": "research",
+      "title": "PAIR 将设备 API 与 VLA 执行放进同一仿真状态",
+      "source": "Seoul National University",
+      "publishedAt": "2026-11-17T16:58:30Z",
+      "url": "https://arxiv.org/html/2611.23070v1",
+      "signals": [
+        "Qwen3-VL-8B-Instruct每5秒仿真时间读取头/腕图像、历史子任务及时间，选择分派π0.5或GR00T N1.7、继续、等待、结束或API。Matter API和物理按键更新共享状态，状态谓词验证结果。",
+        "40任务、340示教、120评测回合；六种配置完整任务成功均0。推理暂停仿真时间，不能推出真实延迟；API默认单程200ms。代码和数据承诺发表时公开，当前未核实可下载。"
+      ],
+      "decision": "11月23日选读诊断规划/执行瓶颈；后续12月18日复查延迟与恢复。",
+      "lineage": "具身 + Agent / 具身 + 大模型",
+      "modelVersion": "arXiv:2611.23070v1 · Qwen3-VL-8B-Instruct / π0.5 / GR00T N1.7"
+    },
+    {
+      "type": "research",
+      "title": "ANYmal D learned simulator 审计暴露短期预测与策略表现背离",
+      "source": "Joyjeet Singh · Independent Researcher, India",
+      "publishedAt": "2026-11-17T17:36:40Z",
+      "url": "https://arxiv.org/html/2611.23118v1",
+      "signals": [
+        "模型按历史状态和12维关节目标预测下一状态，策略在预测rollout中训练，再用自建MuJoCo模型验证。单机器人、平地步态、模拟数据，无硬件。",
+        "18个微调模拟器短期预测均改善，13个产生失败策略；预测误差改善不能直接当闭环晋级证据。作者报告，无GPU，未在本轮复现。"
+      ],
+      "decision": "11月23日选读，12月18日复查世界模型评测单位。",
+      "modelVersion": "arXiv:2611.23118v1"
+    },
+    {
+      "type": "research",
+      "title": "RoboTwin reset 只生成100条并按episode播种",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-18T12:34:45Z",
+      "url": "https://github.com/huggingface/lerobot/commit/0793738cefde81a8354e9730c4dce0d0259280fa",
+      "signals": [
+        "默认候选从百万降到100，按episode种子选指令，不再推进全局NumPy RNG；同种子所选句子相对旧版本会变化。",
+        "作者Radeon AI PRO R9700、本地NVMe、blocks_ranking_size、种子10000–10002：后续reset约38–40秒变0.33秒，29项测试；2/2策略烟测不作成功率估计。"
+      ],
+      "decision": "11月23日源码选读，训练吞吐与指令分布要分开比较。",
+      "commitSha": "0793738cefde81a8354e9730c4dce0d0259280fa",
+      "prUrl": "https://github.com/huggingface/lerobot/pull/5355"
+    },
+    {
+      "type": "research",
+      "title": "Gaussian HDR修复和金图测试隔离合簇",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-17T17:04:07Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/83f1d3d02d45155534864bddfc1f577e8218b0f5",
+      "signals": [
+        "显式rgb_hdr设置skipToneMapping，金图共享min/max，避免独立归一化掩盖亮度差。作者105项focused测试通过，未跑完整渲染集成。",
+        "同功能续更da71d969b350bd9934e3cc7d2f9a07fabe464868，2026-11-17T23:57:10Z，#9068将Valiant RTX HDR比较按NVBUG7071342隔离；depth单独保留。"
+      ],
+      "decision": "11月23日RAW/曝光诊断选读，未报告策略或硬件收益。",
+      "commitSha": "83f1d3d02d45155534864bddfc1f577e8218b0f5",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/9027",
+      "relatedCommits": [
+        "da71d969b350bd9934e3cc7d2f9a07fabe464868"
+      ]
+    },
+    {
+      "type": "research",
+      "title": "导出已初始化环境的USD与后端物理差异",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-18T00:28:03Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/e97638d180b021c57788c06d54e2fb23a2c28426",
+      "signals": [
+        "按后端写入实时物理参数，导出一个环境，保留资产引用；startup/reset随机化在导出之后，不是完整任务快照。",
+        "作者GPU/CI测试：Newton29、OVPhysX11、PhysX9加31共享项；一秒无动作rollout部分任务在噪声内。Newton软体等已知缺项会拒绝或告警，各表对应不同测试提交。"
+      ],
+      "decision": "11月23日复现身份；12月20日仿真配置回归。",
+      "commitSha": "e97638d180b021c57788c06d54e2fb23a2c28426",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/8568"
+    },
+    {
+      "type": "research",
+      "title": "Newton OptiX相机路径与SensorCamera接入",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-18T07:00:27Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/94f35e6beac21418779ab79d5c245db52a43cdd7",
+      "signals": [
+        "OptiX需optix extra；场景每状态refit、相机共享，不支持粒子/可变形表面，不可捕获CUDA graph。Warp splat去除重复sRGB编码，画面会变暗。",
+        "作者RTX PRO6000 Blackwell，4096环境、50步预热+200步测量；Franka256²RGB阴影29.6k→127k环境步/秒，非策略学习加速和真机时延。"
+      ],
+      "decision": "关联12月20日仿真观测版本与吞吐预算；11月23日诊断时先固定渲染器。",
+      "commitSha": "94f35e6beac21418779ab79d5c245db52a43cdd7",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/9058"
+    },
+    {
+      "type": "research",
+      "title": "KukaAllegro保持随机化时的柔顺接触",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-18T07:30:17Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/7deb4f08df2ed1512f1f422498112051508e3cca",
+      "signals": [
+        "PhysX普通材质随机化覆盖柔顺接触；任务级事件用compliant setter保留刚度阻尼，同时随机摩擦。",
+        "作者seed42、4096环境、@2000报告：baseline .055、仅compliant .000、保留随机化修复 .637，Newton参照 .827。单种子仿真，非多种子显著结论或真机。"
+      ],
+      "decision": "11月23日物理后端根因反例；后续12月20日复查。",
+      "commitSha": "7deb4f08df2ed1512f1f422498112051508e3cca",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/7511"
+    },
+    {
+      "type": "research",
+      "title": "无Isaac Sim时恢复USD视觉材质覆盖",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-18T14:01:24Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/841286fddcff61ddf06c99c46750e766a8c133a6",
+      "signals": [
+        "移除过时Kit guard，用OpenUSD创建和绑定材质；相对/绝对路径覆盖子节点绑定，clone保持颜色与粗糙度。",
+        "作者锁依赖checkout的7项回归通过，新负例修复前失败；未做Isaac Sim集成测试。"
+      ],
+      "decision": "关联11月23日外观漂移与后续仿真资产回归。",
+      "commitSha": "841286fddcff61ddf06c99c46750e766a8c133a6",
+      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/9080"
+    },
+    {
+      "type": "research",
+      "title": "N1.7序列化和数据转换路径边界修复",
+      "source": "NVIDIA/Isaac-GR00T",
+      "publishedAt": "2026-11-17T22:53:19Z",
+      "url": "https://github.com/NVIDIA/Isaac-GR00T/commit/708617f5716c63fc0a327391492ea2b91977ae90",
+      "signals": [
+        "嵌套NumPy object dtype在构造数组前拒绝；转换器验证video key和解析路径属于源/目标根目录，拒绝路径逃逸。",
+        "读到新增数字dtype兼容、object拒绝、路径逃逸和ffmpeg测试源码，本轮未运行上游测试；不是新策略权重或机器人效果改进。"
+      ],
+      "decision": "后续12月29日复现和数据边界选读。",
+      "commitSha": "708617f5716c63fc0a327391492ea2b91977ae90"
+    },
     {
       "type": "research",
       "lineage": "具身 + Agent",
@@ -622,6 +749,41 @@
     }
   ],
   "auditReview": {
+    "reviewedAt": "2026-11-18T22:03:26+08:00",
+    "windowStart": "2026-11-17T22:03:26+08:00",
+    "windowEnd": "2026-11-18T22:03:26+08:00",
+    "strictWindowClusters": 9,
+    "newClustersSinceEarlierRun": 9,
+    "summary": "严格24小时选择9个已验证技术更新簇；具身Agent和具身大模型各1簇（PAIR双标合计1）。双团队无已验证研究/模型新增，StanfordVL另有1项CI维护。杭州上海可靠新岗位、面经均0。",
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "updated",
+        "newClusters": 1,
+        "evidence": [
+          "https://arxiv.org/html/2611.23070v1"
+        ],
+        "curriculumRelation": "11月23日分层诊断与规划/执行反例，双标合并计数。"
+      },
+      "EmbodiedLargeModels": {
+        "status": "updated",
+        "newClusters": 1,
+        "evidence": [
+          "https://arxiv.org/html/2611.23070v1"
+        ],
+        "curriculumRelation": "11月23日分层诊断与规划/执行反例，双标合并计数。"
+      }
+    },
+    "lineages": {
+      "StanfordVL": "maintenance_only",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false
+  },
+  "previousAuditReview": {
     "reviewedAt": "2026-11-17T22:46:43+08:00",
     "windowStart": "2026-11-16T22:46:43+08:00",
     "windowEnd": "2026-11-17T22:46:43+08:00",
@@ -654,59 +816,6 @@
       "AMI": "no_verified_change",
       "MetaHistorical": "no_verified_change"
     },
-    "verifiedJobCount": 0,
-    "verifiedInterviewCount": 0,
-    "curriculumChanged": false
-  },
-  "previousAuditReview": {
-    "reviewedAt": "2026-11-16T22:04:55+08:00",
-    "windowStart": "2026-11-15T22:04:55+08:00",
-    "windowEnd": "2026-11-16T22:04:55+08:00",
-    "newClustersSinceEarlierRun": 5,
-    "strictWindowClusters": 5,
-    "summary": "严格 24 小时核实 5 簇，具身大模型 1 簇为 GR00T N1.5 仿真后训练修复。具身 Agent 与双团队无已验证新增，杭州和上海可核新岗位、面经均为 0。",
-    "researchTracks": {
-      "EmbodiedAgent": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://arxiv.org/abs/2611.18562v1",
-          "https://github.com/mit-han-lab/pear/commit/d604856a1b16fdccd47e22a27d4dd935e3a62014",
-          "https://arxiv.org/abs/2611.18359"
-        ],
-        "curriculumRelation": "11 月 21 日补读窗口外 PEAR 的末端位姿接口、IK 重试与分母。"
-      },
-      "EmbodiedLargeModels": {
-        "status": "updated",
-        "newClusters": 1,
-        "evidence": [
-          "https://github.com/isaac-sim/IsaacLab/commit/d44733f0485db619fa142fce7705cb0972402900",
-          "https://github.com/isaac-sim/IsaacLab/pull/8771",
-          "https://platform.qianwenai.com/docs/changelog/models"
-        ],
-        "curriculumRelation": "11 月 21 日比较 GR00T N1.5 仿真后训练与 PEAR 的机器人使用强化学习。"
-      }
-    },
-    "lineages": {
-      "StanfordVL": "no_verified_change",
-      "WorldLabs": "no_verified_change",
-      "AMI": "no_verified_change",
-      "MetaHistorical": "no_verified_change"
-    },
-    "historicalCatchups": [
-      {
-        "title": "PEAR · Qwen3.8-27B 机器人使用强化学习",
-        "source": "MIT、UC Berkeley、UCSD、NVIDIA、Inco AI",
-        "publishedAt": "2026-11-13T18:59:02Z",
-        "version": "arXiv:2611.18562v1",
-        "url": "https://arxiv.org/html/2611.18562v1",
-        "researchTracks": [
-          "EmbodiedAgent",
-          "EmbodiedLargeModels"
-        ],
-        "curriculumRelation": "11 月 21 日选读；相机与本体输入、末端位姿输出、IK/控制器执行与观测回流，YAM 双臂 18/30。"
-      }
-    ],
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
     "curriculumChanged": false
