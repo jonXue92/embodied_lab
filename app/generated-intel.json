@@ -1,141 +1,139 @@
 {
-  "updatedAt": "2026-11-19T22:42:05+08:00",
+  "updatedAt": "2026-11-20T23:01:35+08:00",
   "status": "updated",
-  "summary": "严格24小时核实9个技术簇：Agent1、大模型2（Grana双标，专项合并2）。StanfordVL2项新增；World Labs、AMI及Meta历史线无已验证新增。可靠新岗位和面经各0。",
+  "summary": "严格24小时核实6项工程更新；具身Agent、大模型及双团队均无已验证新增。EmbodyAgent为窗外历史补读。可靠新岗位/面经各0。",
   "items": [
     {
       "type": "research",
-      "title": "Grana以语言条件进度连接离线奖励与触发式MPC",
-      "source": "NVIDIA / UT Austin / University of Washington",
-      "publishedAt": "2026-11-18T18:53:53Z",
-      "url": "https://arxiv.org/html/2611.24926v1",
-      "signals": [
-        "Qwen3.5-4B读取文字与多视角8个采样时刻，先选未完成子任务再估局部进度；允许未来观测的轨迹评分用于离线IQL critic与BPPO actor，非实时因果证据。GPT-6基线明确是2026-09-15的Astra-high；Fable只在写作/代码致谢，不算机器人结果。",
-        "附录E另用Qwen3.5-0.8B跟踪停滞/子任务跳跃，触发GR00T-2生成4个动作及1.6秒未来，选最高进度执行再观测。真机tractor 10种初态，2/10→9/10；本轮未独立复测，不能用H100评分155.95ms当全闭环时延。离线两任务共享50/45训练rollout，每配置20/12测试。"
-      ],
-      "decision": "入11月24日奖励重标边界选读；12月3日奖励、12月13日advantage及12月18日闭环复查。",
-      "lineage": "具身 + Agent / 具身 + 大模型",
-      "modelVersion": "arXiv:2611.24926v1 · Qwen3.5-4B/0.8B; GPT-6 Astra-high (2026-09-15)",
-      "projectUrl": "https://research.nvidia.com/labs/gear/grana/"
-    },
-    {
-      "type": "research",
-      "title": "Z-sight在VLM原生视觉空间联合去噪未来与动作",
-      "source": "Maven Robotics / University of Southern California",
-      "publishedAt": "2026-11-18T18:59:38Z",
-      "url": "https://arxiv.org/html/2611.24940v1",
-      "signals": [
-        "Qwen3.5-2B加两个0.48B专家；输入语言、本体状态和相机历史，输出未来token与30步动作。预测流当前不对候选动作显式条件化，不能称为可比较动作后果的MPC。",
-        "真实G1六任务各10次，平均73.3%，相对Fast-WAM高20pp；10Hz动作送50Hz SONIC执行。单4090、100次预热和100同步计时的进程内chunk为109.5ms，未含传感/通信/恢复。仿真SIMPLE81.9%另列；均作者报告，代码链接可见，未下载权重或复现。"
-      ],
-      "decision": "后续12月18日评测与毕业项目检查native/EMA表征及在线输入边界，不改既有课。",
-      "lineage": "具身 + 大模型",
-      "modelVersion": "arXiv:2611.24940v1 · Qwen3.5-2B",
-      "projectUrl": "https://junjieye.com/Z-sight/"
-    },
-    {
-      "type": "research",
-      "title": "Doppel把未来本体渲染作为跨本体视频预测条件",
-      "source": "Doppel作者团队（论文作者页可核，机构未从可读HTML确认）",
-      "publishedAt": "2026-11-18T18:52:28Z",
-      "url": "https://arxiv.org/html/2611.24925v1",
-      "signals": [
-        "数字动作加相机对齐的未来机器人渲染，预测环境视频；缺外参时先恢复相机位姿。八数据集约600小时，不靠本体标签。",
-        "三机械臂数据的留出/OOD轨迹PSNR较action-only高1.00/1.20dB；八本体训练在六个机器人集合中四个改善。属于离线预测，未证明规划、恢复或真机闭环成功，不计Agent或通用大模型专项。作者项目页本次不可访问。"
-      ],
-      "decision": "关联12月18日预测与闭环指标分离、毕业项目相机标定。",
-      "modelVersion": "arXiv:2611.24925v1"
-    },
-    {
-      "type": "research",
-      "title": "OmniGibson加入核心Newton物理后端",
-      "source": "StanfordVL/BEHAVIOR-1K",
-      "publishedAt": "2026-11-19T08:11:30Z",
-      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/c6aca4609ea4c0bcab7e1a37d4f5a1c97ad2f5f5",
-      "signals": [
-        "gm.PHYSICS_BACKEND=newton、RENDER_BACKEND=none；SolverMuJoCo加Newton碰撞，支持刚体/关节、接触报告、raycast/overlap、AttachedTo与辅助抓取，可选CUDA step graph。",
-        "不支持布料动态、液体/粒子、Newton渲染、viewer recording和JoyLo。核心后端集成，不是全部BEHAVIOR任务迁移或挑战成功率提升；PR正文未列完整端到端测试，本轮只读代码和限制。"
-      ],
-      "decision": "11月24日manifest中绑定物理后端；12月20日仿真回归；未达改纲门槛。",
-      "commitSha": "c6aca4609ea4c0bcab7e1a37d4f5a1c97ad2f5f5",
-      "lineage": "李飞飞相关线 · StanfordVL",
-      "prUrl": "https://github.com/StanfordVL/BEHAVIOR-1K/pull/2384"
-    },
-    {
-      "type": "research",
-      "title": "门梁高度边界修正可通行地图",
-      "source": "StanfordVL/BEHAVIOR-1K",
-      "publishedAt": "2026-11-19T06:55:30Z",
-      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/87f1bbb1595125b463000900d7b0a03d2dfcfd78",
-      "signals": [
-        "make_maps.py默认overlap盒顶从2.00改1.99m并开放高度参数，避免恰为2m门梁与1mm contact offset把门堵住。",
-        "作者仅py_compile；99/200堵门、61处2m和1.87m重绘98/99打开均来自原issue，不是新默认1.99m重新实测。本轮未生成资产地图。"
-      ],
-      "decision": "后续12月20日资产/地图回归；任务名之外还需地图版本，无改纲。",
-      "commitSha": "87f1bbb1595125b463000900d7b0a03d2dfcfd78",
-      "lineage": "李飞飞相关线 · StanfordVL",
-      "prUrl": "https://github.com/StanfordVL/BEHAVIOR-1K/pull/2390"
-    },
-    {
-      "type": "research",
-      "title": "向量环境结束行复制以防terminal observation被覆盖",
+      "title": "筛选tensor字段时保留整数样本索引",
       "source": "huggingface/lerobot",
-      "publishedAt": "2026-11-18T18:29:59Z",
-      "url": "https://github.com/huggingface/lerobot/commit/169694686e3b3593f350c7b7498967d0b590d64c",
+      "publishedAt": "2026-11-20T12:14:21Z",
+      "url": "https://github.com/huggingface/lerobot/commit/9c23a7db15f9c6332824ac8524c3ad889f3a002a",
+      "commitSha": "9c23a7db15f9c6332824ac8524c3ad889f3a002a",
       "signals": [
-        "LocalVectorEnv.step在本地native向量环境terminated/truncated时copy规范观测，其余路径保留；toy模拟器复用状态存储构造负例。",
-        "作者macOS arm64/Python3.12.11/Torch2.7.1 CPU20项通过，完整suite未跑，无GPU或物理机器人。这是无autoreset路径，不能混同same-step autoreset修复。"
+        "_select_value用value[indices]，避免字段dtype构造索引导致bool、uint8、bfloat16改变目标样本。",
+        "已读bool index2、uint8 index256、bfloat16 index257和padding对齐回归；本轮仅运行原创同类夹具，未执行上游测试。"
       ],
-      "decision": "11月24日固定回放加载与复制隔离选读。",
-      "commitSha": "169694686e3b3593f350c7b7498967d0b590d64c",
-      "prUrl": "https://github.com/huggingface/lerobot/pull/5404"
+      "decision": "已入11月25日条件动作图：低精度字段不能改变样本身份。"
     },
     {
       "type": "research",
-      "title": "删除特征时清理episode残留统计与视频元数据",
+      "title": "所有benchmark保留逐episode种子与结果",
       "source": "huggingface/lerobot",
-      "publishedAt": "2026-11-19T10:43:53Z",
-      "url": "https://github.com/huggingface/lerobot/commit/c21cb98fe0cfba33893293116c9cad965f21aa81",
+      "publishedAt": "2026-11-19T15:24:36Z",
+      "url": "https://github.com/huggingface/lerobot/commit/c15b8159ecfeade583825498901b61a432f0eb01",
+      "commitSha": "c15b8159ecfeade583825498901b61a432f0eb01",
       "signals": [
-        "remove_feature后清理stats/videos列，按最后一个斜杠解析完整特征名；旧数据重索引忽略非活动特征，干净parquet走复制快路。",
-        "作者定向4项通过；完整文件68过2失败为HF超时，不能写全量通过。未改公开数据格式。"
+        "eval_one无条件返回per_episode，含seed/success/sum_reward/max_reward；环境有metrics时另附。",
+        "已读无自定义metrics的toy回归；不表示LIBERO策略能力变化，也不把episode区间当训练重复实验区间。"
       ],
-      "decision": "11月24日派生数据身份；后续数据修订回归。",
-      "commitSha": "c21cb98fe0cfba33893293116c9cad965f21aa81",
-      "prUrl": "https://github.com/huggingface/lerobot/pull/5142"
+      "decision": "12月18–20日配对评测复查；与昨日metrics支持区分，本次扩展到没有自定义metrics的所有benchmark。"
     },
     {
       "type": "research",
-      "title": "评测结果保留逐回合指标与step-cap录制边界",
+      "title": "环境服务把信号退出延后到owner循环",
       "source": "huggingface/lerobot",
-      "publishedAt": "2026-11-18T19:04:02Z",
-      "url": "https://github.com/huggingface/lerobot/commit/8ec1a474da5f3f90a670d9343386995ec9f81264",
+      "publishedAt": "2026-11-19T16:21:56Z",
+      "url": "https://github.com/huggingface/lerobot/commit/83883ae60a8e1682552b6853e4170c74d83a4525",
+      "commitSha": "83883ae60a8e1682552b6853e4170c74d83a4525",
       "signals": [
-        "eval_one保留环境上报per_episode metrics进入eval_info.json；同窗口另一修复在评测step cap处设置truncated使未自然结束录制也保存。两项作为评测输出完整性簇。",
-        "已读对应toy回归源码；本轮未执行上游测试，不宣称新策略效果。保留终止、截断与成功的不同含义。"
+        "SIGINT/SIGTERM处理器只置shutdown_requested，serve(should_stop)由owner退出，避免Event.wait持锁时重入stop死锁。",
+        "已读POSIX两信号×普通/持锁四种回归，要求活跃session保留到shutdown、环境恰好关闭一次及handlers恢复；本轮未执行上游进程测试。"
       ],
-      "decision": "关联11月24日固定回放边界，后续评测课复查。",
-      "commitSha": "8ec1a474da5f3f90a670d9343386995ec9f81264",
-      "relatedCommits": [
-        "a1caad57c5e2cf0940ae75850519462c338dbda5"
-      ]
+      "decision": "12月20日回归与SO-101部署生命周期选读；软件退出修复不等于硬件急停验证。"
     },
     {
       "type": "research",
-      "title": "相机capture支持有序tensor processor与掩码",
+      "title": "自定义processor与tokenizer要求当前调用者授权",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-20T14:48:36Z",
+      "url": "https://github.com/huggingface/lerobot/commit/039e05183f38b02d28c5f6ac9dbc7ef1680728cd",
+      "commitSha": "039e05183f38b02d28c5f6ac9dbc7ef1680728cd",
+      "signals": [
+        "外部step导入前检查trust_remote_code，默认false，校验ProcessorStep子类；本地checkpoint和已导入模块也不能代替当前授权。",
+        "policy/env/reward各scope独立；FAST等独立tokenizer支持repo@revision固定。已读pipeline与官方文档，未运行任意远端代码，也未执行完整85文件上游回归。"
+      ],
+      "decision": "12月3日reward classifier和毕业项目依赖清单复查；不计模型/Agent研究新增。"
+    },
+    {
+      "type": "research",
+      "title": "EnvHub环境改为从Spaces下载",
+      "source": "huggingface/lerobot",
+      "publishedAt": "2026-11-20T14:17:19Z",
+      "url": "https://github.com/huggingface/lerobot/commit/37025bd14c689e0c0723a3f463e2d54f91de65e2",
+      "commitSha": "37025bd14c689e0c0723a3f463e2d54f91de65e2",
+      "signals": [
+        "_download_hub_file的snapshot_download明确repo_type=space，保留revision与文件路径；评测、模拟机器人、server共用环境集成。",
+        "已读下载参数回归和环境文档；每send_action推进一次仿真，读观测/推理等待不推进。是环境分发接口变化，无新控制成功率。"
+      ],
+      "decision": "后续SO-101仿真固定Space SHA与控制约定，不能以Hub模型仓ID替代Space身份。"
+    },
+    {
+      "type": "research",
+      "title": "Newton接触容量增长时保留接触属性",
       "source": "isaac-sim/IsaacLab",
-      "publishedAt": "2026-11-18T22:38:27Z",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/3e2b171787826e18d3efac069cb67b72eea9c887",
+      "publishedAt": "2026-11-20T09:35:38Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/a733031688c84fdd6d4141d618a945754e6fe907",
+      "commitSha": "a733031688c84fdd6d4141d618a945754e6fe907",
       "signals": [
-        "CameraCfg.tensor_processors读取渲染或前序输出并发布/替换结果；同步传device Warp mask，异步为None且图像可能延迟重复，带历史处理器需同步模式。",
-        "作者Windows/CUDA Newton Warp，分阶段21+33与后续112项测试；async只测配置和mask，未重跑真实OVRTX/Isaac RTX。清理时即使processor.close失败仍释放渲染资源。"
+        "_allocate_contacts超过自动容量时重建CollisionPipeline并用pipeline.contacts()，替代非确定模式裸Contacts；保留逐接触刚度/阻尼/摩擦、matching与报告。",
+        "作者CUDA kitless水弹性box/ground、MJWarp use_mujoco_contacts=False、nconmax12000复现，报告64项pytest；本轮只读补丁，未GPU复测。不是StanfordVL更新，也不是新策略效果。"
       ],
-      "decision": "后续RAW/时序观测管线复查；不改已完成课程。",
-      "commitSha": "3e2b171787826e18d3efac069cb67b72eea9c887",
-      "prUrl": "https://github.com/isaac-sim/IsaacLab/pull/8871"
+      "decision": "12月20日物理回归：容量参数改变不能静默改变接触定律；不改历史课。"
     }
   ],
   "auditReview": {
+    "windowStart": "2026-11-19T23:01:35+08:00",
+    "windowEnd": "2026-11-20T23:01:35+08:00",
+    "reviewedAt": "2026-11-20T23:01:35+08:00",
+    "verifiedTechnicalClusters": 6,
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://arxiv.org/abs/2611.26196",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://openai.com/index/gpt-6-astra/"
+        ]
+      },
+      "EmbodiedLargeModels": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://arxiv.org/abs/2611.26196",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://openai.com/index/gpt-6-astra/"
+        ]
+      }
+    },
+    "deduplicatedTrackClusters": 0,
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false,
+    "summary": "严格24小时核实6项工程更新；具身Agent、大模型及双团队均无已验证新增。EmbodyAgent为窗外历史补读。可靠新岗位/面经各0。",
+    "limitations": [
+      "Robbyant/lingbot-vla commits API连接中断；其releases成功。其他10仓commits与11仓releases成功；非全球穷尽。",
+      "本轮窗口比上轮截点后移19分30秒，前轮截点到本轮窗起未做补充穷尽审核。"
+    ],
+    "historicalCatchups": [
+      {
+        "url": "https://arxiv.org/html/2611.26196v1",
+        "publishedAt": "2026-11-19T14:41:34Z",
+        "modelVersion": "Qwen3.5-9B; teacher Astra Medium（未给精确API快照）",
+        "lineage": "具身 + Agent / 具身 + 大模型",
+        "countedInStrictWindow": false,
+        "decision": "窗外且早于上轮截点，标记漏检补读；关联后续RL与12月18日评测，不倒灌新增。"
+      }
+    ]
+  },
+  "previousAuditReview": {
     "windowStart": "2026-11-18T22:42:05+08:00",
     "windowEnd": "2026-11-19T22:42:05+08:00",
     "verifiedTechnicalClusters": 9,
@@ -168,41 +166,6 @@
     "curriculumChanged": false,
     "reviewedAt": "2026-11-19T22:42:05+08:00",
     "summary": "严格24小时核实9个技术簇：Agent1、大模型2（Grana双标，专项合并2）。StanfordVL2项新增；World Labs、AMI及Meta历史线无已验证新增。可靠新岗位和面经各0。"
-  },
-  "previousAuditReview": {
-    "reviewedAt": "2026-11-18T22:03:26+08:00",
-    "windowStart": "2026-11-17T22:03:26+08:00",
-    "windowEnd": "2026-11-18T22:03:26+08:00",
-    "strictWindowClusters": 9,
-    "newClustersSinceEarlierRun": 9,
-    "summary": "严格24小时选择9个已验证技术更新簇；具身Agent和具身大模型各1簇（PAIR双标合计1）。双团队无已验证研究/模型新增，StanfordVL另有1项CI维护。杭州上海可靠新岗位、面经均0。",
-    "researchTracks": {
-      "EmbodiedAgent": {
-        "status": "updated",
-        "newClusters": 1,
-        "evidence": [
-          "https://arxiv.org/html/2611.23070v1"
-        ],
-        "curriculumRelation": "11月23日分层诊断与规划/执行反例，双标合并计数。"
-      },
-      "EmbodiedLargeModels": {
-        "status": "updated",
-        "newClusters": 1,
-        "evidence": [
-          "https://arxiv.org/html/2611.23070v1"
-        ],
-        "curriculumRelation": "11月23日分层诊断与规划/执行反例，双标合并计数。"
-      }
-    },
-    "lineages": {
-      "StanfordVL": "maintenance_only",
-      "WorldLabs": "no_verified_change",
-      "AMI": "no_verified_change",
-      "MetaHistorical": "no_verified_change"
-    },
-    "verifiedJobCount": 0,
-    "verifiedInterviewCount": 0,
-    "curriculumChanged": false
   },
   "earlierSameDayAuditReview": {
     "reviewedAt": "2026-11-12T10:30:52+08:00",
