@@ -1,88 +1,109 @@
 {
-  "updatedAt": "2026-11-20T23:01:35+08:00",
+  "updatedAt": "2026-11-21T22:07:29+08:00",
   "status": "updated",
-  "summary": "严格24小时核实6项工程更新；具身Agent、大模型及双团队均无已验证新增。EmbodyAgent为窗外历史补读。可靠新岗位/面经各0。",
+  "summary": "严格24小时新增4项工程簇；具身Agent、大模型及双团队无已验证新增。杭州/上海新岗位与可靠面经均0；官方上海JD仅日级日期待定窗。",
   "items": [
     {
       "type": "research",
-      "title": "筛选tensor字段时保留整数样本索引",
+      "title": "JointReorder显式对齐关节与动作次序",
       "source": "huggingface/lerobot",
-      "publishedAt": "2026-11-20T12:14:21Z",
-      "url": "https://github.com/huggingface/lerobot/commit/9c23a7db15f9c6332824ac8524c3ad889f3a002a",
-      "commitSha": "9c23a7db15f9c6332824ac8524c3ad889f3a002a",
+      "publishedAt": "2026-11-20T18:59:06Z",
+      "url": "https://github.com/huggingface/lerobot/commit/b13b952556c597d1e0849cadb6b6e7496bc5a2f3",
+      "commitSha": "b13b952556c597d1e0849cadb6b6e7496bc5a2f3",
       "signals": [
-        "_select_value用value[indices]，避免字段dtype构造索引导致bool、uint8、bfloat16改变目标样本。",
-        "已读bool index2、uint8 index256、bfloat16 index257和padding对齐回归；本轮仅运行原创同类夹具，未执行上游测试。"
+        "JointReorderProcessorStep对指定observation key及tensor/array action执行x[...,indices]；transform_features同步输出末轴长度。",
+        "已读重排、feature shape与序列化三类测试；未执行上游测试。不会自动变换单位、符号或控制器含义。"
       ],
-      "decision": "已入11月25日条件动作图：低精度字段不能改变样本身份。"
+      "decision": "已加入11月26日代码课延伸：行为距离计算前必须统一关节身份与顺序，不改历史课。"
     },
     {
       "type": "research",
-      "title": "所有benchmark保留逐episode种子与结果",
-      "source": "huggingface/lerobot",
-      "publishedAt": "2026-11-19T15:24:36Z",
-      "url": "https://github.com/huggingface/lerobot/commit/c15b8159ecfeade583825498901b61a432f0eb01",
-      "commitSha": "c15b8159ecfeade583825498901b61a432f0eb01",
-      "signals": [
-        "eval_one无条件返回per_episode，含seed/success/sum_reward/max_reward；环境有metrics时另附。",
-        "已读无自定义metrics的toy回归；不表示LIBERO策略能力变化，也不把episode区间当训练重复实验区间。"
-      ],
-      "decision": "12月18–20日配对评测复查；与昨日metrics支持区分，本次扩展到没有自定义metrics的所有benchmark。"
-    },
-    {
-      "type": "research",
-      "title": "环境服务把信号退出延后到owner循环",
-      "source": "huggingface/lerobot",
-      "publishedAt": "2026-11-19T16:21:56Z",
-      "url": "https://github.com/huggingface/lerobot/commit/83883ae60a8e1682552b6853e4170c74d83a4525",
-      "commitSha": "83883ae60a8e1682552b6853e4170c74d83a4525",
-      "signals": [
-        "SIGINT/SIGTERM处理器只置shutdown_requested，serve(should_stop)由owner退出，避免Event.wait持锁时重入stop死锁。",
-        "已读POSIX两信号×普通/持锁四种回归，要求活跃session保留到shutdown、环境恰好关闭一次及handlers恢复；本轮未执行上游进程测试。"
-      ],
-      "decision": "12月20日回归与SO-101部署生命周期选读；软件退出修复不等于硬件急停验证。"
-    },
-    {
-      "type": "research",
-      "title": "自定义processor与tokenizer要求当前调用者授权",
-      "source": "huggingface/lerobot",
-      "publishedAt": "2026-11-20T14:48:36Z",
-      "url": "https://github.com/huggingface/lerobot/commit/039e05183f38b02d28c5f6ac9dbc7ef1680728cd",
-      "commitSha": "039e05183f38b02d28c5f6ac9dbc7ef1680728cd",
-      "signals": [
-        "外部step导入前检查trust_remote_code，默认false，校验ProcessorStep子类；本地checkpoint和已导入模块也不能代替当前授权。",
-        "policy/env/reward各scope独立；FAST等独立tokenizer支持repo@revision固定。已读pipeline与官方文档，未运行任意远端代码，也未执行完整85文件上游回归。"
-      ],
-      "decision": "12月3日reward classifier和毕业项目依赖清单复查；不计模型/Agent研究新增。"
-    },
-    {
-      "type": "research",
-      "title": "EnvHub环境改为从Spaces下载",
-      "source": "huggingface/lerobot",
-      "publishedAt": "2026-11-20T14:17:19Z",
-      "url": "https://github.com/huggingface/lerobot/commit/37025bd14c689e0c0723a3f463e2d54f91de65e2",
-      "commitSha": "37025bd14c689e0c0723a3f463e2d54f91de65e2",
-      "signals": [
-        "_download_hub_file的snapshot_download明确repo_type=space，保留revision与文件路径；评测、模拟机器人、server共用环境集成。",
-        "已读下载参数回归和环境文档；每send_action推进一次仿真，读观测/推理等待不推进。是环境分发接口变化，无新控制成功率。"
-      ],
-      "decision": "后续SO-101仿真固定Space SHA与控制约定，不能以Hub模型仓ID替代Space身份。"
-    },
-    {
-      "type": "research",
-      "title": "Newton接触容量增长时保留接触属性",
+      "title": "终止观测复制并在下一步清除",
       "source": "isaac-sim/IsaacLab",
-      "publishedAt": "2026-11-20T09:35:38Z",
-      "url": "https://github.com/isaac-sim/IsaacLab/commit/a733031688c84fdd6d4141d618a945754e6fe907",
-      "commitSha": "a733031688c84fdd6d4141d618a945754e6fe907",
+      "publishedAt": "2026-11-20T16:59:14Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/fe51ca8be638e8ab196f0543054891a3df5fc65a",
+      "commitSha": "fe51ca8be638e8ab196f0543054891a3df5fc65a",
       "signals": [
-        "_allocate_contacts超过自动容量时重建CollisionPipeline并用pipeline.contacts()，替代非确定模式裸Contacts；保留逐接触刚度/阻尼/摩擦、matching与报告。",
-        "作者CUDA kitless水弹性box/ground、MJWarp use_mujoco_contacts=False、nconmax12000复现，报告64项pytest；本轮只读补丁，未GPU复测。不是StanfordVL更新，也不是新策略效果。"
+        "DirectRL/MARL在reset前tree_map(torch.clone)拥有final_obs，step/reset清除旧final_obs；AMP保留其他extras。",
+        "已读manager/direct/marl参数化CPU桩测试，验证reset不覆盖终止值、后续step不残留且user/log仍在；未跑上游。"
       ],
-      "decision": "12月20日物理回归：容量参数改变不能静默改变接触定律；不改历史课。"
+      "decision": "11月29日offline-to-online和12月20日回归复查；不把旧terminal污染误判成策略退步。"
+    },
+    {
+      "type": "research",
+      "title": "隐式PD增加按物理步延迟的命令通道",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-20T21:59:04Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/8f7a7851fc2ddf812611a3bf06575bd4d22067fc",
+      "commitSha": "8f7a7851fc2ddf812611a3bf06575bd4d22067fc",
+      "signals": [
+        "DelayedImplicitActuator共享_DelayedActuator历史：reset按环境采样一个lag，位置/速度/前馈力矩共用，增益与关节反馈保持当前。",
+        "文档明确计physics steps含decimation、启动使用最老命令、局部reset只清对应历史；PhysX/OVPhysX/Newton路径条件，非真机测量。"
+      ],
+      "decision": "毕业项目延迟辨识与仿真回归选读；不能把目标延迟当成传感器反馈延迟，不改纲。"
+    },
+    {
+      "type": "research",
+      "title": "PPISP转为tensor processor并显式要求中性曝光",
+      "source": "isaac-sim/IsaacLab",
+      "publishedAt": "2026-11-20T22:18:17Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/15077020d65c4c02d4b1b57fc66fdddb2c7256f9",
+      "commitSha": "15077020d65c4c02d4b1b57fc66fdddb2c7256f9",
+      "signals": [
+        "PpispProcessor从rgb_hdr经ISP到持久RGBA/RGB view；Isaac RTX/OVRTX需ExposureCfg(mode=neutral)，否则报错，不静默改其他color outputs。",
+        "已读prepare_camera、camera文档与neutral schema/三renderer/persistent view测试；Newton Warp/OptiX无曝光无需此设置，发现无PPISP属性则移除并警告；未GPU复测。"
+      ],
+      "decision": "后续RAW/RGB消融、12月20日传感回归：防止双重曝光混淆；同既有HDR链的实质续更，不宣称新策略效果。"
     }
   ],
   "auditReview": {
+    "windowStart": "2026-11-20T22:07:29+08:00",
+    "windowEnd": "2026-11-21T22:07:29+08:00",
+    "reviewedAt": "2026-11-21T22:07:29+08:00",
+    "verifiedTechnicalClusters": 4,
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://openai.com/index/gpt-6-astra/",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://qwen.ai/",
+          "https://arxiv.org/abs/2611.25005",
+          "https://arxiv.org/abs/2611.25251"
+        ]
+      },
+      "EmbodiedLargeModels": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://openai.com/index/gpt-6-astra/",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://qwen.ai/",
+          "https://arxiv.org/abs/2611.25005",
+          "https://arxiv.org/abs/2611.25251"
+        ]
+      }
+    },
+    "deduplicatedTrackClusters": 0,
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false,
+    "summary": "严格24小时新增4项工程簇；具身Agent、大模型及双团队无已验证新增。杭州/上海新岗位与可靠面经均0；官方上海JD仅日级日期待定窗。",
+    "limitations": [
+      "11仓commits成功；9/11 releases成功，openpi与lingbot-vla连接断开。",
+      "与上轮窗口重叠54分06秒，039e051和37025bd已归档，排除重复。",
+      "6候选补丁中GR00T示例IncompleteRead，kitless遥操作链未完整读完，均不计精选；非穷尽。",
+      "上海人工智能实验室JD只有2026-11-20日级日期，无法确认22:07:29之后发布，不算严格窗新增。"
+    ]
+  },
+  "previousAuditReview": {
     "windowStart": "2026-11-19T23:01:35+08:00",
     "windowEnd": "2026-11-20T23:01:35+08:00",
     "reviewedAt": "2026-11-20T23:01:35+08:00",
@@ -132,40 +153,6 @@
         "decision": "窗外且早于上轮截点，标记漏检补读；关联后续RL与12月18日评测，不倒灌新增。"
       }
     ]
-  },
-  "previousAuditReview": {
-    "windowStart": "2026-11-18T22:42:05+08:00",
-    "windowEnd": "2026-11-19T22:42:05+08:00",
-    "verifiedTechnicalClusters": 9,
-    "researchTracks": {
-      "EmbodiedAgent": {
-        "status": "updated",
-        "newClusters": 1,
-        "evidence": [
-          "https://arxiv.org/html/2611.24926v1"
-        ]
-      },
-      "EmbodiedLargeModels": {
-        "status": "updated",
-        "newClusters": 2,
-        "evidence": [
-          "https://arxiv.org/html/2611.24926v1",
-          "https://arxiv.org/html/2611.24940v1"
-        ]
-      }
-    },
-    "deduplicatedTrackClusters": 2,
-    "lineages": {
-      "StanfordVL": "updated",
-      "WorldLabs": "no_verified_change",
-      "AMI": "no_verified_change",
-      "MetaHistorical": "no_verified_change"
-    },
-    "verifiedJobCount": 0,
-    "verifiedInterviewCount": 0,
-    "curriculumChanged": false,
-    "reviewedAt": "2026-11-19T22:42:05+08:00",
-    "summary": "严格24小时核实9个技术簇：Agent1、大模型2（Grana双标，专项合并2）。StanfordVL2项新增；World Labs、AMI及Meta历史线无已验证新增。可靠新岗位和面经各0。"
   },
   "earlierSameDayAuditReview": {
     "reviewedAt": "2026-11-12T10:30:52+08:00",
@@ -336,35 +323,50 @@
     "curriculumChanged": false
   },
   "currentAudit": {
-    "windowStart": "2026-11-18T22:42:05+08:00",
-    "windowEnd": "2026-11-19T22:42:05+08:00",
-    "verifiedTechnicalClusters": 9,
+    "windowStart": "2026-11-20T22:07:29+08:00",
+    "windowEnd": "2026-11-21T22:07:29+08:00",
+    "reviewedAt": "2026-11-21T22:07:29+08:00",
+    "verifiedTechnicalClusters": 4,
     "researchTracks": {
       "EmbodiedAgent": {
-        "status": "updated",
-        "newClusters": 1,
+        "status": "no_verified_change",
+        "newClusters": 0,
         "evidence": [
-          "https://arxiv.org/html/2611.24926v1"
+          "https://openai.com/index/gpt-6-astra/",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://qwen.ai/",
+          "https://arxiv.org/abs/2611.25005",
+          "https://arxiv.org/abs/2611.25251"
         ]
       },
       "EmbodiedLargeModels": {
-        "status": "updated",
-        "newClusters": 2,
+        "status": "no_verified_change",
+        "newClusters": 0,
         "evidence": [
-          "https://arxiv.org/html/2611.24926v1",
-          "https://arxiv.org/html/2611.24940v1"
+          "https://openai.com/index/gpt-6-astra/",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://qwen.ai/",
+          "https://arxiv.org/abs/2611.25005",
+          "https://arxiv.org/abs/2611.25251"
         ]
       }
     },
-    "deduplicatedTrackClusters": 2,
+    "deduplicatedTrackClusters": 0,
     "lineages": {
-      "StanfordVL": "updated",
+      "StanfordVL": "no_verified_change",
       "WorldLabs": "no_verified_change",
       "AMI": "no_verified_change",
       "MetaHistorical": "no_verified_change"
     },
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
-    "curriculumChanged": false
+    "curriculumChanged": false,
+    "summary": "严格24小时新增4项工程簇；具身Agent、大模型及双团队无已验证新增。杭州/上海新岗位与可靠面经均0；官方上海JD仅日级日期待定窗。",
+    "limitations": [
+      "11仓commits成功；9/11 releases成功，openpi与lingbot-vla连接断开。",
+      "与上轮窗口重叠54分06秒，039e051和37025bd已归档，排除重复。",
+      "6候选补丁中GR00T示例IncompleteRead，kitless遥操作链未完整读完，均不计精选；非穷尽。",
+      "上海人工智能实验室JD只有2026-11-20日级日期，无法确认22:07:29之后发布，不算严格窗新增。"
+    ]
   }
 }
