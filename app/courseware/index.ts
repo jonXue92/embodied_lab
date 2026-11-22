@@ -90,6 +90,8 @@ import { day86 } from './2026-11-25';
 
 import { day87 } from './2026-11-26';
 
+import { day88 } from './2026-11-27';
+
 export const authoredDays: Record<string, AuthoredDay> = {
   '2026-09-02': day02,
   '2026-09-03': day03,
@@ -177,4 +179,5 @@ export const authoredDays: Record<string, AuthoredDay> = {
   '2026-11-24': day85,
   '2026-11-25': day86,
   '2026-11-26': day87,
+  '2026-11-27': day88,
 };

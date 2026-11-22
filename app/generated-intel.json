@@ -1,8 +1,62 @@
 {
-  "updatedAt": "2026-11-21T22:07:29+08:00",
+  "updatedAt": "2026-11-22T22:02:10+08:00",
   "status": "updated",
-  "summary": "严格24小时新增4项工程簇；具身Agent、大模型及双团队无已验证新增。杭州/上海新岗位与可靠面经均0；官方上海JD仅日级日期待定窗。",
+  "summary": "严格24小时核实4项技术簇；具身大模型1项NAT VLA、Agent无已验证新增。双团队分别无已验证新增；杭州/上海可靠新岗位与面经各0。",
   "items": [
+    {
+      "type": "research",
+      "title": "NAT VLA接入：LFM2-VL输出流式动作token",
+      "source": "Ahad Jawaid / Hugging Face LeRobot",
+      "publishedAt": "2026-11-21T18:26:33Z",
+      "url": "https://github.com/huggingface/lerobot/commit/e5be0c16be1df4ae004abb4167842a7456c4cd54",
+      "commitSha": "e5be0c16be1df4ae004abb4167842a7456c4cd54",
+      "signals": [
+        "预训练入口ahad-j/nat-vla-450m；VLM读相机、任务、setup、离散状态和control_mode，交叉熵训练NAT动作token；因果decoder将前缀解为动作。",
+        "select_action/stream_action_chunk在后台生成并按latent边界交付；rtc_steps把正在执行的动作编码成下一chunk前缀。动作由LeRobot rollout底层机器人执行，下一观测用于后续chunk；没有高层任务分解/诊断/恢复证据，不双标Agent。",
+        "配置仅允许MIN_MAX动作；默认VLM bfloat16、tokenizer float32，Hub版本有pin。文档给LIBERO评测入口与4090配方，但本轮未下载权重、未跑上游训练、仿真或真机，不能称SO-101验证成功。"
+      ],
+      "decision": "对应12月部署与毕业项目复查候选，先验动作归一化、首动作等待、长尾延迟和队列欠载；不改已完成课程。",
+      "lineage": "具身 + 大模型"
+    },
+    {
+      "type": "research",
+      "title": "Newton求解器故障检测扩展至历史缓冲",
+      "source": "Isaac Lab / NVIDIA与开源贡献者",
+      "publishedAt": "2026-11-22T08:45:53Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/81c33022e9d2b7bd73576f40fabcfc657f589616",
+      "commitSha": "81c33022e9d2b7bd73576f40fabcfc657f589616",
+      "signals": [
+        "get_non_finite_worlds按timestamp懒扫描并缓存body/joint/particle及MuJoCo持久状态；MJWarp按world恢复，CPU MuJoCo私有历史为全局，故障可能终止所有环境。",
+        "solver_fault终止、最后一个非零reward term清故障行、首个reset事件清final_obs整行历史；未标记行和无关NaN保留。其他solver私有历史不在覆盖内。作者报告GPU MJWarp回归，本轮仅读补丁与测试，不复跑。"
+      ],
+      "decision": "已加入11月27日新课延伸：清零是故障标记配套，不能自动把故障transition当有效负回报样本。"
+    },
+    {
+      "type": "research",
+      "title": "FlashSAC任务配方与G1镜像增强修正",
+      "source": "Isaac Lab / NVIDIA与开源贡献者",
+      "publishedAt": "2026-11-21T14:38:23Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/8f5e2756ce8cc7c444db5e0a870d0c334b8bb099",
+      "commitSha": "8f5e2756ce8cc7c444db5e0a870d0c334b8bb099",
+      "signals": [
+        "增加Ant/Humanoid/Allegro/ANYmal-D及G1粗糙地形SAC配置和入口；G1共享左右镜像增强、torso_joint符号为负。",
+        "向量mirror factor按term/device/size缓存以适配CUDA graph，G1动作范围调整至[-1,1]；多配置共同变动，不能把效果归因于单一修复。未跑上游训练，也无本轮独立真机结果。"
+      ],
+      "decision": "11月29日offline-to-online及毕业项目复查动作尺度/对称假设，不改纲。"
+    },
+    {
+      "type": "research",
+      "title": "OvPhysX兼容存在或取消warmup的运行时",
+      "source": "Isaac Lab / NVIDIA与开源贡献者",
+      "publishedAt": "2026-11-21T18:12:33Z",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/b130a8edc7f48725240c4fd9e4f2c67115db0c3e",
+      "commitSha": "b130a8edc7f48725240c4fd9e4f2c67115db0c3e",
+      "signals": [
+        "_warmup_and_load先等待clone receipt，仅在hasattr(warmup)时调用；兼容旧pin版本和在attach/clone阶段完成GPU upload的新runtime。",
+        "参数化测试覆盖有warmup、无warmup与clone失败，失败不发布model-ready；不是模型算法或真机性能新增。"
+      ],
+      "decision": "部署环境版本契约选读；不重排课程。"
+    },
     {
       "type": "research",
       "title": "JointReorder显式对齐关节与动作次序",
@@ -57,6 +111,58 @@
     }
   ],
   "auditReview": {
+    "windowStart": "2026-11-21T22:02:10+08:00",
+    "windowEnd": "2026-11-22T22:02:10+08:00",
+    "reviewedAt": "2026-11-22T22:02:10+08:00",
+    "verifiedTechnicalClusters": 4,
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://arxiv.org/abs/2611.09892",
+          "https://apple-aiml-research.github.io/ml-amp/"
+        ]
+      },
+      "EmbodiedLargeModels": {
+        "status": "updated",
+        "newClusters": 1,
+        "evidence": [
+          "https://github.com/huggingface/lerobot/commit/e5be0c16be1df4ae004abb4167842a7456c4cd54",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://openai.com/index/gpt-6-astra/"
+        ]
+      }
+    },
+    "deduplicatedTrackClusters": 1,
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false,
+    "summary": "严格24小时核实4项技术簇；具身大模型1项NAT VLA、Agent无已验证新增。双团队分别无已验证新增；杭州/上海可靠新岗位与面经各0。",
+    "limitations": [
+      "11仓commits中10成功，Evo-RL连接中断；11/11 releases成功。仅默认分支与各仓最近5个release，非全球穷尽。",
+      "与上轮窗口重叠5分19秒；4个精选SHA未在历史daily-intel中出现。",
+      "NAT作者论文跳转及HF模型页工具无法读取，以官方合并补丁和文档核机制；权重可用性未实测，不引用未读论文性能。",
+      "中英日韩检索命中的媒体、聚合页与招聘转载均不能充当首发证据。"
+    ],
+    "historicalCatchups": [
+      {
+        "title": "Apple AMP1",
+        "url": "https://arxiv.org/abs/2611.09892",
+        "publishedAt": "2026-11-06T18:59:34Z",
+        "version": "v3 2026-11-19T17:48:05Z",
+        "countedInStrictWindow": false,
+        "decision": "作者harness页面用于12月状态机、恢复、延迟主题复查；sim推理暂停，不能称实时闭环。"
+      }
+    ]
+  },
+  "previousAuditReview": {
     "windowStart": "2026-11-20T22:07:29+08:00",
     "windowEnd": "2026-11-21T22:07:29+08:00",
     "reviewedAt": "2026-11-21T22:07:29+08:00",
@@ -101,57 +207,6 @@
       "与上轮窗口重叠54分06秒，039e051和37025bd已归档，排除重复。",
       "6候选补丁中GR00T示例IncompleteRead，kitless遥操作链未完整读完，均不计精选；非穷尽。",
       "上海人工智能实验室JD只有2026-11-20日级日期，无法确认22:07:29之后发布，不算严格窗新增。"
-    ]
-  },
-  "previousAuditReview": {
-    "windowStart": "2026-11-19T23:01:35+08:00",
-    "windowEnd": "2026-11-20T23:01:35+08:00",
-    "reviewedAt": "2026-11-20T23:01:35+08:00",
-    "verifiedTechnicalClusters": 6,
-    "researchTracks": {
-      "EmbodiedAgent": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://arxiv.org/abs/2611.26196",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://openai.com/index/gpt-6-astra/"
-        ]
-      },
-      "EmbodiedLargeModels": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://arxiv.org/abs/2611.26196",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://openai.com/index/gpt-6-astra/"
-        ]
-      }
-    },
-    "deduplicatedTrackClusters": 0,
-    "lineages": {
-      "StanfordVL": "no_verified_change",
-      "WorldLabs": "no_verified_change",
-      "AMI": "no_verified_change",
-      "MetaHistorical": "no_verified_change"
-    },
-    "verifiedJobCount": 0,
-    "verifiedInterviewCount": 0,
-    "curriculumChanged": false,
-    "summary": "严格24小时核实6项工程更新；具身Agent、大模型及双团队均无已验证新增。EmbodyAgent为窗外历史补读。可靠新岗位/面经各0。",
-    "limitations": [
-      "Robbyant/lingbot-vla commits API连接中断；其releases成功。其他10仓commits与11仓releases成功；非全球穷尽。",
-      "本轮窗口比上轮截点后移19分30秒，前轮截点到本轮窗起未做补充穷尽审核。"
-    ],
-    "historicalCatchups": [
-      {
-        "url": "https://arxiv.org/html/2611.26196v1",
-        "publishedAt": "2026-11-19T14:41:34Z",
-        "modelVersion": "Qwen3.5-9B; teacher Astra Medium（未给精确API快照）",
-        "lineage": "具身 + Agent / 具身 + 大模型",
-        "countedInStrictWindow": false,
-        "decision": "窗外且早于上轮截点，标记漏检补读；关联后续RL与12月18日评测，不倒灌新增。"
-      }
     ]
   },
   "earlierSameDayAuditReview": {
@@ -323,35 +378,30 @@
     "curriculumChanged": false
   },
   "currentAudit": {
-    "windowStart": "2026-11-20T22:07:29+08:00",
-    "windowEnd": "2026-11-21T22:07:29+08:00",
-    "reviewedAt": "2026-11-21T22:07:29+08:00",
+    "windowStart": "2026-11-21T22:02:10+08:00",
+    "windowEnd": "2026-11-22T22:02:10+08:00",
+    "reviewedAt": "2026-11-22T22:02:10+08:00",
     "verifiedTechnicalClusters": 4,
     "researchTracks": {
       "EmbodiedAgent": {
         "status": "no_verified_change",
         "newClusters": 0,
         "evidence": [
-          "https://openai.com/index/gpt-6-astra/",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://qwen.ai/",
-          "https://arxiv.org/abs/2611.25005",
-          "https://arxiv.org/abs/2611.25251"
+          "https://arxiv.org/abs/2611.09892",
+          "https://apple-aiml-research.github.io/ml-amp/"
         ]
       },
       "EmbodiedLargeModels": {
-        "status": "no_verified_change",
-        "newClusters": 0,
+        "status": "updated",
+        "newClusters": 1,
         "evidence": [
-          "https://openai.com/index/gpt-6-astra/",
+          "https://github.com/huggingface/lerobot/commit/e5be0c16be1df4ae004abb4167842a7456c4cd54",
           "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://qwen.ai/",
-          "https://arxiv.org/abs/2611.25005",
-          "https://arxiv.org/abs/2611.25251"
+          "https://openai.com/index/gpt-6-astra/"
         ]
       }
     },
-    "deduplicatedTrackClusters": 0,
+    "deduplicatedTrackClusters": 1,
     "lineages": {
       "StanfordVL": "no_verified_change",
       "WorldLabs": "no_verified_change",
@@ -361,12 +411,22 @@
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
     "curriculumChanged": false,
-    "summary": "严格24小时新增4项工程簇；具身Agent、大模型及双团队无已验证新增。杭州/上海新岗位与可靠面经均0；官方上海JD仅日级日期待定窗。",
+    "summary": "严格24小时核实4项技术簇；具身大模型1项NAT VLA、Agent无已验证新增。双团队分别无已验证新增；杭州/上海可靠新岗位与面经各0。",
     "limitations": [
-      "11仓commits成功；9/11 releases成功，openpi与lingbot-vla连接断开。",
-      "与上轮窗口重叠54分06秒，039e051和37025bd已归档，排除重复。",
-      "6候选补丁中GR00T示例IncompleteRead，kitless遥操作链未完整读完，均不计精选；非穷尽。",
-      "上海人工智能实验室JD只有2026-11-20日级日期，无法确认22:07:29之后发布，不算严格窗新增。"
+      "11仓commits中10成功，Evo-RL连接中断；11/11 releases成功。仅默认分支与各仓最近5个release，非全球穷尽。",
+      "与上轮窗口重叠5分19秒；4个精选SHA未在历史daily-intel中出现。",
+      "NAT作者论文跳转及HF模型页工具无法读取，以官方合并补丁和文档核机制；权重可用性未实测，不引用未读论文性能。",
+      "中英日韩检索命中的媒体、聚合页与招聘转载均不能充当首发证据。"
+    ],
+    "historicalCatchups": [
+      {
+        "title": "Apple AMP1",
+        "url": "https://arxiv.org/abs/2611.09892",
+        "publishedAt": "2026-11-06T18:59:34Z",
+        "version": "v3 2026-11-19T17:48:05Z",
+        "countedInStrictWindow": false,
+        "decision": "作者harness页面用于12月状态机、恢复、延迟主题复查；sim推理暂停，不能称实时闭环。"
+      }
     ]
   }
 }
