@@ -1,8 +1,37 @@
 {
-  "updatedAt": "2026-11-22T22:02:10+08:00",
+  "updatedAt": "2026-11-23T22:02:42+08:00",
   "status": "updated",
-  "summary": "严格24小时核实4项技术簇；具身大模型1项NAT VLA、Agent无已验证新增。双团队分别无已验证新增；杭州/上海可靠新岗位与面经各0。",
+  "summary": "严格24小时核实2项技术簇：FastWAM预测帧接口、Isaac Lab输送带API。具身Agent0，大模型工程新增1；双团队无已验证新增，两地可靠新JD/面经0。",
   "items": [
+    {
+      "type": "research",
+      "title": "FastWAM可选返回想象相机帧，动作保持不变",
+      "source": "Hugging Face LeRobot / FastWAM贡献者",
+      "publishedAt": "2026-11-23T10:37:41Z",
+      "commitSha": "8476881bfb5d6f412a651a66517ed0502d849d9e",
+      "url": "https://github.com/huggingface/lerobot/commit/8476881bfb5d6f412a651a66517ed0502d849d9e",
+      "lineage": "具身 + 大模型",
+      "signals": [
+        "return_predicted_video默认false；开启后每chunk另加视频去噪与VAE解码，select_action返回action并在预测帧变化时附prediction.observation。",
+        "输入当前图像、任务context和本体状态；动作专家仍经predict_action_chunk，视频专家单独预测后续帧，动作条件专家才传入预测动作。不是根据视频成功自动重规划的上层Agent。",
+        "fork_rng保护视频采样不消耗全局RNG；上游tiny fixtures覆盖default/Faster-WAM/action_conditioned两chunk动作一致、视频与joint输出相等、多相机按等宽拆分与compile入口。这里只读测试，未下载权重或执行上游训练/仿真/真机。"
+      ],
+      "decision": "12月离线/闭环指标、部署与毕业项目复查：预测画面不是实际观测，额外去噪解码会增加等待；执行者仍是rollout下层机器人/仿真控制器，实测观测须独立回流，不按画面判成功。"
+    },
+    {
+      "type": "research",
+      "title": "Isaac Lab输送带批量命令与reset生命周期API",
+      "source": "Isaac Lab / NVIDIA与开源社区",
+      "publishedAt": "2026-11-22T19:11:39Z",
+      "commitSha": "5c40dd797baac01eb0dd3d0022eea6873db852d3",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/5c40dd797baac01eb0dd3d0022eea6873db852d3",
+      "signals": [
+        "ConveyorCfg/Conveyor对既有静态碰撞面设定直线或弯曲牵引；每环境speed_scale乘既定m/s，负数反转，reset清选中world力历史而保留命令。Newton MJWarp暂依赖锁定Newton d31603ff示例力模型，非通用后端承诺。",
+        "post_solver_substep读取已解接触力并计算下一子步牵引；hard reset重新绑定，close移除hook和消费者请求；共享观测量仍被其他消费者需要时保留。",
+        "作者报告21 focused与11 combined案例、600步既有策略轨迹一致；本轮只读补丁，非本轮实跑，也无真机迁移结果。tensor速度值为了避免capture同步不逐值检查有限性，调用方仍需输入验证。"
+      ],
+      "decision": "11月29日离线转在线与毕业项目标记：控制命令持久性、reset历史和动力学版本应进入日志；不改总纲。"
+    },
     {
       "type": "research",
       "title": "NAT VLA接入：LFM2-VL输出流式动作token",
@@ -111,6 +140,65 @@
     }
   ],
   "auditReview": {
+    "windowStart": "2026-11-22T22:02:42+08:00",
+    "windowEnd": "2026-11-23T22:02:42+08:00",
+    "reviewedAt": "2026-11-23T22:02:42+08:00",
+    "verifiedTechnicalClusters": 2,
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://arxiv.org/abs/2611.26376"
+        ]
+      },
+      "EmbodiedLargeModels": {
+        "status": "updated",
+        "newClusters": 1,
+        "evidence": [
+          "https://github.com/huggingface/lerobot/commit/8476881bfb5d6f412a651a66517ed0502d849d9e",
+          "https://openai.com/index/gpt-6-astra/",
+          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
+          "https://docs.qwencloud.com/changelog/models"
+        ]
+      }
+    },
+    "deduplicatedTrackClusters": 1,
+    "lineages": {
+      "StanfordVL": "no_verified_change",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false,
+    "summary": "严格24小时核实2项技术簇：FastWAM预测帧接口、Isaac Lab输送带API。具身Agent0，大模型工程新增1；双团队无已验证新增，两地可靠新JD/面经0。",
+    "limitations": [
+      "默认分支commits和最近5个release，非所有分支/地区穷尽；上游测试与权重均未执行。",
+      "32秒接缝另行补查官方仓库，不把抓取时间当首发。",
+      "招聘转载更新日/截止日不等于企业首发；未编造面经。"
+    ],
+    "historicalCatchups": [
+      {
+        "title": "UniCraft",
+        "url": "https://arxiv.org/abs/2611.26376",
+        "publishedAt": "2026-11-19T16:37:10Z",
+        "version": "v1",
+        "countedInStrictWindow": false,
+        "decision": "12月技能编排/状态机复查，先补读全文再引用性能。"
+      },
+      {
+        "title": "Devol-ONE",
+        "url": "https://arxiv.org/abs/2609.32193",
+        "publishedAt": "2026-09-26T03:35:15Z",
+        "version": "v2 2026-10-01T06:42:05Z",
+        "countedInStrictWindow": false,
+        "decision": "V-JEPA表征与动作生成的后续阅读候选；不能因采用V-JEPA就标记LeCun团队发布。"
+      }
+    ]
+  },
+  "previousAuditReview": {
     "windowStart": "2026-11-21T22:02:10+08:00",
     "windowEnd": "2026-11-22T22:02:10+08:00",
     "reviewedAt": "2026-11-22T22:02:10+08:00",
@@ -160,53 +248,6 @@
         "countedInStrictWindow": false,
         "decision": "作者harness页面用于12月状态机、恢复、延迟主题复查；sim推理暂停，不能称实时闭环。"
       }
-    ]
-  },
-  "previousAuditReview": {
-    "windowStart": "2026-11-20T22:07:29+08:00",
-    "windowEnd": "2026-11-21T22:07:29+08:00",
-    "reviewedAt": "2026-11-21T22:07:29+08:00",
-    "verifiedTechnicalClusters": 4,
-    "researchTracks": {
-      "EmbodiedAgent": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://openai.com/index/gpt-6-astra/",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://qwen.ai/",
-          "https://arxiv.org/abs/2611.25005",
-          "https://arxiv.org/abs/2611.25251"
-        ]
-      },
-      "EmbodiedLargeModels": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://openai.com/index/gpt-6-astra/",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://qwen.ai/",
-          "https://arxiv.org/abs/2611.25005",
-          "https://arxiv.org/abs/2611.25251"
-        ]
-      }
-    },
-    "deduplicatedTrackClusters": 0,
-    "lineages": {
-      "StanfordVL": "no_verified_change",
-      "WorldLabs": "no_verified_change",
-      "AMI": "no_verified_change",
-      "MetaHistorical": "no_verified_change"
-    },
-    "verifiedJobCount": 0,
-    "verifiedInterviewCount": 0,
-    "curriculumChanged": false,
-    "summary": "严格24小时新增4项工程簇；具身Agent、大模型及双团队无已验证新增。杭州/上海新岗位与可靠面经均0；官方上海JD仅日级日期待定窗。",
-    "limitations": [
-      "11仓commits成功；9/11 releases成功，openpi与lingbot-vla连接断开。",
-      "与上轮窗口重叠54分06秒，039e051和37025bd已归档，排除重复。",
-      "6候选补丁中GR00T示例IncompleteRead，kitless遥操作链未完整读完，均不计精选；非穷尽。",
-      "上海人工智能实验室JD只有2026-11-20日级日期，无法确认22:07:29之后发布，不算严格窗新增。"
     ]
   },
   "earlierSameDayAuditReview": {
@@ -378,26 +419,26 @@
     "curriculumChanged": false
   },
   "currentAudit": {
-    "windowStart": "2026-11-21T22:02:10+08:00",
-    "windowEnd": "2026-11-22T22:02:10+08:00",
-    "reviewedAt": "2026-11-22T22:02:10+08:00",
-    "verifiedTechnicalClusters": 4,
+    "windowStart": "2026-11-22T22:02:42+08:00",
+    "windowEnd": "2026-11-23T22:02:42+08:00",
+    "reviewedAt": "2026-11-23T22:02:42+08:00",
+    "verifiedTechnicalClusters": 2,
     "researchTracks": {
       "EmbodiedAgent": {
         "status": "no_verified_change",
         "newClusters": 0,
         "evidence": [
-          "https://arxiv.org/abs/2611.09892",
-          "https://apple-aiml-research.github.io/ml-amp/"
+          "https://arxiv.org/abs/2611.26376"
         ]
       },
       "EmbodiedLargeModels": {
         "status": "updated",
         "newClusters": 1,
         "evidence": [
-          "https://github.com/huggingface/lerobot/commit/e5be0c16be1df4ae004abb4167842a7456c4cd54",
+          "https://github.com/huggingface/lerobot/commit/8476881bfb5d6f412a651a66517ed0502d849d9e",
+          "https://openai.com/index/gpt-6-astra/",
           "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://openai.com/index/gpt-6-astra/"
+          "https://docs.qwencloud.com/changelog/models"
         ]
       }
     },
@@ -411,21 +452,28 @@
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
     "curriculumChanged": false,
-    "summary": "严格24小时核实4项技术簇；具身大模型1项NAT VLA、Agent无已验证新增。双团队分别无已验证新增；杭州/上海可靠新岗位与面经各0。",
+    "summary": "严格24小时核实2项技术簇：FastWAM预测帧接口、Isaac Lab输送带API。具身Agent0，大模型工程新增1；双团队无已验证新增，两地可靠新JD/面经0。",
     "limitations": [
-      "11仓commits中10成功，Evo-RL连接中断；11/11 releases成功。仅默认分支与各仓最近5个release，非全球穷尽。",
-      "与上轮窗口重叠5分19秒；4个精选SHA未在历史daily-intel中出现。",
-      "NAT作者论文跳转及HF模型页工具无法读取，以官方合并补丁和文档核机制；权重可用性未实测，不引用未读论文性能。",
-      "中英日韩检索命中的媒体、聚合页与招聘转载均不能充当首发证据。"
+      "默认分支commits和最近5个release，非所有分支/地区穷尽；上游测试与权重均未执行。",
+      "32秒接缝另行补查官方仓库，不把抓取时间当首发。",
+      "招聘转载更新日/截止日不等于企业首发；未编造面经。"
     ],
     "historicalCatchups": [
       {
-        "title": "Apple AMP1",
-        "url": "https://arxiv.org/abs/2611.09892",
-        "publishedAt": "2026-11-06T18:59:34Z",
-        "version": "v3 2026-11-19T17:48:05Z",
+        "title": "UniCraft",
+        "url": "https://arxiv.org/abs/2611.26376",
+        "publishedAt": "2026-11-19T16:37:10Z",
+        "version": "v1",
         "countedInStrictWindow": false,
-        "decision": "作者harness页面用于12月状态机、恢复、延迟主题复查；sim推理暂停，不能称实时闭环。"
+        "decision": "12月技能编排/状态机复查，先补读全文再引用性能。"
+      },
+      {
+        "title": "Devol-ONE",
+        "url": "https://arxiv.org/abs/2609.32193",
+        "publishedAt": "2026-09-26T03:35:15Z",
+        "version": "v2 2026-10-01T06:42:05Z",
+        "countedInStrictWindow": false,
+        "decision": "V-JEPA表征与动作生成的后续阅读候选；不能因采用V-JEPA就标记LeCun团队发布。"
       }
     ]
   }
