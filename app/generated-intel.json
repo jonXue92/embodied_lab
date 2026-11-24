@@ -1,8 +1,78 @@
 {
-  "updatedAt": "2026-11-23T22:02:42+08:00",
+  "updatedAt": "2026-11-24T23:04:00+08:00",
   "status": "updated",
-  "summary": "严格24小时核实2项技术簇：FastWAM预测帧接口、Isaac Lab输送带API。具身Agent0，大模型工程新增1；双团队无已验证新增，两地可靠新JD/面经0。",
+  "summary": "严格24小时核实5项技术簇（6个提交）：StanfordVL渲染/环境迁移与姿态差修复、Isaac Lab主动注视、ACT dtype及VLA分项日志。Agent无已验证新增；大模型训练工程1项，非新模型。",
   "items": [
+    {
+      "type": "research",
+      "title": "OmniGibson新增Newton RGB渲染并升级Kit运行环境",
+      "source": "StanfordVL / BEHAVIOR-1K贡献者",
+      "publishedAt": "2026-11-23T23:55:53Z",
+      "commitSha": "30880c2c6b6160aee5bc43478f6fd00652749251",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/30880c2c6b6160aee5bc43478f6fd00652749251",
+      "signals": [
+        "新增gl/ovrtx后端；支持physx+kit、newton+none/gl/ovrtx组合。Newton共享headless viewer，以相机世界姿态抓取RGBA；目前只支持rgb，其他annotator模态拒绝。",
+        "GL按分辨率共享viewer、模型变化时rebind；OVRTX还按FOV共享，灯光在构建时拷贝。不能把RGB接口当深度/分割/RAW能力，也未证明与Kit像素一致。",
+        "同日152dc80342267fd9e0d98f0ee36386f27c69342e（2026-11-24T07:51:07Z）升级Isaac Sim6.2.0.0、Kit110.4及环境版本2，合为环境迁移簇。源码补丁已读，未安装或运行上游GPU仿真。"
+      ],
+      "decision": "11月29日经验混合：保留physics/render/依赖版本与来源，迁移后重跑同场景回归；12月数据修订与毕业项目复查。",
+      "lineage": "李飞飞相关 / StanfordVL"
+    },
+    {
+      "type": "research",
+      "title": "OmniGibson NumPy姿态差从轴夹角改为相对旋转角",
+      "source": "StanfordVL / BEHAVIOR-1K贡献者",
+      "publishedAt": "2026-11-24T05:19:36Z",
+      "commitSha": "cc20c420607e3eca7a0efc60b7cffa34aa2dbf31",
+      "url": "https://github.com/StanfordVL/BEHAVIOR-1K/commit/cc20c420607e3eca7a0efc60b7cffa34aa2dbf31",
+      "signals": [
+        "get_orientation_diff_in_radian旧实现归一化两个axis-angle再取点积acos，测的是旋转轴夹角；新实现quat_distance后取axis-angle范数，与Torch实现对齐。",
+        "作者新增同z轴.1与1.0应差.9弧度、恒等与.1、自身差0及100对随机SciPy相对旋转对照。这里只读测试，未执行上游。"
+      ],
+      "decision": "11月29日两池成功/奖励容差必须同版；12月评测课复查姿态容差，旧日志不能直接重判成绩。",
+      "lineage": "李飞飞相关 / StanfordVL"
+    },
+    {
+      "type": "research",
+      "title": "Isaac Lab实验性中央凹相机与主动注视Cartpole",
+      "source": "NVIDIA / Isaac Lab / fovi贡献者",
+      "publishedAt": "2026-11-24T03:25:15Z",
+      "commitSha": "bb44944dd450745a83750f7936a5df5ad6f58fbc",
+      "url": "https://github.com/isaac-sim/IsaacLab/commit/bb44944dd450745a83750f7936a5df5ad6f58fbc",
+      "signals": [
+        "isaaclab_fovi按视角偏心率非均匀采样；Newton直接投射retina rays，RTX/OVRTX用lens LUT。默认输出[env,H,W,C]，sample-set为[env,N,1,C]；物理视野外可置零。",
+        "32×32 Cartpole增加末两维有界gaze动作，pole-tip teacher仅为监督标签、不进actor/critic输入；PPO另加有效标签平均距离损失，注视噪声固定.1。不是LLM任务规划或工具Agent。",
+        "补丁明确实验性；作者列无模拟器测试与仿真示例，测试含无效NaN标签不传梯度、零系数匹配原PPO及噪声固定。本轮仅读文档/源码/测试，未实跑上游，无真机证据。"
+      ],
+      "decision": "传感器/RAW专项候选：比较等采样预算下反光目标恢复与视野遗漏，12月评测/毕业项目复查；不把中央凹采样说成RAW sensor或实测控制提升。"
+    },
+    {
+      "type": "research",
+      "title": "LeRobot ACT推理零latent跟随投影权重dtype",
+      "source": "Hugging Face / LeRobot贡献者",
+      "publishedAt": "2026-11-24T10:35:58Z",
+      "commitSha": "c5a8bed13f67c192f84d2b00e8429afd85745e1a",
+      "url": "https://github.com/huggingface/lerobot/commit/c5a8bed13f67c192f84d2b00e8429afd85745e1a",
+      "signals": [
+        "ACT.forward在不使用VAE encoder时，零latent从固定float32改为encoder_latent_input_proj.weight.dtype，避免半精度线性层不匹配；设备仍取状态输入。",
+        "新增CPU小模型bfloat16动作chunk与float32对照，atol/rtol=.1；提交说明涉及ONNX Runtime故障，但本轮不声称已运行ONNX或真机。ACT非通用大模型，此项不计大模型专项。"
+      ],
+      "decision": "个人Mac/单卡部署前复查输入、权重与latent dtype；对应12月毕业项目回归，不改历史课。"
+    },
+    {
+      "type": "research",
+      "title": "LeRobot按名字归约跨rank策略分项loss",
+      "source": "Hugging Face / LeRobot贡献者",
+      "publishedAt": "2026-11-24T07:14:24Z",
+      "commitSha": "cc69168f28410da7654e0f81381dec2efb1bb5bb",
+      "url": "https://github.com/huggingface/lerobot/commit/cc69168f28410da7654e0f81381dec2efb1bb5bb",
+      "signals": [
+        "MetricsTracker把自动策略标量以sum/count按名字all_gather_object，不同rank可缺不同监督项；caller自定meter保留原reduction，普通reduction按排序后的键执行。",
+        "仅修日志观测口径，不改反向梯度。测试含异名flow/text loss、重复reduce、caller同名保护与late meter；本轮只读未运行上游多进程。无新增模型权重、机器人基准或真机结果。"
+      ],
+      "decision": "VLA混合监督的训练诊断：避免把rank0局部均值当全局。12月value/迭代训练与作品报告复查。",
+      "lineage": "具身 + 大模型 / 训练工程"
+    },
     {
       "type": "research",
       "title": "FastWAM可选返回想象相机帧，动作保持不变",
@@ -140,6 +210,64 @@
     }
   ],
   "auditReview": {
+    "windowStart": "2026-11-23T23:04:00+08:00",
+    "windowEnd": "2026-11-24T23:04:00+08:00",
+    "reviewedAt": "2026-11-24T23:04:00+08:00",
+    "verifiedTechnicalClusters": 5,
+    "researchTracks": {
+      "EmbodiedAgent": {
+        "status": "no_verified_change",
+        "newClusters": 0,
+        "evidence": [
+          "https://arxiv.org/abs/2611.26613"
+        ]
+      },
+      "EmbodiedLargeModels": {
+        "status": "updated",
+        "newClusters": 1,
+        "evidence": [
+          "https://github.com/huggingface/lerobot/commit/cc69168f28410da7654e0f81381dec2efb1bb5bb"
+        ],
+        "scope": "mixed-supervision training metrics only"
+      }
+    },
+    "deduplicatedTrackClusters": 1,
+    "lineages": {
+      "StanfordVL": "updated",
+      "WorldLabs": "no_verified_change",
+      "AMI": "no_verified_change",
+      "MetaHistorical": "no_verified_change"
+    },
+    "verifiedJobCount": 0,
+    "verifiedInterviewCount": 0,
+    "curriculumChanged": false,
+    "summary": "严格24小时核实5项技术簇（6个提交）：StanfordVL渲染/环境迁移与姿态差修复、Isaac Lab主动注视、ACT dtype及VLA分项日志。Agent无已验证新增；大模型训练工程1项，非新模型。",
+    "limitations": [
+      "11/11 commit queries and 10/11 release queries succeeded; lingbot-vla release connection closed. Default branch and latest 5 releases only.",
+      "All upstream GPU/simulator tests only read, not executed. Local original teaching fixtures separately tested.",
+      "Sandbox DNS failed; authorized networking restored source synchronization and GitHub queries.",
+      "Window gap 2026-11-23T14:02:42Z to15:04:00Z checked, no commits/releases."
+    ],
+    "historicalCatchups": [
+      {
+        "title": "AgentRoboCritic",
+        "url": "https://arxiv.org/abs/2611.26613",
+        "version": "v1",
+        "publishedAt": "2026-11-19T18:57:25Z",
+        "countedInStrictWindow": false,
+        "decision": "12月失败诊断与评测候选，全文待复读。"
+      },
+      {
+        "title": "Motion Mamba2.0",
+        "url": "https://arxiv.org/abs/2611.29897",
+        "version": "v1",
+        "publishedAt": "2026-11-23T01:51:57Z",
+        "countedInStrictWindow": false,
+        "decision": "部署、时序记忆候选，未复现，不按今日媒体重计。"
+      }
+    ]
+  },
+  "previousAuditReview": {
     "windowStart": "2026-11-22T22:02:42+08:00",
     "windowEnd": "2026-11-23T22:02:42+08:00",
     "reviewedAt": "2026-11-23T22:02:42+08:00",
@@ -195,58 +323,6 @@
         "version": "v2 2026-10-01T06:42:05Z",
         "countedInStrictWindow": false,
         "decision": "V-JEPA表征与动作生成的后续阅读候选；不能因采用V-JEPA就标记LeCun团队发布。"
-      }
-    ]
-  },
-  "previousAuditReview": {
-    "windowStart": "2026-11-21T22:02:10+08:00",
-    "windowEnd": "2026-11-22T22:02:10+08:00",
-    "reviewedAt": "2026-11-22T22:02:10+08:00",
-    "verifiedTechnicalClusters": 4,
-    "researchTracks": {
-      "EmbodiedAgent": {
-        "status": "no_verified_change",
-        "newClusters": 0,
-        "evidence": [
-          "https://arxiv.org/abs/2611.09892",
-          "https://apple-aiml-research.github.io/ml-amp/"
-        ]
-      },
-      "EmbodiedLargeModels": {
-        "status": "updated",
-        "newClusters": 1,
-        "evidence": [
-          "https://github.com/huggingface/lerobot/commit/e5be0c16be1df4ae004abb4167842a7456c4cd54",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://openai.com/index/gpt-6-astra/"
-        ]
-      }
-    },
-    "deduplicatedTrackClusters": 1,
-    "lineages": {
-      "StanfordVL": "no_verified_change",
-      "WorldLabs": "no_verified_change",
-      "AMI": "no_verified_change",
-      "MetaHistorical": "no_verified_change"
-    },
-    "verifiedJobCount": 0,
-    "verifiedInterviewCount": 0,
-    "curriculumChanged": false,
-    "summary": "严格24小时核实4项技术簇；具身大模型1项NAT VLA、Agent无已验证新增。双团队分别无已验证新增；杭州/上海可靠新岗位与面经各0。",
-    "limitations": [
-      "11仓commits中10成功，Evo-RL连接中断；11/11 releases成功。仅默认分支与各仓最近5个release，非全球穷尽。",
-      "与上轮窗口重叠5分19秒；4个精选SHA未在历史daily-intel中出现。",
-      "NAT作者论文跳转及HF模型页工具无法读取，以官方合并补丁和文档核机制；权重可用性未实测，不引用未读论文性能。",
-      "中英日韩检索命中的媒体、聚合页与招聘转载均不能充当首发证据。"
-    ],
-    "historicalCatchups": [
-      {
-        "title": "Apple AMP1",
-        "url": "https://arxiv.org/abs/2611.09892",
-        "publishedAt": "2026-11-06T18:59:34Z",
-        "version": "v3 2026-11-19T17:48:05Z",
-        "countedInStrictWindow": false,
-        "decision": "作者harness页面用于12月状态机、恢复、延迟主题复查；sim推理暂停，不能称实时闭环。"
       }
     ]
   },
@@ -419,32 +495,30 @@
     "curriculumChanged": false
   },
   "currentAudit": {
-    "windowStart": "2026-11-22T22:02:42+08:00",
-    "windowEnd": "2026-11-23T22:02:42+08:00",
-    "reviewedAt": "2026-11-23T22:02:42+08:00",
-    "verifiedTechnicalClusters": 2,
+    "windowStart": "2026-11-23T23:04:00+08:00",
+    "windowEnd": "2026-11-24T23:04:00+08:00",
+    "reviewedAt": "2026-11-24T23:04:00+08:00",
+    "verifiedTechnicalClusters": 5,
     "researchTracks": {
       "EmbodiedAgent": {
         "status": "no_verified_change",
         "newClusters": 0,
         "evidence": [
-          "https://arxiv.org/abs/2611.26376"
+          "https://arxiv.org/abs/2611.26613"
         ]
       },
       "EmbodiedLargeModels": {
         "status": "updated",
         "newClusters": 1,
         "evidence": [
-          "https://github.com/huggingface/lerobot/commit/8476881bfb5d6f412a651a66517ed0502d849d9e",
-          "https://openai.com/index/gpt-6-astra/",
-          "https://www.anthropic.com/claude-fable-and-mythos-5-2",
-          "https://docs.qwencloud.com/changelog/models"
-        ]
+          "https://github.com/huggingface/lerobot/commit/cc69168f28410da7654e0f81381dec2efb1bb5bb"
+        ],
+        "scope": "mixed-supervision training metrics only"
       }
     },
     "deduplicatedTrackClusters": 1,
     "lineages": {
-      "StanfordVL": "no_verified_change",
+      "StanfordVL": "updated",
       "WorldLabs": "no_verified_change",
       "AMI": "no_verified_change",
       "MetaHistorical": "no_verified_change"
@@ -452,28 +526,29 @@
     "verifiedJobCount": 0,
     "verifiedInterviewCount": 0,
     "curriculumChanged": false,
-    "summary": "严格24小时核实2项技术簇：FastWAM预测帧接口、Isaac Lab输送带API。具身Agent0，大模型工程新增1；双团队无已验证新增，两地可靠新JD/面经0。",
+    "summary": "严格24小时核实5项技术簇（6个提交）：StanfordVL渲染/环境迁移与姿态差修复、Isaac Lab主动注视、ACT dtype及VLA分项日志。Agent无已验证新增；大模型训练工程1项，非新模型。",
     "limitations": [
-      "默认分支commits和最近5个release，非所有分支/地区穷尽；上游测试与权重均未执行。",
-      "32秒接缝另行补查官方仓库，不把抓取时间当首发。",
-      "招聘转载更新日/截止日不等于企业首发；未编造面经。"
+      "11/11 commit queries and 10/11 release queries succeeded; lingbot-vla release connection closed. Default branch and latest 5 releases only.",
+      "All upstream GPU/simulator tests only read, not executed. Local original teaching fixtures separately tested.",
+      "Sandbox DNS failed; authorized networking restored source synchronization and GitHub queries.",
+      "Window gap 2026-11-23T14:02:42Z to15:04:00Z checked, no commits/releases."
     ],
     "historicalCatchups": [
       {
-        "title": "UniCraft",
-        "url": "https://arxiv.org/abs/2611.26376",
-        "publishedAt": "2026-11-19T16:37:10Z",
+        "title": "AgentRoboCritic",
+        "url": "https://arxiv.org/abs/2611.26613",
         "version": "v1",
+        "publishedAt": "2026-11-19T18:57:25Z",
         "countedInStrictWindow": false,
-        "decision": "12月技能编排/状态机复查，先补读全文再引用性能。"
+        "decision": "12月失败诊断与评测候选，全文待复读。"
       },
       {
-        "title": "Devol-ONE",
-        "url": "https://arxiv.org/abs/2609.32193",
-        "publishedAt": "2026-09-26T03:35:15Z",
-        "version": "v2 2026-10-01T06:42:05Z",
+        "title": "Motion Mamba2.0",
+        "url": "https://arxiv.org/abs/2611.29897",
+        "version": "v1",
+        "publishedAt": "2026-11-23T01:51:57Z",
         "countedInStrictWindow": false,
-        "decision": "V-JEPA表征与动作生成的后续阅读候选；不能因采用V-JEPA就标记LeCun团队发布。"
+        "decision": "部署、时序记忆候选，未复现，不按今日媒体重计。"
       }
     ]
   }
